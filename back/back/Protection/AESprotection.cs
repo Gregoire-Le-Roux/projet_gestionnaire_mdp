@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using BC = BCrypt.Net.BCrypt;
 
 namespace back.securite
 {
@@ -56,6 +57,15 @@ namespace back.securite
             aesCryptoService.Clear();
 
             return textDechiffrer;
+        }
+
+        public static string CreerCleChiffrement(string _nom, string _prenom, string _mail)
+        {
+            string info = _nom + _prenom + _mail;
+
+            string cleChiffrement = BC.HashPassword(info);
+
+            return cleChiffrement;
         }
     }
 }

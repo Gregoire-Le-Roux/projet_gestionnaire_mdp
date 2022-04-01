@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace back.Models
 {
@@ -11,39 +14,29 @@ namespace back.Models
         public GestionMdpContext(DbContextOptions<GestionMdpContext> options)
             : base(options)
         {
-            
         }
 
-        public virtual DbSet<CarnetAdresse> CarnetAdresses { get; set; } = null!;
         public virtual DbSet<Compte> Comptes { get; set; } = null!;
         public virtual DbSet<Groupe> Groupes { get; set; } = null!;
         public virtual DbSet<MotDePasse> MotDePasses { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<CarnetAdresse>(entity =>
-            {
-                entity.ToTable("CarnetAdresse");
-
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.IdCompte).HasColumnName("idCompte");
-
-                entity.HasOne(d => d.IdCompteNavigation)
-                    .WithMany(p => p.CarnetAdresses)
-                    .HasForeignKey(d => d.IdCompte)
-                    .HasConstraintName("FK__CarnetAdr__idCom__66603565");
-            });
-
             modelBuilder.Entity<Compte>(entity =>
             {
                 entity.ToTable("Compte");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.HashCle)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("hashCle");
 
                 entity.Property(e => e.Mail)
                     .HasMaxLength(250)
@@ -64,6 +57,40 @@ namespace back.Models
                     .HasMaxLength(200)
                     .IsUnicode(false)
                     .HasColumnName("prenom");
+
+                entity.HasMany(d => d.IdCompteCarnets)
+                    .WithMany(p => p.IdComptes)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CarnetAdresse",
+                        l => l.HasOne<Compte>().WithMany().HasForeignKey("IdCompteCarnet").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CarnetAdr__idCom__1BC821DD"),
+                        r => r.HasOne<Compte>().WithMany().HasForeignKey("IdCompte").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CarnetAdr__idCom__1AD3FDA4"),
+                        j =>
+                        {
+                            j.HasKey("IdCompte", "IdCompteCarnet").HasName("PK__CarnetAd__E66F3CC5B389B155");
+
+                            j.ToTable("CarnetAdresse");
+
+                            j.IndexerProperty<int>("IdCompte").HasColumnName("idCompte");
+
+                            j.IndexerProperty<int>("IdCompteCarnet").HasColumnName("idCompteCarnet");
+                        });
+
+                entity.HasMany(d => d.IdComptes)
+                    .WithMany(p => p.IdCompteCarnets)
+                    .UsingEntity<Dictionary<string, object>>(
+                        "CarnetAdresse",
+                        l => l.HasOne<Compte>().WithMany().HasForeignKey("IdCompte").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CarnetAdr__idCom__1AD3FDA4"),
+                        r => r.HasOne<Compte>().WithMany().HasForeignKey("IdCompteCarnet").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CarnetAdr__idCom__1BC821DD"),
+                        j =>
+                        {
+                            j.HasKey("IdCompte", "IdCompteCarnet").HasName("PK__CarnetAd__E66F3CC5B389B155");
+
+                            j.ToTable("CarnetAdresse");
+
+                            j.IndexerProperty<int>("IdCompte").HasColumnName("idCompte");
+
+                            j.IndexerProperty<int>("IdCompteCarnet").HasColumnName("idCompteCarnet");
+                        });
             });
 
             modelBuilder.Entity<Groupe>(entity =>
@@ -82,17 +109,17 @@ namespace back.Models
                 entity.HasOne(d => d.IdCompteCreateurNavigation)
                     .WithMany(p => p.Groupes)
                     .HasForeignKey(d => d.IdCompteCreateur)
-                    .HasConstraintName("FK__Groupe__idCompte__693CA210");
+                    .HasConstraintName("FK__Groupe__idCompte__1EA48E88");
 
                 entity.HasMany(d => d.IdComptes)
                     .WithMany(p => p.IdGroupes)
                     .UsingEntity<Dictionary<string, object>>(
                         "CompteGroupe",
-                        l => l.HasOne<Compte>().WithMany().HasForeignKey("IdCompte").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CompteGro__idCom__6D0D32F4"),
-                        r => r.HasOne<Groupe>().WithMany().HasForeignKey("IdGroupe").HasConstraintName("FK__CompteGro__idGro__6C190EBB"),
+                        l => l.HasOne<Compte>().WithMany().HasForeignKey("IdCompte").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__CompteGro__idCom__22751F6C"),
+                        r => r.HasOne<Groupe>().WithMany().HasForeignKey("IdGroupe").HasConstraintName("FK__CompteGro__idGro__2180FB33"),
                         j =>
                         {
-                            j.HasKey("IdGroupe", "IdCompte").HasName("PK__CompteGr__D94C61B5D1B04032");
+                            j.HasKey("IdGroupe", "IdCompte").HasName("PK__CompteGr__D94C61B5D076C8D5");
 
                             j.ToTable("CompteGroupe");
 
@@ -105,11 +132,11 @@ namespace back.Models
                     .WithMany(p => p.IdGroupes)
                     .UsingEntity<Dictionary<string, object>>(
                         "GroupeMdp",
-                        l => l.HasOne<MotDePasse>().WithMany().HasForeignKey("IdMdp").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__GroupeMdp__idMdp__70DDC3D8"),
-                        r => r.HasOne<Groupe>().WithMany().HasForeignKey("IdGroupe").HasConstraintName("FK__GroupeMdp__idGro__6FE99F9F"),
+                        l => l.HasOne<MotDePasse>().WithMany().HasForeignKey("IdMdp").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("FK__GroupeMdp__idMdp__2645B050"),
+                        r => r.HasOne<Groupe>().WithMany().HasForeignKey("IdGroupe").HasConstraintName("FK__GroupeMdp__idGro__25518C17"),
                         j =>
                         {
-                            j.HasKey("IdGroupe", "IdMdp").HasName("PK__GroupeMd__FE1B975D22B46BC0");
+                            j.HasKey("IdGroupe", "IdMdp").HasName("PK__GroupeMd__FE1B975DB7BC5E73");
 
                             j.ToTable("GroupeMdp");
 
@@ -125,12 +152,41 @@ namespace back.Models
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.DateExpiration)
+                    .HasColumnType("date")
+                    .HasColumnName("dateExpiration");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(2000)
+                    .IsUnicode(false)
+                    .HasColumnName("description");
+
                 entity.Property(e => e.IdCompteCreateur).HasColumnName("idCompteCreateur");
+
+                entity.Property(e => e.Login)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("login");
+
+                entity.Property(e => e.Mdp)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("mdp");
+
+                entity.Property(e => e.Titre)
+                    .HasMaxLength(100)
+                    .IsUnicode(false)
+                    .HasColumnName("titre");
+
+                entity.Property(e => e.Url)
+                    .HasMaxLength(500)
+                    .IsUnicode(false)
+                    .HasColumnName("url");
 
                 entity.HasOne(d => d.IdCompteCreateurNavigation)
                     .WithMany(p => p.MotDePasses)
                     .HasForeignKey(d => d.IdCompteCreateur)
-                    .HasConstraintName("FK__MotDePass__idCom__6383C8BA");
+                    .HasConstraintName("FK__MotDePass__idCom__17F790F9");
             });
 
             OnModelCreatingPartial(modelBuilder);
