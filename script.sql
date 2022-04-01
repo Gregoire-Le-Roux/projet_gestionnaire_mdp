@@ -65,3 +65,5 @@ CREATE TABLE GroupeMdp
     FOREIGN KEY (idGroupe) REFERENCES Groupe(id) ON DELETE CASCADE,
     FOREIGN KEY (idMdp) REFERENCES MotDePasse(id)
 );
+
+INSERT INTO Compte(nom, prenom, mail, mdp) VALUES ('Nom', 'Prenom', 'a@a.com', 'azerty'), ('Nom2', 'Prenom2', 'a@a.com', 'azerty');
