@@ -2,10 +2,7 @@
 {
     public class InterneCompte
     {
-        public string Nom { get; set; } = null!;
-        public string Prenom { get; set; } = null!;
-        public string Mail { get; set; } = null!;
-        public string HashCle { get; set; } = null!;
+        public int Id { get; set; }
         public string HashMdp { get; set; } = null!;
     }
 }

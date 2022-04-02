@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import * as CryptoJS from 'crypto-js';
 import { ConnexionService } from 'src/app/services/connexion.service';
 import { OutilService } from 'src/app/services/outil.service';
+import { Compte } from 'src/app/Types/Compte';
+import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Aes } from 'src/app/Static/Aes';
 
 @Component({
   selector: 'app-connexion',
@@ -21,26 +23,25 @@ export class ConnexionComponent implements OnInit
   
   SeConnecter(_form: NgForm): void
   {
-    let cleSecrete = CryptoJS.enc.Utf8.parse(this.CLE_SECRETE);
-    let iv = CryptoJS.enc.Utf8.parse(this.CLE_SECRETE.substring(0, 16));
+    let aes: Aes = new Aes(this.CLE_SECRETE); 
 
-    let mdpChiffrer = CryptoJS.AES.encrypt(_form.value.mdp, cleSecrete, { iv: iv }).toString();
-    let loginChiffrer = CryptoJS.AES.encrypt(_form.value.login, cleSecrete, { iv: iv }).toString();
+    let mdpChiffrer = aes.Chiffrer(_form.value.mdp);
+    let loginChiffrer = aes.Chiffrer(_form.value.login);
+
+    aes = null;
 
     this.connexionServ.Connexion({ login: loginChiffrer, mdp: mdpChiffrer }).subscribe({
-      next: (retour) =>
+      next: (retour: string | Compte) =>
       {
-        console.log(retour);
-        
+        if(typeof(retour) == "string")
+          this.outilServ.ToastErreur(retour);
+        else
+          VariableStatic.compte = retour as Compte;
       },
       error: () =>
       {
-        this.outilServ.MsgErreurHttp();
+        this.outilServ.ToastErreurHttp();
       }
     });
-
-    let mdpDecrypt = CryptoJS.AES.decrypt(mdpChiffrer, cleSecrete, { iv: iv }).toString(CryptoJS.enc.Utf8);
-
-    console.log(mdpDecrypt);
   }
 }

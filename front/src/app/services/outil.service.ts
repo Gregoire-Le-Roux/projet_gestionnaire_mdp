@@ -8,8 +8,13 @@ export class OutilService {
 
   constructor(private toastrServ: ToastrService) { }
 
-  MsgErreurHttp(): void
+  ToastErreurHttp(): void
   {
     this.toastrServ.error("Connexion avec le serveur impossible");
+  }
+
+  ToastErreur(_text: string): void
+  {
+    this.toastrServ.error(_text);
   }
 }

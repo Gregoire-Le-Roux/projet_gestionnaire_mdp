@@ -37,10 +37,20 @@ namespace back.Controllers
                     InterneCompte compte = DB_Compte.InfoConnexion(login);
 
                     if (BC.Verify(mdp, compte.HashMdp))
-                        return JsonConvert.SerializeObject(true);
-                }
+                    {
+                        var infoCompte = DB_Compte.Compte(compte.Id);
 
-                return JsonConvert.SerializeObject(false);
+                        return JsonConvert.SerializeObject(infoCompte);
+                    }
+                    else
+                    {
+                        return JsonConvert.SerializeObject("Le login ou le mot de passe est incorrect");
+                    }
+                }
+                else
+                {
+                    return JsonConvert.SerializeObject("Le compte existe déjà");
+                }
             }
             catch (Exception)
             {

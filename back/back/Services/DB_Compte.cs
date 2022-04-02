@@ -21,10 +21,7 @@ public static class DB_Compte
                       where c.Mail == _mail
                       select new InterneCompte
                       {
-                          Nom = c.Nom,
-                          Prenom = c.Prenom,
-                          Mail = c.Mail,
-                          HashCle = c.HashCle,
+                          Id = c.Id,
                           HashMdp = c.Mdp
                       }).First();
 
