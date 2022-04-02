@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 using BC = BCrypt.Net.BCrypt;
 
 namespace back.securite
@@ -48,6 +49,8 @@ namespace back.securite
 
         public string Dechiffrer(string _text)
         {
+            string[] tabCaractereUTF16 = new string[] { "\n", "\t", "\u000b", "\u0007", "\x07" };
+
             aes.Padding = PaddingMode.Zeros;
 
             MemoryStream ms = new MemoryStream();
@@ -63,9 +66,15 @@ namespace back.securite
             cs.Close();
             ms.Close();
 
-            string textClairSale = Encoding.UTF8.GetString(dechiffrer, 0, dechiffrer.Length);
+            string textClair = Encoding.UTF8.GetString(dechiffrer, 0, dechiffrer.Length);
 
-            return textClairSale.Replace("\n", "").Replace("\t", "");
+            // netoie le text des caracteres UTF16 générer par le chiffrement
+            foreach (string element in tabCaractereUTF16)
+            {
+                textClair = textClair.Replace(element, string.Empty);
+            }
+
+            return textClair;
         }
 
         public static string CreerCleChiffrement(string _nom, string _prenom, string _mail)

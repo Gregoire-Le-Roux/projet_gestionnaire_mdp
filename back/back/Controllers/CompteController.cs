@@ -18,18 +18,12 @@ namespace back.Controllers
         [HttpGet("MonCompte/{id}")]
         public string Compte([FromRoute] int id)
         {
-            // nicolas
-            // peyrachon
-            // nicolas@gmail.com
-            // jeton!peche01
-
             var compte = DB_Compte.Compte(id);
 
             AESprotection aESprotection = new(compte.HashCle.Substring(0, 32), compte.HashCle.Substring(0, 16));
 
             compte.Nom = aESprotection.Dechiffrer(compte.Nom);
             compte.Prenom = aESprotection.Dechiffrer(compte.Prenom);
-            compte.Mail = aESprotection.Dechiffrer(compte.Mail);
 
             return JsonConvert.SerializeObject(compte);
         }
@@ -54,7 +48,7 @@ namespace back.Controllers
                 {
                     Nom = aESprotection.Chiffrer(nomSecu),
                     Prenom = aESprotection.Chiffrer(prenomSecu),
-                    Mail =  aESprotection.Chiffrer(mailSecu),
+                    Mail =  mailSecu,
                     Mdp = BC.HashPassword(_compte.Mdp),
                     HashCle = cleAES
                 };

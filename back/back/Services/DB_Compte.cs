@@ -1,5 +1,6 @@
 ﻿
 using System.Data;
+using back.InterneModels;
 using Microsoft.Data.SqlClient;
 
 namespace back.Services;
@@ -8,6 +9,27 @@ public static class DB_Compte
 {
     private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
     public static GestionMdpContext context;
+
+    /// <summary>
+    /// Recupere les infos pour l'authentification
+    /// </summary>
+    /// <param name="_mail"></param>
+    /// <returns></returns>
+    public static InterneCompte InfoConnexion(string _mail)
+    {
+        var compte = (from c in context.Comptes
+                      where c.Mail == _mail
+                      select new InterneCompte
+                      {
+                          Nom = c.Nom,
+                          Prenom = c.Prenom,
+                          Mail = c.Mail,
+                          HashCle = c.HashCle,
+                          HashMdp = c.Mdp
+                      }).First();
+
+        return compte;
+    }
 
     public static CompteExport Compte(int _id)
     {
