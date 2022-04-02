@@ -17,4 +17,9 @@ export class OutilService {
   {
     this.toastrServ.error(_text);
   }
+
+  ToastOK(_text: string): void
+  {
+    this.toastrServ.success(_text);
+  }
 }
