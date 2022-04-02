@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using back.ImportModels;
 using BC = BCrypt.Net.BCrypt;
 
 namespace back.Controllers
@@ -16,8 +15,27 @@ namespace back.Controllers
             DB_Compte.context = _context;
         }
 
+        [HttpGet("MonCompte/{id}")]
+        public string Compte([FromRoute] int id)
+        {
+            // nicolas
+            // peyrachon
+            // nicolas@gmail.com
+            // jeton!peche01
+
+            var compte = DB_Compte.Compte(id);
+
+            AESprotection aESprotection = new(compte.HashCle.Substring(0, 32), compte.HashCle.Substring(0, 16));
+
+            compte.Nom = aESprotection.Dechiffrer(compte.Nom);
+            compte.Prenom = aESprotection.Dechiffrer(compte.Prenom);
+            compte.Mail = aESprotection.Dechiffrer(compte.Mail);
+
+            return JsonConvert.SerializeObject(compte);
+        }
+
         [HttpPost("ajouter")]
-        public async Task<string> Ajouter([FromBody] CompteImport _compte)
+        public string Ajouter([FromBody] CompteImport _compte)
         {
             try
             {
@@ -25,13 +43,18 @@ namespace back.Controllers
                 string prenomSecu = Protection.XSS(_compte.Prenom);
                 string mailSecu = Protection.XSS(_compte.Mail);
 
+                if (DB_Compte.Existe(mailSecu))
+                    return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
+
                 string cleAES = AESprotection.CreerCleChiffrement(nomSecu, prenomSecu, mailSecu);
+
+                AESprotection aESprotection = new(cleAES.Substring(0, 32), cleAES.Substring(0, 16));
 
                 Compte compte = new()
                 {
-                    Nom = nomSecu,
-                    Prenom = prenomSecu,
-                    Mail = mailSecu,
+                    Nom = aESprotection.Chiffrer(nomSecu),
+                    Prenom = aESprotection.Chiffrer(prenomSecu),
+                    Mail =  aESprotection.Chiffrer(mailSecu),
                     Mdp = BC.HashPassword(_compte.Mdp),
                     HashCle = cleAES
                 };

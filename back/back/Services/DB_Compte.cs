@@ -9,6 +9,22 @@ public static class DB_Compte
     private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
     public static GestionMdpContext context;
 
+    public static CompteExport Compte(int _id)
+    {
+        var compte =  (from c in context.Comptes
+                       where c.Id == _id
+                       select new CompteExport
+                       {
+                           Id = c.Id,
+                           Nom = c.Nom,
+                           Prenom = c.Prenom,
+                           Mail = c.Mail,
+                           HashCle = c.HashCle
+                       }).First();
+
+        return compte;
+    }
+
     public static int Ajouter(Compte _compte)
     {
         context.Comptes.Add(_compte);
@@ -60,6 +76,13 @@ public static class DB_Compte
 
             con.Close();
         }
+    }
+
+    public static bool Existe(string _mail)
+    {
+        int retour = context.Comptes.Count(c => c.Mail == _mail);
+
+        return retour == 1;
     }
 
     public static string[] Lister()

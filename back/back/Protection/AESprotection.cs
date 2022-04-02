@@ -6,7 +6,10 @@ namespace back.securite
 {
     public class AESprotection
     {
-        private AesCryptoServiceProvider aesCryptoService;
+        private AesManaged aes;
+
+        private byte[] cleSecrete;
+        private byte[] ivSecrete;
 
         /// <summary>
         ///     Initialise les parametres de AES
@@ -15,48 +18,54 @@ namespace back.securite
         /// <param name="_iv">La longeur doit etre de 16</param>
         public AESprotection(string _cleSecrete, string _iv)
         {
-            aesCryptoService = new AesCryptoServiceProvider();
+            cleSecrete = Encoding.UTF8.GetBytes(_cleSecrete);
+            ivSecrete = Encoding.UTF8.GetBytes(_iv);
 
-            aesCryptoService.BlockSize = 128;
-            aesCryptoService.KeySize = 256;
+            aes = new AesManaged();
 
-            // longeur doit etre de 16
-            aesCryptoService.IV = Encoding.UTF8.GetBytes(_iv);
-
-            // longeur doit etre de 32
-            aesCryptoService.Key = Encoding.UTF8.GetBytes(_cleSecrete);
-            aesCryptoService.Mode = CipherMode.CBC;
-            aesCryptoService.Padding = PaddingMode.PKCS7;
+            aes.Key = cleSecrete;
+            aes.IV = ivSecrete;
+            aes.Mode = CipherMode.CBC;
+            aes.Padding = PaddingMode.PKCS7;
         }
 
         public string Chiffrer(string _text)
         {
-            ICryptoTransform transform = aesCryptoService.CreateEncryptor();
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, aes.CreateEncryptor(), CryptoStreamMode.Write);
 
-            byte[] textByte = transform.TransformFinalBlock(Encoding.ASCII.GetBytes(_text), 0, _text.Length);
+            byte[] textByte = Encoding.UTF8.GetBytes(_text);
+            cs.Write(textByte, 0, textByte.Length);
+            cs.FlushFinalBlock();
 
-            string textBase64 = Convert.ToBase64String(textByte);
+            byte[] chiffre = ms.ToArray();
 
-            // libere toutes les ressources utilisé
-            aesCryptoService.Clear();
+            cs.Close();
+            ms.Close();
 
-            return textBase64;
+            return Convert.ToBase64String(chiffre);
         }
 
         public string Dechiffrer(string _text)
         {
-            ICryptoTransform transform = aesCryptoService.CreateDecryptor();
+            aes.Padding = PaddingMode.Zeros;
+
+            MemoryStream ms = new MemoryStream();
+            CryptoStream cs = new CryptoStream(ms, aes.CreateDecryptor(), CryptoStreamMode.Write);
 
             byte[] textByte = Convert.FromBase64String(_text);
+            cs.Write(textByte, 0, textByte.Length);
+            cs.FlushFinalBlock();
 
-            byte[] textByteDechiffrer = transform.TransformFinalBlock(textByte, 0, textByte.Length);
+            byte[] dechiffrer = ms.ToArray();
 
-            string textDechiffrer = Encoding.ASCII.GetString(textByteDechiffrer);
+            // ferme les flux
+            cs.Close();
+            ms.Close();
 
-            // libere toutes les ressources utilisé
-            aesCryptoService.Clear();
+            string textClairSale = Encoding.UTF8.GetString(dechiffrer, 0, dechiffrer.Length);
 
-            return textDechiffrer;
+            return textClairSale.Replace("\n", "").Replace("\t", "");
         }
 
         public static string CreerCleChiffrement(string _nom, string _prenom, string _mail)

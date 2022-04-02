@@ -2,6 +2,8 @@ global using back.Services;
 global using back.Models;
 global using Newtonsoft.Json;
 global using back.securite;
+global using back.ImportModels;
+global using back.ExportModels;
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
