@@ -5,14 +5,14 @@
         private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         public static GestionMdpContext context;
 
-        public static string CreeMdp()
+        public static int Ajouter(MotDePasse _mdp)
         {
-            return "";
-        }
+            context.MotDePasses.Add(_mdp);
+            context.SaveChanges();
 
-        public static int Ajouter()
-        {
-            return 0;
+            int id = context.MotDePasses.OrderByDescending(m => m.Id).Select(m => m.Id).First();
+
+            return id;
         }
     }
 }
