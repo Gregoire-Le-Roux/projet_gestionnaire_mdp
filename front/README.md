@@ -68,6 +68,11 @@ ng g s services/[nom du service] (ne pas ajouter le mot service dans le nom c'es
 Générer Guard (protection des URLs)
 ng g g guard/[nom du guard] (ne pas ajouter le mot guard dans le nom c'est automatique)
 
+## Routeur
+
+Le routage des pages se passe dans app-routing.module.ts
+suivre le même exemple
+
 ## Form (type NgForm)
 
 #e="ngForm" => Attribut angular (une sorte id unique a chaque page HTML)
