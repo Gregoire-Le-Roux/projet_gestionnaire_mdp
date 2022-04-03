@@ -47,7 +47,7 @@ namespace back.securite
 
         public string Dechiffrer(string _text)
         {
-            string[] tabCaractereUTF16 = new string[] { "\n", "\t", "\u000b", "\u0007", "\x07" };
+            string[] tabCaractereUTF16Asupprimer = new string[] { "\n", "\t", "\f", "\u000b", "\u0007", "\x07", "\u0006", "\u000e" };
 
             aes.Padding = PaddingMode.Zeros;
 
@@ -67,7 +67,7 @@ namespace back.securite
             string textClair = Encoding.UTF8.GetString(dechiffrer, 0, dechiffrer.Length);
 
             // netoie le text des caracteres UTF16 généré par le chiffrement
-            foreach (string element in tabCaractereUTF16)
+            foreach (string element in tabCaractereUTF16Asupprimer)
             {
                 textClair = textClair.Replace(element, string.Empty);
             }

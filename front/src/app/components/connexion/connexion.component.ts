@@ -6,6 +6,7 @@ import { Compte } from 'src/app/Types/Compte';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Aes } from 'src/app/Static/Aes';
 import { Router } from '@angular/router';
+import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-connexion',
@@ -36,14 +37,11 @@ export class ConnexionComponent implements OnInit
 
     this.connexionServ.Connexion({ login: loginChiffrer, mdp: mdpChiffrer }).subscribe({
       next: (retour: string | Compte) =>
-      { 
+      {
         if(typeof(retour) == "string")
           this.outilServ.ToastErreur(retour);
         else
-        {
-          VariableStatic.compte = retour as Compte;
-          this.DechiffrerCompte();
-        }
+          this.DechiffrerCompte(retour);
       },
       error: () =>
       {
@@ -52,17 +50,23 @@ export class ConnexionComponent implements OnInit
     });
   }
 
-  private DechiffrerCompte(): void
+  private DechiffrerCompte(_retour: Compte): void
   {
-    // base64 to string
-    VariableStatic.compte.HashCle = atob(VariableStatic.compte.HashCle);
+    _retour.HashCle = atob(_retour.HashCle);
 
-    let aes: Aes = new Aes(VariableStatic.compte.HashCle);
+    let aes: Aes = new Aes(_retour.HashCle);
 
-    VariableStatic.compte.Mail = aes.Dechiffrer(VariableStatic.compte.Mail);
-    VariableStatic.compte.Nom = aes.Dechiffrer(VariableStatic.compte.Nom);
-    VariableStatic.compte.Prenom = aes.Dechiffrer(VariableStatic.compte.Prenom);
+    const DATA: Compte =
+    {
+      Id: _retour.Id,
+      HashCle: _retour.HashCle,
+      Mail: aes.Dechiffrer(_retour.Mail),
+      Nom: aes.Dechiffrer(_retour.Nom),
+      Prenom: aes.Dechiffrer(_retour.Prenom)
+    };
 
     aes = null;
+
+    VariableStatic.compte = DATA;
   }
 }

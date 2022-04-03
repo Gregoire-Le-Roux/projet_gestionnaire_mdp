@@ -7,7 +7,7 @@ export class Aes
 
     constructor(_cleSecrete: string)
     {
-        this.cleSecrete = CryptoJS.enc.Utf8.parse(_cleSecrete);
+        this.cleSecrete = CryptoJS.enc.Utf8.parse(_cleSecrete.substring(0, 32));
         this.iv = CryptoJS.enc.Utf8.parse(_cleSecrete.substring(0, 16));
     }
 

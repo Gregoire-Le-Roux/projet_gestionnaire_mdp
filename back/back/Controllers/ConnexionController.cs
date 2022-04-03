@@ -32,6 +32,8 @@ namespace back.Controllers
                 string login = aes.Dechiffrer(_log.login);
                 string mdp = aes.Dechiffrer(_log.mdp);
 
+                return JsonConvert.SerializeObject(login);
+
                 aes = null;
 
                 if (DB_Compte.Existe(login))
@@ -49,15 +51,9 @@ namespace back.Controllers
 
                         return JsonConvert.SerializeObject(infoCompte);
                     }
-                    else
-                    {
-                        return JsonConvert.SerializeObject("Le login ou le mot de passe est incorrect");
-                    }
                 }
-                else
-                {
-                    return JsonConvert.SerializeObject("Le compte existe déjà");
-                }
+
+                return JsonConvert.SerializeObject("Le login ou le mot de passe est incorrect");
             }
             catch (Exception)
             {

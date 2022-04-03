@@ -104,6 +104,13 @@ public static class DB_Compte
         return retour == 1;
     }
 
+    public static string GetHashCle(int _id)
+    {
+        string hashCle = context.Comptes.Where(c => c.Id == _id).Select(c => c.HashCle).First();
+
+        return hashCle;
+    }
+
     public static string[] Lister()
     {
         string[] tab = new string[2];

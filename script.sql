@@ -24,12 +24,12 @@ CREATE TABLE MotDePasse
 (
     id int PRIMARY KEY IDENTITY(1, 1) NOT NULL,
 
-    titre varchar(100) NOT NULL,
+    titre varchar(200) NOT NULL,
     login varchar(200) NOT NULL,
     mdp varchar(500) NOT NULL,
     url varchar(500) NOT NULL,
-    dateExpiration date NOT NULL,
-    description varchar(2000) DEFAULT NULL,
+    dateExpiration varchar(200) NOT NULL,
+    description varchar(2000) NOT NULL,
 
     idCompteCreateur int NOT NULL,
 
