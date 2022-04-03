@@ -1,6 +1,4 @@
 ﻿using System.Security.Cryptography;
-using System.Text;
-using System.Text.RegularExpressions;
 using BC = BCrypt.Net.BCrypt;
 
 namespace back.securite
@@ -15,19 +13,19 @@ namespace back.securite
         /// <summary>
         ///     Initialise les parametres de AES
         /// </summary>
-        /// <param name="_cleSecrete">La longeur doit etre de 32</param>
-        /// <param name="_iv">La longeur doit etre de 16</param>
-        public AESprotection(string _cleSecrete, string _iv)
+        /// <param name="_cleSecrete">Superieur à 32 de longeur</param>
+        public AESprotection(string _cleSecrete)
         {
-            cleSecrete = Encoding.UTF8.GetBytes(_cleSecrete);
-            ivSecrete = Encoding.UTF8.GetBytes(_iv);
+            cleSecrete = Encoding.UTF8.GetBytes(_cleSecrete.Substring(0, 32));
+            ivSecrete = Encoding.UTF8.GetBytes(_cleSecrete.Substring(0, 16));
 
-            aes = new AesManaged();
-
-            aes.Key = cleSecrete;
-            aes.IV = ivSecrete;
-            aes.Mode = CipherMode.CBC;
-            aes.Padding = PaddingMode.PKCS7;
+            aes = new AesManaged
+            {
+                Key = cleSecrete,
+                IV = ivSecrete,
+                Mode = CipherMode.CBC,
+                Padding = PaddingMode.PKCS7
+            };
         }
 
         public string Chiffrer(string _text)
@@ -68,7 +66,7 @@ namespace back.securite
 
             string textClair = Encoding.UTF8.GetString(dechiffrer, 0, dechiffrer.Length);
 
-            // netoie le text des caracteres UTF16 générer par le chiffrement
+            // netoie le text des caracteres UTF16 généré par le chiffrement
             foreach (string element in tabCaractereUTF16)
             {
                 textClair = textClair.Replace(element, string.Empty);

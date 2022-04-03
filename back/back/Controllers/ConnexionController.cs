@@ -27,10 +27,12 @@ namespace back.Controllers
         {
             try
             {
-                AESprotection aes = new(CLE_SECRETE, CLE_SECRETE.Substring(0, 16));
+                AESprotection? aes = new(CLE_SECRETE);
 
                 string login = aes.Dechiffrer(_log.login);
                 string mdp = aes.Dechiffrer(_log.mdp);
+
+                aes = null;
 
                 if (DB_Compte.Existe(login))
                 {
@@ -39,6 +41,11 @@ namespace back.Controllers
                     if (BC.Verify(mdp, compte.HashMdp))
                     {
                         var infoCompte = DB_Compte.Compte(compte.Id);
+
+                        aes = new(infoCompte.HashCle);
+
+                        infoCompte.Mail = aes.Chiffrer(infoCompte.Mail);
+                        infoCompte.HashCle = Convert.ToBase64String(Encoding.UTF8.GetBytes(infoCompte.HashCle));
 
                         return JsonConvert.SerializeObject(infoCompte);
                     }

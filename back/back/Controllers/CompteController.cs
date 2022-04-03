@@ -20,10 +20,12 @@ namespace back.Controllers
         {
             var compte = DB_Compte.Compte(id);
 
-            AESprotection aESprotection = new(compte.HashCle.Substring(0, 32), compte.HashCle.Substring(0, 16));
+            AESprotection? aESprotection = new(compte.HashCle);
 
             compte.Nom = aESprotection.Dechiffrer(compte.Nom);
             compte.Prenom = aESprotection.Dechiffrer(compte.Prenom);
+
+            aESprotection = null;
 
             return JsonConvert.SerializeObject(compte);
         }
@@ -42,7 +44,7 @@ namespace back.Controllers
 
                 string cleAES = AESprotection.CreerCleChiffrement(nomSecu, prenomSecu, mailSecu);
 
-                AESprotection aESprotection = new(cleAES.Substring(0, 32), cleAES.Substring(0, 16));
+                AESprotection aESprotection = new(cleAES);
 
                 Compte compte = new()
                 {
@@ -69,7 +71,7 @@ namespace back.Controllers
         /// <param name="id"></param>
         /// <response>True si tout est OK</response>
         [HttpDelete("supprimer/{id}")]
-        public async Task<string> Supprimer([FromRoute] int id)
+        public string Supprimer([FromRoute] int id)
         {
             try
             {

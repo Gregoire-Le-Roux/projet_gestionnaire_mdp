@@ -4,6 +4,7 @@ global using Newtonsoft.Json;
 global using back.securite;
 global using back.ImportModels;
 global using back.ExportModels;
+global using System.Text;
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
