@@ -12,9 +12,9 @@ export class MdpService
 {
   constructor(private http: HttpClient) { }
 
-  Lister(_idCompte: number): Observable<Mdp[]>
+  ListerLesMiens(_idCompte: number): Observable<Mdp[]>
   {
-    return this.http.get<Mdp[]>(`${environment.urlApi}/Mdp/lister`);
+    return this.http.get<Mdp[]>(`${environment.urlApi}/Mdp/listerMesMdp/${_idCompte}`);
   }
 
   Ajouter(_info: ExportMdp): Observable<any>

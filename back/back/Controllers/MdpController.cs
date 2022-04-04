@@ -14,6 +14,14 @@ namespace back.Controllers
             BD_Mdp.context = DB_Compte.context = _context;
         }
 
+        [HttpGet("listerMesMdp/{id}")]
+        public string ListerMesMdp([FromRoute] int id)
+        {
+            var liste = BD_Mdp.ListerMesMdp(id);
+
+            return JsonConvert.SerializeObject(liste);
+        }
+
         /// <summary>
         ///     Toutes les infos reçu doivent etre Chiffrés SAUF la date et l'id createur
         /// </summary>
@@ -49,8 +57,6 @@ namespace back.Controllers
                 Description = description,
                 IdCompteCreateur = _mdp.IdCompteCreateur
             };
-
-            return JsonConvert.SerializeObject(mdp);
 
             int id = BD_Mdp.Ajouter(mdp);
 

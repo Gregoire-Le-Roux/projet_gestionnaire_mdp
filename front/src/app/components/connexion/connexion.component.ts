@@ -37,7 +37,9 @@ export class ConnexionComponent implements OnInit
 
     this.connexionServ.Connexion({ login: loginChiffrer, mdp: mdpChiffrer }).subscribe({
       next: (retour: string | Compte) =>
-      {
+      { 
+        console.log(retour);
+        
         if(typeof(retour) == "string")
           this.outilServ.ToastErreur(retour);
         else

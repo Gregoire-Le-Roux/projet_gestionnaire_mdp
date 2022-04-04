@@ -32,8 +32,6 @@ namespace back.Controllers
                 string login = aes.Dechiffrer(_log.login);
                 string mdp = aes.Dechiffrer(_log.mdp);
 
-                return JsonConvert.SerializeObject(login);
-
                 aes = null;
 
                 if (DB_Compte.Existe(login))

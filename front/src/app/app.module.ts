@@ -10,6 +10,12 @@ import {MatInputModule} from '@angular/material/input';
 import {MatIconModule} from '@angular/material/icon';
 import {MatButtonModule} from '@angular/material/button';
 import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatTableModule} from '@angular/material/table';
+import { MatSortModule } from '@angular/material/sort';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { ClipboardModule } from '@angular/cdk/clipboard';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -42,7 +48,13 @@ import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.compon
     MatIconModule,
     MatButtonModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule,
+    MatTooltipModule,
+    ClipboardModule,
+    MatCheckboxModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, DatePipe],
   bootstrap: [AppComponent]

@@ -4,6 +4,7 @@ export type Mdp =
     Titre: string,
     Mdp: string,
     Url: string,
+    Login: string,
     DateExpiration: string,
     IdCompteCreateur: number
 }

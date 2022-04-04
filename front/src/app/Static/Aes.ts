@@ -1,4 +1,5 @@
 import * as CryptoJS from 'crypto-js';
+import { VariableStatic } from './VariableStatic';
 
 export class Aes
 {
@@ -22,6 +23,6 @@ export class Aes
     {
         const TEXT_DECHIFFRER = CryptoJS.AES.decrypt(_text, this.cleSecrete, { iv: this.iv }).toString(CryptoJS.enc.Utf8);
 
-        return TEXT_DECHIFFRER;
+        return TEXT_DECHIFFRER.replace(/[\u0000\x00]/g, "");
     }
 }

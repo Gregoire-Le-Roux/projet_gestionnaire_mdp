@@ -101,7 +101,7 @@ public static class DB_Compte
     {
         int retour = context.Comptes.Count(c => c.Mail == _mail);
 
-        return retour == 1;
+        return retour >= 1;
     }
 
     public static string GetHashCle(int _id)

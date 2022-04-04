@@ -1,41 +1,92 @@
 <form #e="ngForm">
-        <!-- titre -->
-        <mat-form-field appearance="outline">
-            <mat-label>Titre</mat-label>
-            <input matInput type="text" name="Titre" ngModel required>
-        </mat-form-field>
-    
-        <!-- login -->
-        <mat-form-field appearance="outline">
-            <mat-label>Login</mat-label>
-            <input matInput type="text" name="Login" ngModel required>
-        </mat-form-field>
+    <!-- titre -->
+    <mat-form-field appearance="outline">
+        <mat-label>Titre</mat-label>
+        <input matInput type="text" name="Titre" ngModel required>
+    </mat-form-field>
 
-        <!-- mdp -->
-        <mat-form-field appearance="outline">
-            <mat-label>Mot de passe</mat-label>
-            <input matInput type="text" name="Mdp" ngModel required>
-        </mat-form-field>
-    
-        <!-- url -->
-        <mat-form-field appearance="outline">
-            <mat-label>Url</mat-label>
-            <input matInput type="text" name="Url" ngModel required>
-        </mat-form-field>
+    <!-- login -->
+    <mat-form-field appearance="outline">
+        <mat-label>Login</mat-label>
+        <input matInput type="text" name="Login" ngModel required>
+    </mat-form-field>
 
-        <!-- date -->
-        <mat-form-field appearance="outline">
-            <mat-label>Date expiration</mat-label>
-            <input matInput name="DateExpiration" [matDatepicker]="picker" ngModel required>
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+    <!-- mdp -->
+    <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="text" name="Mdp" ngModel required>
+    </mat-form-field>
 
-        <!-- description -->
-        <mat-form-field appearance="outline">
-            <mat-label>Description</mat-label>
-            <input matInput type="text" name="Description" ngModel required>
-        </mat-form-field>
-    
-        <button mat-raised-button color="primary" (click)="Ajouter(e)">Primary</button>
+    <!-- url -->
+    <mat-form-field appearance="outline">
+        <mat-label>Url</mat-label>
+        <input matInput type="text" name="Url" ngModel required>
+    </mat-form-field>
+
+    <!-- date -->
+    <mat-form-field appearance="outline">
+        <mat-label>Date expiration</mat-label>
+        <input matInput name="DateExpiration" [matDatepicker]="picker" ngModel required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- description -->
+    <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <input matInput type="text" name="Description" ngModel required>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="Ajouter(e)">Primary</button>
 </form>
+
+<mat-form-field class="full-width" appearance="outline">
+    <mat-label>Recherche</mat-label>
+    <input matInput (keyup)="applyFilter($event)" #input>
+</mat-form-field>
+
+<table mat-table [dataSource]="listeMdp" class="mat-elevation-z8" matSort>
+
+    <!-- titre Column -->
+    <ng-container matColumnDef="Titre">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Titre </th>
+        <td mat-cell *matCellDef="let element"> {{ element.Titre }} </td>
+    </ng-container>
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="Login">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Login </th>
+        <td mat-cell *matCellDef="let element"> {{ element.Login }} </td>
+    </ng-container>
+
+    <!-- Weight Column -->
+    <ng-container matColumnDef="Mdp">
+        <th mat-header-cell *matHeaderCellDef> Mot de passe </th>
+        <td mat-cell *matCellDef="let element" style="font-size: 1em; letter-spacing: 1px;">
+            {{ AfficherMdpCaractere(element.Mdp) }}
+        </td>
+    </ng-container>
+
+    <!-- Action Column -->
+    <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let element">
+
+            <button mat-mini-fab matTooltip="Copier le mot de passe" [cdkCopyToClipboard]="element.Mdp" color="primary">
+                <mat-icon>content_copy</mat-icon>
+            </button>&nbsp;
+
+            <button mat-mini-fab color="primary" (click)="OuvrirUrl(element.Url)">
+                <mat-icon>open_in_new</mat-icon>
+            </button>
+        </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+    <!-- Row shown when there is no matching data. -->
+    <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="4">Aucune donnée pour: "{{input.value}}"</td>
+    </tr>
+</table>
