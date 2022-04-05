@@ -16,6 +16,7 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -25,12 +26,14 @@ import { AppComponent } from './app.component';
 import { ConnexionComponent } from './components/connexion/connexion.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.component';
+import { AjouterMdpComponent } from './modal/ajouter-mdp/ajouter-mdp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConnexionComponent,
-    ListingMdpComponent
+    ListingMdpComponent,
+    AjouterMdpComponent
   ],
   imports: [
     BrowserModule,
@@ -54,7 +57,8 @@ import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.compon
     MatPaginatorModule,
     MatTooltipModule,
     ClipboardModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, DatePipe],
   bootstrap: [AppComponent]

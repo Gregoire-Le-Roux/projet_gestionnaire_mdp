@@ -1,44 +1,4 @@
-<form #e="ngForm">
-    <!-- titre -->
-    <mat-form-field appearance="outline">
-        <mat-label>Titre</mat-label>
-        <input matInput type="text" name="Titre" ngModel required>
-    </mat-form-field>
-
-    <!-- login -->
-    <mat-form-field appearance="outline">
-        <mat-label>Login</mat-label>
-        <input matInput type="text" name="Login" ngModel required>
-    </mat-form-field>
-
-    <!-- mdp -->
-    <mat-form-field appearance="outline">
-        <mat-label>Mot de passe</mat-label>
-        <input matInput type="text" name="Mdp" ngModel required>
-    </mat-form-field>
-
-    <!-- url -->
-    <mat-form-field appearance="outline">
-        <mat-label>Url</mat-label>
-        <input matInput type="text" name="Url" ngModel required>
-    </mat-form-field>
-
-    <!-- date -->
-    <mat-form-field appearance="outline">
-        <mat-label>Date expiration</mat-label>
-        <input matInput name="DateExpiration" [matDatepicker]="picker" ngModel required>
-        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
-
-    <!-- description -->
-    <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
-        <input matInput type="text" name="Description" ngModel required>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" (click)="Ajouter(e)">Primary</button>
-</form>
+<button mat-raised-button color="primary" (click)="OuvrirModalAjouterMdp()">Ajouter</button>
 
 <mat-form-field class="full-width" appearance="outline">
     <mat-label>Recherche</mat-label>
@@ -59,11 +19,19 @@
         <td mat-cell *matCellDef="let element"> {{ element.Login }} </td>
     </ng-container>
 
-    <!-- Weight Column -->
+    <!-- mdp Column -->
     <ng-container matColumnDef="Mdp">
         <th mat-header-cell *matHeaderCellDef> Mot de passe </th>
         <td mat-cell *matCellDef="let element" style="font-size: 1em; letter-spacing: 1px;">
             {{ AfficherMdpCaractere(element.Mdp) }}
+        </td>
+    </ng-container>
+
+    <!-- url Column -->
+    <ng-container matColumnDef="Url">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> Url </th>
+        <td mat-cell *matCellDef="let element">
+            <a [href]="element.Url" target="_blank">{{ element.Url }}</a>
         </td>
     </ng-container>
 
@@ -72,11 +40,13 @@
         <th mat-header-cell *matHeaderCellDef> Actions </th>
         <td mat-cell *matCellDef="let element">
 
-            <button mat-mini-fab matTooltip="Copier le mot de passe" [cdkCopyToClipboard]="element.Mdp" color="primary">
+            <!-- copier le mdp -->
+            <button mat-mini-fab matTooltip="Copier le mot de passe" (click)="ToastrCopierMdp()" [cdkCopyToClipboard]="element.Mdp" color="primary">
                 <mat-icon>content_copy</mat-icon>
             </button>&nbsp;
 
-            <button mat-mini-fab color="primary" (click)="OuvrirUrl(element.Url)">
+            <!-- redirection site -->
+            <button mat-mini-fab color="primary" matTooltip="Aller sur le site"  (click)="OuvrirUrl(element.Url)">
                 <mat-icon>open_in_new</mat-icon>
             </button>
         </td>

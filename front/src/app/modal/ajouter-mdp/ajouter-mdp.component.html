@@ -1,0 +1,46 @@
+<h1 mat-dialog-title>Ajouter un mot de passe</h1>
+<mat-dialog-content class="mat-typography">
+    <form #e="ngForm">
+        <!-- titre -->
+        <mat-form-field appearance="outline">
+            <mat-label>Titre</mat-label>
+            <input matInput type="text" name="Titre" ngModel required>
+        </mat-form-field>
+    
+        <!-- login -->
+        <mat-form-field appearance="outline">
+            <mat-label>Login</mat-label>
+            <input matInput type="text" name="Login" ngModel required>
+        </mat-form-field>
+    
+        <!-- mdp -->
+        <mat-form-field appearance="outline">
+            <mat-label>Mot de passe</mat-label>
+            <input matInput type="text" name="Mdp" ngModel required>
+        </mat-form-field>
+    
+        <!-- url -->
+        <mat-form-field appearance="outline">
+            <mat-label>Url</mat-label>
+            <input matInput type="text" name="Url" ngModel required>
+        </mat-form-field>
+    
+        <!-- date -->
+        <mat-form-field appearance="outline">
+            <mat-label>Date expiration</mat-label>
+            <input matInput name="DateExpiration" [matDatepicker]="picker" ngModel required>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+    
+        <!-- description -->
+        <mat-form-field appearance="outline">
+            <mat-label>Description</mat-label>
+            <input matInput type="text" name="Description" ngModel required>
+        </mat-form-field>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button color="warn" [mat-dialog-close]="false">Annuler</button>
+    <button mat-raised-button color="primary" (click)="Ajouter(e)" cdkFocusInitial>Enregistrer</button>
+</mat-dialog-actions>

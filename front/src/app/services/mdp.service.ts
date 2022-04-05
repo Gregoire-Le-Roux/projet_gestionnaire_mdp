@@ -17,8 +17,8 @@ export class MdpService
     return this.http.get<Mdp[]>(`${environment.urlApi}/Mdp/listerMesMdp/${_idCompte}`);
   }
 
-  Ajouter(_info: ExportMdp): Observable<any>
+  Ajouter(_info: ExportMdp): Observable<number>
   {
-    return this.http.post(`${environment.urlApi}/Mdp/ajouter`, _info);
+    return this.http.post<number>(`${environment.urlApi}/Mdp/ajouter`, _info);
   }
 }
