@@ -11,13 +11,21 @@ namespace back.Controllers
         public MdpController(GestionMdpContext _context)
         {
             mdpContext = _context;
-            BD_Mdp.context = DB_Compte.context = _context;
+            DB_Mdp.context = DB_Compte.context = _context;
         }
 
         [HttpGet("listerMesMdp/{id}")]
         public string ListerMesMdp([FromRoute] int id)
         {
-            var liste = BD_Mdp.ListerMesMdp(id);
+            MdpExport[] liste = DB_Mdp.ListerMesMdp(id);
+
+            return JsonConvert.SerializeObject(liste);
+        }
+
+        [HttpGet("listerPartagerAvecMoi/{id}")]
+        public string ListerPartagerAvecMoi([FromRoute] int id)
+        {
+            MdpExport[] liste = DB_Mdp.ListerMdpPartagerAvecMoi(id);
 
             return JsonConvert.SerializeObject(liste);
         }
@@ -58,7 +66,7 @@ namespace back.Controllers
                 IdCompteCreateur = _mdp.IdCompteCreateur
             };
 
-            int id = BD_Mdp.Ajouter(mdp);
+            int id = DB_Mdp.Ajouter(mdp);
 
             return JsonConvert.SerializeObject(id);
         }

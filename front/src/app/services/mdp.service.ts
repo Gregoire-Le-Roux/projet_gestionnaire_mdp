@@ -17,6 +17,11 @@ export class MdpService
     return this.http.get<Mdp[]>(`${environment.urlApi}/Mdp/listerMesMdp/${_idCompte}`);
   }
 
+  ListerPartagerAvecMoi(_idCompte: number): Observable<Mdp[]>
+  {
+    return this.http.get<Mdp[]>(`${environment.urlApi}/Mdp/listerPartagerAvecMoi/${_idCompte}`);
+  }
+
   Ajouter(_info: ExportMdp): Observable<number>
   {
     return this.http.post<number>(`${environment.urlApi}/Mdp/ajouter`, _info);

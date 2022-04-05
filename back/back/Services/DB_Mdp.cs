@@ -1,6 +1,6 @@
 ﻿namespace back.Services
 {
-    public static class BD_Mdp
+    public static class DB_Mdp
     {
         private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         public static GestionMdpContext context;
@@ -22,6 +22,13 @@
                         }).ToArray();
 
             return liste;
+        }
+
+        public static MdpExport[] ListerMdpPartagerAvecMoi(int _id)
+        {
+            // lister les mdps partager avec moi
+
+            return new MdpExport[2];
         }
 
         public static int Ajouter(MotDePasse _mdp)
