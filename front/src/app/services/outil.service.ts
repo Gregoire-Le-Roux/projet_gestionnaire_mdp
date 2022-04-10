@@ -22,4 +22,9 @@ export class OutilService {
   {
     this.toastrServ.success(_text);
   }
+
+  ToastInfo(_text: string): void
+  {
+    this.toastrServ.info(_text);
+  }
 }

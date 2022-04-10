@@ -6,18 +6,19 @@ namespace back.Controllers
     [ApiController]
     public class MdpController : Controller
     {
+        private DB_Mdp dbMdp;
         private GestionMdpContext mdpContext;
 
         public MdpController(GestionMdpContext _context)
         {
             mdpContext = _context;
-            DB_Mdp.context = DB_Compte.context = _context;
+            dbMdp = new(_context);
         }
 
         [HttpGet("listerMesMdp/{id}")]
         public string ListerMesMdp([FromRoute] int id)
         {
-            MdpExport[] liste = DB_Mdp.ListerMesMdp(id);
+            MdpExport[] liste = dbMdp.ListerMesMdp(id);
 
             return JsonConvert.SerializeObject(liste);
         }
@@ -25,9 +26,20 @@ namespace back.Controllers
         [HttpGet("listerPartagerAvecMoi/{id}")]
         public string ListerPartagerAvecMoi([FromRoute] int id)
         {
-            MdpExport[] liste = DB_Mdp.ListerMdpPartagerAvecMoi(id);
+            MdpExport[] liste = dbMdp.ListerMdpPartagerAvecMoi(id);
 
             return JsonConvert.SerializeObject(liste);
+        }
+
+        /// <summary>
+        ///     Je c pas encore dans le body
+        /// </summary>
+        /// <param name="_info"></param>
+        /// <returns></returns>
+        [HttpPost("partager")]
+        public string Partager([FromBody] dynamic _info)
+        {
+            return JsonConvert.SerializeObject("");
         }
 
         /// <summary>
@@ -38,6 +50,7 @@ namespace back.Controllers
         [HttpPost("ajouter")]
         public string Ajouter(MdpImport _mdp)
         {
+            DB_Compte.context = mdpContext;
             string hashCle = DB_Compte.GetHashCle(_mdp.IdCompteCreateur);
 
             AESprotection aes = new(hashCle);
@@ -66,7 +79,7 @@ namespace back.Controllers
                 IdCompteCreateur = _mdp.IdCompteCreateur
             };
 
-            int id = DB_Mdp.Ajouter(mdp);
+            int id = dbMdp.Ajouter(mdp);
 
             return JsonConvert.SerializeObject(id);
         }

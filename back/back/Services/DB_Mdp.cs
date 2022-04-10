@@ -1,37 +1,40 @@
 ﻿namespace back.Services
 {
-    public static class DB_Mdp
+    public class DB_Mdp
     {
         private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
-        public static GestionMdpContext context;
+        private GestionMdpContext context { init; get; }
 
-        public static MdpExport[] ListerMesMdp(int _id)
+        public DB_Mdp(GestionMdpContext _context)
         {
-            var liste = (from mdp in context.MotDePasses
-                        where mdp.IdCompteCreateur == _id
-                        select new MdpExport
-                        {
-                            Id = mdp.Id,
-                            Titre = mdp.Titre,
-                            Url = mdp.Url,
-                            DateExpiration = mdp.DateExpiration,
-                            Description = mdp.Description,
-                            Login = mdp.Login,
-                            Mdp = mdp.Mdp,
-                            IdCompteCreateur = mdp.IdCompteCreateur
-                        }).ToArray();
+            context = _context;
+        }
+
+        public MdpExport[] ListerMesMdp(int _id)
+        {
+            MdpExport[] liste = (from mdp in context.MotDePasses
+                                where mdp.IdCompteCreateur == _id
+                                select new MdpExport
+                                {
+                                    Id = mdp.Id,
+                                    Titre = mdp.Titre,
+                                    Url = mdp.Url,
+                                    DateExpiration = mdp.DateExpiration,
+                                    Description = mdp.Description,
+                                    Login = mdp.Login,
+                                    Mdp = mdp.Mdp,
+                                    IdCompteCreateur = mdp.IdCompteCreateur
+                                }).ToArray();
 
             return liste;
         }
 
-        public static MdpExport[] ListerMdpPartagerAvecMoi(int _id)
+        public MdpExport[] ListerMdpPartagerAvecMoi(int _id)
         {
-            // lister les mdps partager avec moi
-
-            return new MdpExport[2];
+            return new MdpExport[0];
         }
 
-        public static int Ajouter(MotDePasse _mdp)
+        public int Ajouter(MotDePasse _mdp)
         {
             context.MotDePasses.Add(_mdp);
             context.SaveChanges();

@@ -1,62 +1,69 @@
-<button mat-raised-button color="primary" (click)="OuvrirModalAjouterMdp()">Ajouter</button>
-
 <mat-form-field class="full-width" appearance="outline">
     <mat-label>Recherche</mat-label>
     <input matInput (keyup)="applyFilter($event)" #input>
 </mat-form-field>
 
-<table mat-table [dataSource]="listeMdp" class="mat-elevation-z8" matSort>
+<div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource" matSort>
 
-    <!-- titre Column -->
-    <ng-container matColumnDef="Titre">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Titre </th>
-        <td mat-cell *matCellDef="let element"> {{ element.Titre }} </td>
-    </ng-container>
+        <!-- titre Column -->
+        <ng-container matColumnDef="Titre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Titre </th>
+            <td mat-cell *matCellDef="let element"> {{ element.Titre }} </td>
+        </ng-container>
 
-    <!-- Name Column -->
-    <ng-container matColumnDef="Login">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Login </th>
-        <td mat-cell *matCellDef="let element"> {{ element.Login }} </td>
-    </ng-container>
+        <!-- Name Column -->
+        <ng-container matColumnDef="Login">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Login </th>
+            <td mat-cell *matCellDef="let element"> {{ element.Login }} </td>
+        </ng-container>
 
-    <!-- mdp Column -->
-    <ng-container matColumnDef="Mdp">
-        <th mat-header-cell *matHeaderCellDef> Mot de passe </th>
-        <td mat-cell *matCellDef="let element" style="font-size: 1em; letter-spacing: 1px;">
-            {{ AfficherMdpCaractere(element.Mdp) }}
-        </td>
-    </ng-container>
+        <!-- mdp Column -->
+        <ng-container matColumnDef="Mdp">
+            <th mat-header-cell *matHeaderCellDef> Mot de passe </th>
+            <td mat-cell *matCellDef="let element" style="font-size: 1em; letter-spacing: 1px;">
+                {{ AfficherMdpCaractere(element.Mdp) }}
+            </td>
+        </ng-container>
 
-    <!-- url Column -->
-    <ng-container matColumnDef="Url">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Url </th>
-        <td mat-cell *matCellDef="let element">
-            <a [href]="element.Url" target="_blank">{{ element.Url }}</a>
-        </td>
-    </ng-container>
+        <!-- url Column -->
+        <ng-container matColumnDef="Url">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Url </th>
+            <td mat-cell *matCellDef="let element">
+                <a [href]="element.Url" target="_blank">{{ element.Url }}</a>
+            </td>
+        </ng-container>
 
-    <!-- Action Column -->
-    <ng-container matColumnDef="action">
-        <th mat-header-cell *matHeaderCellDef> Actions </th>
-        <td mat-cell *matCellDef="let element">
+        <!-- Action Column -->
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Actions </th>
+            <td mat-cell *matCellDef="let element">
 
-            <!-- copier le mdp -->
-            <button mat-mini-fab matTooltip="Copier le mot de passe" (click)="ToastrCopierMdp()" [cdkCopyToClipboard]="element.Mdp" color="primary">
-                <mat-icon>content_copy</mat-icon>
-            </button>&nbsp;
+                <!-- copier le mdp -->
+                <button mat-mini-fab matTooltip="Copier le mot de passe" (click)="ToastrCopierMdp()" [cdkCopyToClipboard]="element.Mdp" color="primary">
+                    <mat-icon>content_copy</mat-icon>
+                </button>&nbsp;
 
-            <!-- redirection site -->
-            <button mat-mini-fab color="primary" matTooltip="Aller sur le site"  (click)="OuvrirUrl(element.Url)">
-                <mat-icon>open_in_new</mat-icon>
-            </button>
-        </td>
-    </ng-container>
+                <!-- redirection site -->
+                <button mat-mini-fab color="primary" matTooltip="Aller sur le site"  (click)="OuvrirUrl(element.Url)">
+                    <mat-icon>open_in_new</mat-icon>
+                </button>&nbsp;
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <!-- partager site -->
+                <button *ngIf="mesMdp" mat-mini-fab color="primary" matTooltip="Aller sur le site"  (click)="OuvrirModalPartagerMdp(element)">
+                    <mat-icon>share</mat-icon>
+                </button>
+            </td>
+        </ng-container>
 
-    <!-- Row shown when there is no matching data. -->
-    <tr class="mat-row" *matNoDataRow>
-        <td class="mat-cell" colspan="4">Aucune donnée pour: "{{input.value}}"</td>
-    </tr>
-</table>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell" colspan="4">Aucune donnée pour: "{{input.value}}"</td>
+        </tr>
+    </table>
+
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>

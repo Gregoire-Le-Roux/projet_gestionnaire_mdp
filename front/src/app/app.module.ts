@@ -18,6 +18,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatTabsModule } from '@angular/material/tabs';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
@@ -27,13 +28,17 @@ import { ConnexionComponent } from './components/connexion/connexion.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.component';
 import { AjouterMdpComponent } from './modal/ajouter-mdp/ajouter-mdp.component';
+import { MenuMdpComponent } from './components/menu-mdp/menu-mdp.component';
+import { PartagerMdpComponent } from './modal/partager-mdp/partager-mdp.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     ConnexionComponent,
     ListingMdpComponent,
-    AjouterMdpComponent
+    AjouterMdpComponent,
+    MenuMdpComponent,
+    PartagerMdpComponent
   ],
   imports: [
     BrowserModule,
@@ -58,7 +63,8 @@ import { AjouterMdpComponent } from './modal/ajouter-mdp/ajouter-mdp.component';
     MatTooltipModule,
     ClipboardModule,
     MatCheckboxModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTabsModule
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, DatePipe],
   bootstrap: [AppComponent]
