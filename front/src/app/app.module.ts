@@ -31,6 +31,9 @@ import { AjouterMdpComponent } from './modal/ajouter-mdp/ajouter-mdp.component';
 import { MenuMdpComponent } from './components/menu-mdp/menu-mdp.component';
 import { PartagerMdpComponent } from './modal/partager-mdp/partager-mdp.component';
 
+// permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +69,11 @@ import { PartagerMdpComponent } from './modal/partager-mdp/partager-mdp.componen
     MatDialogModule,
     MatTabsModule
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, DatePipe],
+  providers: [
+    { provide: LocationStrategy, useClass: HashLocationStrategy }, 
+    { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, 
+    DatePipe
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

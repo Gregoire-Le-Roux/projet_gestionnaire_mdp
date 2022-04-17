@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // connection a la base de donnée
-builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("defaut")));
+builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ionos")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
