@@ -21,6 +21,7 @@ import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
@@ -73,7 +74,8 @@ import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.componen
     MatDialogModule,
     MatTabsModule,
     MatMenuModule,
-    MatCardModule
+    MatCardModule,
+    MatToolbarModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }, 

@@ -43,5 +43,11 @@
 
             return id;
         }
+
+        public void Modifier(MotDePasse _mdp)
+        {
+            context.MotDePasses.Update(_mdp);
+            context.SaveChanges();
+        }
     }
 }

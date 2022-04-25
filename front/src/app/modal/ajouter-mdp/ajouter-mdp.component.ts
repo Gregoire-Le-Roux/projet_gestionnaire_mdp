@@ -5,6 +5,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
+import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 
 @Component({
@@ -28,14 +29,13 @@ export class AjouterMdpComponent implements OnInit
   Ajouter(_form: NgForm): void
   {
     _form.value.DateExpiration = this.datePipe.transform(_form.value.DateExpiration, "yyyy-MM-dd");
-    _form.value.IdCompteCreateur = 1//VariableStatic.compte.Id;
+    _form.value.IdCompteCreateur = VariableStatic.compte.Id;
 
     const DATA = this.ChiffrerDonnee(_form.value);
 
     this.mdpServ.Ajouter(DATA).subscribe({
       next: (retour: number) =>
       {
-        console.log(retour);
         this.outilServ.ToastOK("Votre mot de passe a été enregistré");
 
         _form.value.Id = retour;
@@ -55,7 +55,7 @@ export class AjouterMdpComponent implements OnInit
 
   private ChiffrerDonnee(_donnee: ExportMdp): ExportMdp
   {
-    let aes: Aes = new Aes("$2a$11$5FPfTSv/dy3XWMDx9d7wPuHiBUuyfSsDEnXNnmlh04ChKFHdTZgU.");//VariableStatic.compte.HashCle);
+    let aes: Aes = new Aes(VariableStatic.compte.HashCle);
 
     const DATA: ExportMdp =
     {

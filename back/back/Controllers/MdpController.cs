@@ -31,6 +31,35 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(liste);
         }
 
+        [HttpPut("modifier")]
+        public string Modifier([FromBody] MdpImport _mdp)
+        {
+            DB_Compte.context = mdpContext;
+            string hashCle = DB_Compte.GetHashCle(_mdp.IdCompteCreateur);
+
+            AESprotection aes = new(hashCle);
+            _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
+            _mdp.Titre = Protection.XSS(aes.Dechiffrer(_mdp.Titre));
+            _mdp.Login =  Protection.XSS(aes.Dechiffrer(_mdp.Login));
+            _mdp.Url =  Protection.XSS(aes.Dechiffrer(_mdp.Url));
+
+            MotDePasse mdp = new()
+            {
+                Id = _mdp.Id,
+                IdCompteCreateur = _mdp.IdCompteCreateur,
+                DateExpiration = _mdp.DateExpiration,
+                Mdp = _mdp.Mdp,
+                Description = aes.Chiffrer(_mdp.Description),
+                Titre = aes.Chiffrer(_mdp.Titre),
+                Login = aes.Chiffrer(_mdp.Login),
+                Url = aes.Chiffrer(_mdp.Url)
+            };
+
+            dbMdp.Modifier(mdp);
+
+            return JsonConvert.SerializeObject(true);
+        }
+
         /// <summary>
         ///     Je c pas encore dans le body
         /// </summary>

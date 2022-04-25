@@ -4,6 +4,7 @@ import { AjouterMdpComponent } from 'src/app/modal/ajouter-mdp/ajouter-mdp.compo
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
+import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Mdp } from 'src/app/Types/Mdp';
 import { ListingMdpComponent } from '../listing-mdp/listing-mdp.component';
 
@@ -49,15 +50,19 @@ export class MenuMdpComponent implements OnInit
 
   private DechiffrerInfoRecu(_liste: Mdp[]): Mdp[]
   {
-    let aes: Aes = new Aes("$2a$11$5FPfTSv/dy3XWMDx9d7wPuHiBUuyfSsDEnXNnmlh04ChKFHdTZgU.");
+    if(!VariableStatic.compte.HashCle)
+      return [];
+
+    let aes: Aes = new Aes(VariableStatic.compte.HashCle);
 
     for (const element of _liste) 
     {
-      element.DateExpiration =  aes.Dechiffrer(element.DateExpiration);  
+      element.DateExpiration =  aes.Dechiffrer(element.DateExpiration);
       element.Login = aes.Dechiffrer(element.Login);
       element.Titre = aes.Dechiffrer(element.Titre);
       element.Url = aes.Dechiffrer(element.Url);
       element.Mdp = aes.Dechiffrer(element.Mdp);
+      element.Description = aes.Dechiffrer(element.Description);
     }
 
     return _liste;
@@ -65,11 +70,11 @@ export class MenuMdpComponent implements OnInit
 
   private ListerMesMdp(): void
   {
-    this.mdpServ.ListerLesMiens(1).subscribe({
+    this.mdpServ.ListerLesMiens(VariableStatic.compte.Id).subscribe({
       next: (retour: Mdp[]) =>
       {
         if(retour.length > 0)
-        {
+        { 
           this.listeMesMdp = this.DechiffrerInfoRecu(retour); 
           this.component.toArray()[0].InitListe(this.listeMesMdp);
         }
@@ -85,7 +90,7 @@ export class MenuMdpComponent implements OnInit
 
   private ListerMdpPartagerAvecMoi(): void
   {
-    this.mdpServ.ListerPartagerAvecMoi(1).subscribe({
+    this.mdpServ.ListerPartagerAvecMoi(VariableStatic.compte.Id).subscribe({
       next: (retour: Mdp[]) =>
       {
         if(retour.length > 0)

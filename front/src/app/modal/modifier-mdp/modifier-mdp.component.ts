@@ -1,9 +1,12 @@
+import { DatePipe } from '@angular/common';
 import { Component, Inject, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
+import { Aes } from 'src/app/Static/Aes';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 import { Mdp } from 'src/app/Types/Mdp';
 
 @Component({
@@ -19,7 +22,9 @@ export class ModifierMdpComponent implements OnInit
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
     private mdpServ: MdpService, 
-    private outilServ: OutilService
+    private outilServ: OutilService,
+    private datePipe: DatePipe,
+    private dialogRef: MatDialogRef<ModifierMdpComponent>
     ) { }
 
   ngOnInit(): void
@@ -37,11 +42,15 @@ export class ModifierMdpComponent implements OnInit
 
     _form.value.IdCompteCreateur = VariableStatic.compte.Id;
     _form.value.Id = this.mdp.Id;
+    _form.value.DateExpiration = this.datePipe.transform(_form.value.DateExpiration, "yyyy-MM-dd");
 
-    this.mdpServ.Modifier(_form.value).subscribe({
+    let data: ExportMdp = this.ChiffrerDonnee(_form.value);
+    
+    this.mdpServ.Modifier(data).subscribe({
       next: (retour: boolean) =>
-      { 
-        console.log(retour);
+      {
+        if(retour == true)
+          this.dialogRef.close(_form.value);
       },
       error: () =>
       {
@@ -55,4 +64,23 @@ export class ModifierMdpComponent implements OnInit
     this.voirMdp = !this.voirMdp;
   }
 
+  private ChiffrerDonnee(_donnee: Mdp): ExportMdp
+  {
+    const AES = new Aes(VariableStatic.compte.HashCle);
+
+    const DATA: ExportMdp =
+    {
+      Id: _donnee.Id,
+      IdCompteCreateur: _donnee.IdCompteCreateur,
+
+      Login: AES.Chiffrer(_donnee.Login),
+      Description: AES.Chiffrer(_donnee.Description),
+      DateExpiration: AES.Chiffrer(_donnee.DateExpiration),
+      Mdp: AES.Chiffrer(_donnee.Mdp),
+      Titre: AES.Chiffrer(_donnee.Titre),
+      Url: AES.Chiffrer(_donnee.Url)
+    }
+
+    return DATA;
+  }
 }

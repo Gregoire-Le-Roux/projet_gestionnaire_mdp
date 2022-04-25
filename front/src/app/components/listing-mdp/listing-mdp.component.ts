@@ -7,7 +7,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { ModifierMdpComponent } from 'src/app/modal/modifier-mdp/modifier-mdp.component';
 import { PartagerMdpComponent } from 'src/app/modal/partager-mdp/partager-mdp.component';
 import { OutilService } from 'src/app/services/outil.service';
-import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Mdp } from 'src/app/Types/Mdp';
 
 @Component({
@@ -59,6 +58,17 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   OuvrirModalModifierMdp(_mdp: Mdp): void
   {
     const DIALOG_REF = this.dialog.open(ModifierMdpComponent, { data: { mdp: _mdp }});
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: Mdp) =>
+      {
+        _mdp.DateExpiration = retour.DateExpiration;
+        _mdp.Description = retour.Description;
+        _mdp.Login = retour.Login;
+        _mdp.Mdp = retour.Mdp;
+        _mdp.Url = retour.Url;
+      }
+    });
   }
 
   AfficherMdpCaractere(_mdp: string): string

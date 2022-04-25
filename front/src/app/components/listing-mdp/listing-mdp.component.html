@@ -47,15 +47,15 @@
             <th mat-header-cell *matHeaderCellDef> Actions </th>
             <td mat-cell *matCellDef="let element">
 
+                <!-- copier le mdp -->
+                <button mat-mini-fab (click)="ToastrCopierMdp()" color="primary" [cdkCopyToClipboard]="element.Mdp">
+                    <mat-icon>content_copy</mat-icon>
+                </button>
+
                 <button mat-icon-button [matMenuTriggerFor]="menu">
                     <mat-icon>more_vert</mat-icon>
                 </button>
                 <mat-menu #menu="matMenu">
-
-                    <!-- copier le mdp -->
-                    <button mat-menu-item (click)="ToastrCopierMdp()" [cdkCopyToClipboard]="element.Mdp">
-                        <mat-icon>content_copy</mat-icon> Copier
-                    </button>
 
                     <!-- redirection site -->
                     <button mat-menu-item (click)="OuvrirUrl(element.Url)">
