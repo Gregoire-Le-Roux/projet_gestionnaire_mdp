@@ -26,4 +26,9 @@ export class MdpService
   {
     return this.http.post<number>(`${environment.urlApi}/Mdp/ajouter`, _info);
   }
+
+  Modifier(_info: ExportMdp): Observable<boolean>
+  {
+    return this.http.put<boolean>(`${environment.urlApi}/Mdp/modifier`, _info)
+  }
 }

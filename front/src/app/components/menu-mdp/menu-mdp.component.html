@@ -1,12 +1,22 @@
-<button mat-raised-button color="primary" (click)="OuvrirModalAjouterMdp()">Ajouter</button>
+
+<div class="header">
+    <h1>Mot de passe</h1>
+
+    <button mat-raised-button color="primary" (click)="OuvrirModalAjouterMdp()">
+        Ajouter
+    </button>
+</div>
+
 <br>
 
-<mat-tab-group>
-    <mat-tab label="Mes mots de passe">
-        <app-listing-mdp [mesMdp]="true"></app-listing-mdp>
-    </mat-tab>
-
-    <mat-tab label="Partagé par moi">
-        <app-listing-mdp [mesMdp]="false"></app-listing-mdp>
-    </mat-tab>
-</mat-tab-group>
+<div class="container-fluid">
+    <mat-tab-group>
+        <mat-tab label="Mes mots de passe">
+            <app-listing-mdp [mesMdp]="true"></app-listing-mdp>
+        </mat-tab>
+    
+        <mat-tab label="Partagé par moi">
+            <app-listing-mdp [mesMdp]="false"></app-listing-mdp>
+        </mat-tab>
+    </mat-tab-group>
+</div>

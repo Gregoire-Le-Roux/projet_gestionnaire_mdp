@@ -19,6 +19,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
@@ -33,6 +35,7 @@ import { PartagerMdpComponent } from './modal/partager-mdp/partager-mdp.componen
 
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     ListingMdpComponent,
     AjouterMdpComponent,
     MenuMdpComponent,
-    PartagerMdpComponent
+    PartagerMdpComponent,
+    ModifierMdpComponent
   ],
   imports: [
     BrowserModule,
@@ -67,7 +71,9 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     ClipboardModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatTabsModule
+    MatTabsModule,
+    MatMenuModule,
+    MatCardModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }, 

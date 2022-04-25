@@ -1,26 +1,26 @@
-<h1 mat-dialog-title>Ajouter un mot de passe</h1>
+<h1 mat-dialog-title>Modifier les informations</h1>
 <mat-dialog-content class="mat-typography">
     <form #e="ngForm">
 
         <!-- titre -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Titre</mat-label>
-            <input matInput type="text" name="Titre" ngModel required>
+            <input matInput type="text" name="Titre" [ngModel]="mdp.Titre" required>
         </mat-form-field>
     
         <!-- login -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Login</mat-label>
-            <input matInput type="text" name="Login" ngModel required>
+            <input matInput type="text" name="Login" [ngModel]="mdp.Login" required>
         </mat-form-field>
     
         <!-- mdp -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Mot de passe</mat-label>
-            <input matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" ngModel required>
+            <input matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" [ngModel]="mdp.Mdp" required>
             <button matSuffix mat-icon-button (click)="AfficherMdp()">
                 <mat-icon>{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
-            </button>
+              </button>
         </mat-form-field>
     
         <div class="row">
@@ -29,7 +29,7 @@
             <div class="col-xs-12 col-lg-6">
                 <mat-form-field class="full-width" appearance="outline">
                     <mat-label>Url</mat-label>
-                    <input matInput type="text" name="Url" ngModel required>
+                    <input matInput type="url" name="Url" [ngModel]="mdp.Url" required>
                 </mat-form-field>
             </div>
 
@@ -37,7 +37,7 @@
             <div class="col-xs-12 col-lg-6">
                 <mat-form-field class="full-width" appearance="outline">
                     <mat-label>Date expiration</mat-label>
-                    <input matInput name="DateExpiration" [matDatepicker]="picker" ngModel required>
+                    <input matInput name="DateExpiration" [matDatepicker]="picker" [ngModel]="mdp.DateExpiration" required>
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -47,11 +47,11 @@
         <!-- description -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Description</mat-label>
-            <textarea matInput rows="5" name="Description" ngModel required></textarea>
+            <textarea matInput rows="5" name="Description" [ngModel]="mdp.Description" required></textarea>
         </mat-form-field>
     </form>
 </mat-dialog-content>
 <mat-dialog-actions align="end">
     <button mat-button color="warn" [mat-dialog-close]="false">Annuler</button>
-    <button mat-raised-button color="primary" (click)="Ajouter(e)">Enregistrer</button>
+    <button mat-raised-button color="primary" (click)="Modifier(e)">Enregistrer</button>
 </mat-dialog-actions>

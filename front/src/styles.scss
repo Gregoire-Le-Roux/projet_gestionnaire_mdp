@@ -7,3 +7,17 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 {
     width: 100%;
 }
+
+.matTable
+{
+    th
+    {
+        font-size: 1em;
+        color: black;
+    }
+
+    .td
+    {
+        background-color: #ebebeb;
+    }
+}

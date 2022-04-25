@@ -12,7 +12,9 @@ import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
   templateUrl: './ajouter-mdp.component.html',
   styleUrls: ['./ajouter-mdp.component.scss']
 })
-export class AjouterMdpComponent implements OnInit {
+export class AjouterMdpComponent implements OnInit 
+{
+  voirMdp: boolean = false;
 
   constructor(
     private outilServ: OutilService, 
@@ -44,6 +46,11 @@ export class AjouterMdpComponent implements OnInit {
         this.outilServ.ToastErreurHttp();
       }
     });
+  }
+
+  AfficherMdp()
+  {
+    this.voirMdp = !this.voirMdp;
   }
 
   private ChiffrerDonnee(_donnee: ExportMdp): ExportMdp

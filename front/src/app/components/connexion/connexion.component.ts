@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConnexionService } from 'src/app/services/connexion.service';
 import { OutilService } from 'src/app/services/outil.service';
@@ -6,28 +6,27 @@ import { Compte } from 'src/app/Types/Compte';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Aes } from 'src/app/Static/Aes';
 import { Router } from '@angular/router';
-import * as CryptoJS from 'crypto-js';
 
 @Component({
   selector: 'app-connexion',
   templateUrl: './connexion.component.html',
   styleUrls: ['./connexion.component.scss']
 })
-export class ConnexionComponent implements OnInit 
+export class ConnexionComponent
 {
+  voirMdp: boolean = false;
   private readonly CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
   constructor(
     private connexionServ: ConnexionService, 
     private outilServ: OutilService,
     private router: Router) { }
-
-  ngOnInit(): void 
-  {
-  }
   
   SeConnecter(_form: NgForm): void
   {
+    if(_form.invalid)
+      return;
+
     let aes: Aes = new Aes(this.CLE_SECRETE); 
 
     let mdpChiffrer = aes.Chiffrer(_form.value.mdp);
@@ -43,13 +42,21 @@ export class ConnexionComponent implements OnInit
         if(typeof(retour) == "string")
           this.outilServ.ToastErreur(retour);
         else
+        {
           this.DechiffrerCompte(retour);
+          this.router.navigate(["/mdp"]);
+        }
       },
       error: () =>
       {
         this.outilServ.ToastErreurHttp();
       }
     });
+  }
+
+  AfficherMdp(): void
+  {
+    this.voirMdp = !this.voirMdp;
   }
 
   private DechiffrerCompte(_retour: Compte): void

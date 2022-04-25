@@ -4,8 +4,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { ModifierMdpComponent } from 'src/app/modal/modifier-mdp/modifier-mdp.component';
 import { PartagerMdpComponent } from 'src/app/modal/partager-mdp/partager-mdp.component';
-import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Mdp } from 'src/app/Types/Mdp';
@@ -25,7 +25,7 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
 
   dataSource: MatTableDataSource<Mdp>;
 
-  displayedColumns: string[] = ['Titre', 'Login', 'Mdp', 'Url', 'action'];
+  displayedColumns: string[] = ['Titre', 'Login', 'Mdp', 'Url', 'DateExpiration', 'action'];
 
   constructor(private outilServ: OutilService, private dialog: MatDialog) { }
 
@@ -54,6 +54,11 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   OuvrirModalPartagerMdp(_mdp: Mdp): void
   {
     this.dialog.open(PartagerMdpComponent, { data: { mdp: _mdp }});
+  }
+
+  OuvrirModalModifierMdp(_mdp: Mdp): void
+  {
+    const DIALOG_REF = this.dialog.open(ModifierMdpComponent, { data: { mdp: _mdp }});
   }
 
   AfficherMdpCaractere(_mdp: string): string

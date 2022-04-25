@@ -1,5 +1,6 @@
 export type ExportMdp =
 {
+    Id?: number,
     Titre: string,
     Login: string,
     Mdp: string,

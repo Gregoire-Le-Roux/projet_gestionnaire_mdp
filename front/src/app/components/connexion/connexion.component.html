@@ -1,16 +1,26 @@
-<form #e="ngForm">
+<mat-card>
+    <mat-card-title>Connexion</mat-card-title>
+    <mat-card-content>
+        <form #e="ngForm">
 
-    <!-- login -->
-    <mat-form-field appearance="outline">
-        <mat-label>Login</mat-label>
-        <input matInput type="text" name="login" ngModel required>
-    </mat-form-field>
-
-    <!-- mdp -->
-    <mat-form-field appearance="outline">
-        <mat-label>Mot de passe</mat-label>
-        <input matInput type="text" name="mdp" ngModel required>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" (click)="SeConnecter(e)">Primary</button>
-</form>
+            <!-- login -->
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Login</mat-label>
+                <input matInput type="text" name="login" ngModel required>
+            </mat-form-field>
+        
+            <!-- mdp -->
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Mot de passe</mat-label>
+                <input matInput [type]="voirMdp ? 'text' : 'password'" name="mdp" ngModel required>
+                <button matSuffix mat-icon-button (click)="AfficherMdp()">
+                    <mat-icon>{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
+                </button>
+            </mat-form-field>
+        
+            <button mat-raised-button class="full-width" color="primary" (click)="SeConnecter(e)">
+                Se connecter
+            </button>
+        </form>
+      </mat-card-content>
+</mat-card>
