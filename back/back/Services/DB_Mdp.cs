@@ -2,7 +2,7 @@
 {
     public class DB_Mdp
     {
-        private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
+        //private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         private GestionMdpContext context { init; get; }
 
         public DB_Mdp(GestionMdpContext _context)

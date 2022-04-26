@@ -13,12 +13,10 @@
             <mat-form-field class="full-width" appearance="outline">
                 <mat-label>Mot de passe</mat-label>
                 <input matInput [type]="voirMdp ? 'text' : 'password'" name="mdp" ngModel required>
-                <button matSuffix mat-icon-button (click)="AfficherMdp()">
-                    <mat-icon>{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
-                </button>
+                <mat-icon matSuffix (click)="AfficherMdp()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
             </mat-form-field>
         
-            <button mat-raised-button class="full-width" color="primary" (click)="SeConnecter(e)">
+            <button mat-raised-button class="full-width" color="primary" (click)="SeConnecter(e)" cdkFocusInitial>
                 Se connecter
             </button>
         </form>

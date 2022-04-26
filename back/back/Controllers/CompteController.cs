@@ -30,6 +30,14 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(compte);
         }
 
+        [HttpGet("existe/{mail}")]
+        public string Existe([FromRoute] string mail)
+        {
+            bool existe = DB_Compte.Existe(mail);
+
+            return JsonConvert.SerializeObject(existe);
+        }
+
         [HttpPost("ajouter")]
         public string Ajouter([FromBody] CompteImport _compte)
         {

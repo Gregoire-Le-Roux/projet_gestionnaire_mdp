@@ -1,0 +1,29 @@
+<h1 mat-dialog-title>Créer un groupe</h1>
+<mat-dialog-content class="mat-typography">
+    <form #e="ngForm">
+
+        <!-- titre -->
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Titre</mat-label>
+            <input matInput type="text" name="Titre" ngModel required>
+        </mat-form-field>
+
+        <p>Saisissez une adresse mail et appuyer sur entrer pour valider</p>
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Mail</mat-label>
+            <input #inputMail (keyup.enter)="AjouterListeMail(inputMail.value)" matInput type="email">
+        </mat-form-field>
+
+        <mat-list role="list">
+            <mat-list-item *ngFor="let element of listeMail; let i = index" role="listitem">
+                <mat-icon style="cursor: pointer;" (click)="Supprimer(i)">close</mat-icon>
+                {{ element }}
+            </mat-list-item>
+        </mat-list>
+
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button color="warn" [mat-dialog-close]="false">Annuler</button>
+    <button mat-raised-button color="primary" (click)="Ajouter(e)">Ajouter</button>
+</mat-dialog-actions>

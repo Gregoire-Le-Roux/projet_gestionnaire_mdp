@@ -19,7 +19,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // connection a la base de donnée
-builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ionos")));
+builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("pcPortable")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
@@ -56,4 +56,4 @@ app.MapControllers();
 
 app.Run();
 
-// Scaffold-DbContext "Data Source=DESKTOP-J5HTQCS\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models
+// Scaffold-DbContext "Data Source=DESKTOP-U41J905\SQLEXPRESS;Initial Catalog=GestionMdp;Integrated Security=True" Microsoft.EntityFrameworkCore.SqlServer -OutputDir Models

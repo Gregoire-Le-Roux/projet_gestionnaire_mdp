@@ -22,6 +22,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatListModule } from '@angular/material/list';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
@@ -33,10 +34,12 @@ import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.compon
 import { AjouterMdpComponent } from './modal/ajouter-mdp/ajouter-mdp.component';
 import { MenuMdpComponent } from './components/menu-mdp/menu-mdp.component';
 import { PartagerMdpComponent } from './modal/partager-mdp/partager-mdp.component';
+import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.component';
+import { ListingGroupeComponent } from './components/listing-groupe/listing-groupe.component';
 
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
-import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.component';
+import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,9 @@ import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.componen
     AjouterMdpComponent,
     MenuMdpComponent,
     PartagerMdpComponent,
-    ModifierMdpComponent
+    ModifierMdpComponent,
+    ListingGroupeComponent,
+    AjouterGroupeComponent
   ],
   imports: [
     BrowserModule,
@@ -75,7 +80,8 @@ import { ModifierMdpComponent } from './modal/modifier-mdp/modifier-mdp.componen
     MatTabsModule,
     MatMenuModule,
     MatCardModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatListModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }, 
