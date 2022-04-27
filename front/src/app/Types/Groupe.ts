@@ -6,6 +6,6 @@ export type Groupe =
     IdCompteCreateur: number,
     Titre: string,
     NbCompte: number,
-
+    NbMdp: number,
     ListeMdp: Mdp[]
 }

@@ -30,8 +30,9 @@ namespace back.Services
                         {
                             groupe.Id,
                             groupe.Titre,
-                            nbCompte = groupe.IdComptes.Count,
-                            listeMdp = groupe.IdMdps.Select(m =>
+                            NbCompte = groupe.IdComptes.Count,
+                            NbMdp = groupe.IdMdps.Count,
+                            ListeMdp = groupe.IdMdps.Select(m =>
                                 new
                                 {
                                     m.Id,
@@ -39,7 +40,8 @@ namespace back.Services
                                     m.Mdp,
                                     m.Url,
                                     m.Titre,
-                                    m.DateExpiration
+                                    m.DateExpiration,
+                                    m.Description
                                 })
                         };
             });

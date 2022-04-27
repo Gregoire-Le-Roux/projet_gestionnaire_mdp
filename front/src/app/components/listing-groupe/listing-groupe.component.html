@@ -13,12 +13,34 @@
     </mat-form-field>
     
     <div class="matTable mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" matSort>
+        <table class="full-width" mat-table [dataSource]="dataSource" matSort>
     
             <!-- titre Column -->
             <ng-container matColumnDef="Titre">
                 <th mat-header-cell *matHeaderCellDef mat-sort-header> Titre </th>
                 <td mat-cell *matCellDef="let element"> {{ element.Titre }} </td>
+            </ng-container>
+
+            <!-- nb compte Column -->
+            <ng-container matColumnDef="NbCompte">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre de compte </th>
+                <td mat-cell *matCellDef="let element"> {{ element.NbCompte }} </td>
+            </ng-container>
+
+            <!-- nb mdp Column -->
+            <ng-container matColumnDef="NbMdp">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header> Nombre mots de passe </th>
+                <td mat-cell *matCellDef="let element"> {{ element.NbMdp }} </td>
+            </ng-container>
+
+            <!-- action Column -->
+            <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> Action </th>
+                <td mat-cell *matCellDef="let element">
+                    <button mat-mini-fab color="primary">
+                        <mat-icon>edit</mat-icon>
+                    </button>
+                </td>
             </ng-container>
     
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

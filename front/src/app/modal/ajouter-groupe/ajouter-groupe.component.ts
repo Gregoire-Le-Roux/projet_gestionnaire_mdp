@@ -129,6 +129,7 @@ export class AjouterGroupeComponent implements OnInit
           IdCompteCreateur: VariableStatic.compte.Id,
           Titre: _form.value.Titre,
           NbCompte: this.listeMail.length,
+          NbMdp: listeMdp.length,
           ListeMdp: listeMdp
         };
 

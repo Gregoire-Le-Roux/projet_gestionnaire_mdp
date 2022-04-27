@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -24,14 +24,14 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
 
   dataSource: MatTableDataSource<Groupe>;
 
-  displayedColumns: string[] = ['Titre'];
+  displayedColumns: string[] = ['Titre', 'NbCompte', 'NbMdp', 'action'];
 
   constructor(
     private groupeServ: GroupeService, 
     private outilServ: OutilService,
     private dialog: MatDialog) { }
 
-  ngOnInit(): void 
+  ngOnInit(): void
   {
     this.dataSource = new MatTableDataSource();
     this.ListerGroupe();
@@ -51,8 +51,6 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: Groupe) =>
       {
-        console.log(retour);
-        
         if(retour)
         {
           this.dataSource.data.push(retour);
@@ -72,8 +70,14 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
   {
     this.groupeServ.Lister(VariableStatic.compte.Id).subscribe({
       next: (liste: Groupe[]) =>
-      {
-        console.log(liste);
+      {  
+        let aes = new Aes(VariableStatic.compte.HashCle);
+
+        for (let groupe of liste)
+        {
+          groupe.Titre = aes.Dechiffrer(groupe.Titre);
+          groupe.ListeMdp = aes.DechiffrerMdp(groupe.ListeMdp);
+        }
         
         this.dataSource.data = liste;
       },
@@ -81,6 +85,6 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
       {
         this.outilServ.ToastErreurHttp();
       }
-    })
+    });
   }
 }
