@@ -30,6 +30,7 @@ namespace back.Services
                         {
                             groupe.Id,
                             groupe.Titre,
+                            nbCompte = groupe.IdComptes.Count,
                             listeMdp = groupe.IdMdps.Select(m =>
                                 new
                                 {
@@ -39,9 +40,7 @@ namespace back.Services
                                     m.Url,
                                     m.Titre,
                                     m.DateExpiration
-                                }),
-
-                            listeCompte = ListerCompteGroupeAvecMonHash(groupe.IdComptes).ToList()
+                                })
                         };
             });
 
@@ -155,22 +154,25 @@ namespace back.Services
             }
         }
 
-        private List<Compte> ListerCompteGroupeAvecMonHash(ICollection<Compte> _listeCompte)
+        private async Task<List<Compte>> ListerCompteGroupeAvecMonHash(ICollection<Compte> _listeCompte)
         {
             List<Compte> listeRetour = new();
 
-            foreach (Compte compte in _listeCompte)
+            await Task.Run(() =>
             {
-                AESprotection aes = new(compte.HashCle);
+                foreach (Compte compte in _listeCompte)
+                {
+                    AESprotection aes = new(compte.HashCle);
 
-                listeRetour.Add(
-                    new Compte 
-                    { 
-                        Nom = aes.Chiffrer(aes.Dechiffrer(compte.Nom)),
-                        Prenom = aes.Chiffrer(aes.Dechiffrer(compte.Prenom)),
-                        Mail = aes.Chiffrer(aes.Dechiffrer(compte.Mail))
-                    });
-            }
+                    listeRetour.Add(
+                        new Compte
+                        {
+                            Nom = aes.Chiffrer(aes.Dechiffrer(compte.Nom)),
+                            Prenom = aes.Chiffrer(aes.Dechiffrer(compte.Prenom)),
+                            Mail = aes.Chiffrer(aes.Dechiffrer(compte.Mail))
+                        });
+                }
+            });
 
             return listeRetour;
         }

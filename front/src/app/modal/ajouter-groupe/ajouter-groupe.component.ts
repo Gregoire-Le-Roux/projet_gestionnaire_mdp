@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { CompteService } from 'src/app/services/compte.service';
 import { GroupeService } from 'src/app/services/groupe.service';
@@ -27,7 +27,7 @@ export class AjouterGroupeComponent implements OnInit
   }
 
   AjouterListeMail(_mail: string): void
-  { 
+  {
     if(_mail.replace(/ /g, "") == "")
       return;
 
