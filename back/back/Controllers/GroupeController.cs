@@ -7,10 +7,12 @@ namespace back.Controllers
     public class GroupeController : ControllerBase
     {
         private readonly DB_Groupe dbGroupe;
+        private readonly GestionMdpContext context;
 
         public GroupeController(GestionMdpContext _context, IConfiguration _config)
         {
             dbGroupe = new (_context, _config);
+            context = _context;
         }
 
         [HttpGet("lister/{idCompte}")]
@@ -24,25 +26,38 @@ namespace back.Controllers
         [HttpPost("ajouter")]
         public async Task<string> Ajouter([FromBody] groupeImport _groupe)
         {
-            List<string> listeMailSecu = new();
+            List<string> listeMailSecuDechiffrer = new();
+            DB_Compte dbCompte = new(context);
+
+            string hashCle = await dbCompte.GetHashCleAsync(_groupe.IdCreateur);
+
+            AESprotection aes = new(hashCle);
 
             foreach (string mail in _groupe.listeMail)
             {
-                listeMailSecu.Add(Protection.XSS(mail));
+                string mailDechiffrer = aes.Dechiffrer(mail);
+                listeMailSecuDechiffrer.Add(Protection.XSS(mailDechiffrer));
             }
+
+            string titreSecuDechiffrer = Protection.XSS(aes.Dechiffrer(_groupe.Titre));
 
             Groupe groupe = new()
             {
-                Titre = Protection.XSS(_groupe.Titre),
+                Titre = aes.Chiffrer(titreSecuDechiffrer),
                 IdCompteCreateur = _groupe.IdCreateur
             };
 
             int idGroupe = await dbGroupe.AjouterAsync(groupe);
 
-            List<int> listeIdCompte = await dbGroupe.ListerIdCompteAsync(listeMailSecu);
 
-            await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, idGroupe);
-            await dbGroupe.AjouterMdpGroupeAsync(idGroupe, _groupe.IdMdp);
+            if(listeMailSecuDechiffrer.Count > 0)
+            {
+                List<int> listeIdCompte = await dbGroupe.ListerIdCompteAsync(listeMailSecuDechiffrer);
+                await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, idGroupe);
+            }
+
+            if(_groupe.listeIdMdp.Length > 0)
+                await dbGroupe.AjouterMdpGroupeAsync(idGroupe, _groupe.listeIdMdp);
 
             return JsonConvert.SerializeObject(idGroupe);
         }

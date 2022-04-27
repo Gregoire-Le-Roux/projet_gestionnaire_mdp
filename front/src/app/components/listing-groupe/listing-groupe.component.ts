@@ -7,6 +7,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AjouterGroupeComponent } from 'src/app/modal/ajouter-groupe/ajouter-groupe.component';
 import { GroupeService } from 'src/app/services/groupe.service';
 import { OutilService } from 'src/app/services/outil.service';
+import { Aes } from 'src/app/Static/Aes';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Groupe } from 'src/app/Types/Groupe';
 import { Mdp } from 'src/app/Types/Mdp';
@@ -46,6 +47,19 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
   OuvrirModalAjouterGroupe(): void
   {
     const DIALOG_REF = this.dialog.open(AjouterGroupeComponent);
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: Groupe) =>
+      {
+        console.log(retour);
+        
+        if(retour)
+        {
+          this.dataSource.data.push(retour);
+          this.dataSource.data = this.dataSource.data;
+        }
+      }
+    });
   }
   
   applyFilter(event: Event): void

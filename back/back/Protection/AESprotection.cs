@@ -47,7 +47,8 @@ namespace back.securite
 
         public string Dechiffrer(string _text)
         {
-            string[] tabCaractereUTF16Asupprimer = new string[] { "\n", "\t", "\f", "\u000b", "\u0007", "\x07", "\u0006", "\u000e" };
+            string[] tabCaractereUTF16Asupprimer = new string[] 
+            { "\n", "\t", "\f", "\b", "\u000b", "\u0007", "\x07", "\u0006", "\u000e", "\u001f", "\x1F" };
 
             aes.Padding = PaddingMode.Zeros;
 

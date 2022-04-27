@@ -1,5 +1,6 @@
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Cache } from 'src/app/enum/Cache';
 import { AjouterMdpComponent } from 'src/app/modal/ajouter-mdp/ajouter-mdp.component';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
@@ -48,26 +49,6 @@ export class MenuMdpComponent implements OnInit
     });
   }
 
-  private DechiffrerInfoRecu(_liste: Mdp[]): Mdp[]
-  {
-    if(!VariableStatic.compte.HashCle)
-      return [];
-
-    let aes: Aes = new Aes(VariableStatic.compte.HashCle);
-
-    for (const element of _liste) 
-    {
-      element.DateExpiration =  aes.Dechiffrer(element.DateExpiration);
-      element.Login = aes.Dechiffrer(element.Login);
-      element.Titre = aes.Dechiffrer(element.Titre);
-      element.Url = aes.Dechiffrer(element.Url);
-      element.Mdp = aes.Dechiffrer(element.Mdp);
-      element.Description = aes.Dechiffrer(element.Description);
-    }
-
-    return _liste;
-  }
-
   private ListerMesMdp(): void
   {
     this.mdpServ.ListerLesMiens(VariableStatic.compte.Id).subscribe({
@@ -75,7 +56,11 @@ export class MenuMdpComponent implements OnInit
       {
         if(retour.length > 0)
         { 
-          this.listeMesMdp = this.DechiffrerInfoRecu(retour); 
+          let aes: Aes = new Aes(VariableStatic.compte.HashCle);
+
+          this.listeMesMdp = aes.DechiffrerMdp(retour);
+          sessionStorage.setItem(Cache.LISTE_MDP, JSON.stringify(this.listeMesMdp));
+
           this.component.toArray()[0].InitListe(this.listeMesMdp);
         }
         else
@@ -95,7 +80,9 @@ export class MenuMdpComponent implements OnInit
       {
         if(retour.length > 0)
         {
-          this.listeMdpPartagerAvecMoi = this.DechiffrerInfoRecu(retour);
+          let aes: Aes = new Aes(VariableStatic.compte.HashCle);
+
+          this.listeMdpPartagerAvecMoi = aes.DechiffrerMdp(retour);
           this.component.toArray()[1].InitListe(this.listeMdpPartagerAvecMoi);
         }
         else

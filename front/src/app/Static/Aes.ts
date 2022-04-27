@@ -1,4 +1,5 @@
 import * as CryptoJS from 'crypto-js';
+import { Mdp } from '../Types/Mdp';
 import { VariableStatic } from './VariableStatic';
 
 export class Aes
@@ -23,6 +24,27 @@ export class Aes
     {
         const TEXT_DECHIFFRER = CryptoJS.AES.decrypt(_text, this.cleSecrete, { iv: this.iv }).toString(CryptoJS.enc.Utf8);
 
-        return TEXT_DECHIFFRER.replace(/[\u0000\x00]/g, "");
+        return TEXT_DECHIFFRER.replace(/[\u0000\x00\u001f\x1F\b]/g, "");
+    }
+
+    DechiffrerMdp(_liste: Mdp[]): Mdp[]
+    {
+        let listeRetour: Mdp[] = [];
+
+        for (const element of _liste) 
+        {
+            listeRetour.push({
+                Id: element.Id,
+                Titre: this.Dechiffrer(element.Titre),
+                Mdp: this.Dechiffrer(element.Mdp),
+                Url: this.Dechiffrer(element.Url),
+                Login: this.Dechiffrer(element.Login),
+                DateExpiration: this.Dechiffrer(element.DateExpiration),
+                IdCompteCreateur: element.IdCompteCreateur,
+                Description: this.Dechiffrer(element.Description)
+            });
+        }
+
+        return listeRetour;
     }
 }

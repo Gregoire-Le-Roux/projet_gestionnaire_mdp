@@ -6,6 +6,7 @@ import { Compte } from 'src/app/Types/Compte';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Aes } from 'src/app/Static/Aes';
 import { Router } from '@angular/router';
+import { Cache } from 'src/app/enum/Cache';
 
 @Component({
   selector: 'app-connexion',
@@ -50,9 +51,9 @@ export class ConnexionComponent
       },
       error: () =>
       {
+        this.btnClicker = false;
         this.outilServ.ToastErreurHttp();
-      },
-      complete: () => this.btnClicker = false
+      }
     });
   }
 
@@ -77,6 +78,8 @@ export class ConnexionComponent
     };
 
     aes = null;
+
+    sessionStorage.setItem(Cache.INFO_COMPTE, JSON.stringify(DATA));
 
     VariableStatic.compte = DATA;
   }

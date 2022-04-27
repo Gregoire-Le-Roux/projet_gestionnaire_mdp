@@ -8,10 +8,28 @@
             <input matInput type="text" name="Titre" ngModel required>
         </mat-form-field>
 
+        <!-- liste des mdp -->
+        <mat-accordion>
+            <mat-expansion-panel>
+                <mat-expansion-panel-header>
+                    <mat-panel-description>
+                        Choisissez les mots de passe à partager
+                    </mat-panel-description>
+                </mat-expansion-panel-header>
+
+                <mat-selection-list color="primary" name="ListeIdMdp" ngModel>
+                    <mat-list-option [value]="element.Id" *ngFor="let element of listeMdp">
+                      {{ element.Titre }}
+                    </mat-list-option>
+                  </mat-selection-list>
+
+            </mat-expansion-panel>
+        </mat-accordion><br>
+
         <p>Saisissez une adresse mail et appuyer sur entrer pour valider</p>
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Mail</mat-label>
-            <input #inputMail (keyup.enter)="AjouterListeMail(inputMail.value)" matInput type="email">
+            <input #inputMail (keyup.enter)="AjouterListeMail(inputMail.value)" matInput placeholder="exemple@mail.com" type="email">
         </mat-form-field>
 
         <mat-list role="list">

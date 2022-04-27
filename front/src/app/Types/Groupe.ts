@@ -1,11 +1,11 @@
+import { Mdp } from "./Mdp"
+
 export type Groupe =
 {
     Id: number,
     IdCompteCreateur: number,
     Titre: string,
+    NbCompte: number,
 
-    listeCompte: [{
-        IdGroupe: number,
-        IdCompte: number
-    }]
+    ListeMdp: Mdp[]
 }

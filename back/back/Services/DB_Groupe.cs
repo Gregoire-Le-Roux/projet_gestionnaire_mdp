@@ -72,7 +72,6 @@ namespace back.Services
 
                 cmd.CommandText = $"SELECT id FROM compte WHERE mail IN({listeMailString})";
 
-                //cmd.Parameters.Add("@liste", SqlDbType.VarChar, listeMailString.Length).Value = listeMailString;
                 await cmd.PrepareAsync();
 
                 await cmd.ExecuteNonQueryAsync();
@@ -133,18 +132,27 @@ namespace back.Services
             }
         }
 
-        public async Task AjouterMdpGroupeAsync(int _idGroupe, int _idMdp)
+        public async Task AjouterMdpGroupeAsync(int _idGroupe, int[] _listeIdMdp)
         {
+            string valueGroupeMdp = "";
+
+            for (int i = 0; i < _listeIdMdp.Length; i++)
+            {
+                int idMdp = _listeIdMdp[i];
+
+                valueGroupeMdp += $"({_idGroupe}, {idMdp})";
+
+                if (i < _listeIdMdp.Length - 1)
+                    valueGroupeMdp += ",";
+            }
+
             using(SqlConnection sqlCon = new(configuration.GetConnectionString("pcPortable")))
             {
                 await sqlCon.OpenAsync();
 
                 SqlCommand cmd = sqlCon.CreateCommand();
 
-                cmd.CommandText = "INSERT INTO GroupeMdp (idGroupe, idMdp) VALUES (@idGrp, @idMdp)";
-
-                cmd.Parameters.Add("@idGrp", SqlDbType.Int).Value = _idGroupe;
-                cmd.Parameters.Add("@idMdp", SqlDbType.Int).Value = _idMdp;
+                cmd.CommandText = $"INSERT INTO GroupeMdp (idGroupe, idMdp) VALUES {valueGroupeMdp}";
 
                 await cmd.PrepareAsync();
 
