@@ -7,18 +7,18 @@ namespace back.Controllers
     public class MdpController : Controller
     {
         private DB_Mdp dbMdp;
-        private GestionMdpContext mdpContext;
+        private GestionMdpContext context;
 
         public MdpController(GestionMdpContext _context)
         {
-            mdpContext = _context;
+            context = _context;
             dbMdp = new(_context);
         }
 
         [HttpGet("listerMesMdp/{id}")]
-        public string ListerMesMdp([FromRoute] int id)
+        public async Task<string> ListerMesMdp([FromRoute] int id)
         {
-            MdpExport[] liste = dbMdp.ListerMesMdp(id);
+            MdpExport[] liste = await dbMdp.ListerMesMdpAsync(id);
 
             return JsonConvert.SerializeObject(liste);
         }
@@ -32,10 +32,10 @@ namespace back.Controllers
         }
 
         [HttpPut("modifier")]
-        public string Modifier([FromBody] MdpImport _mdp)
+        public async Task<string> Modifier([FromBody] MdpImport _mdp)
         {
-            DB_Compte.context = mdpContext;
-            string hashCle = DB_Compte.GetHashCle(_mdp.IdCompteCreateur);
+            DB_Compte dbCompte = new(context);
+            string hashCle = await dbCompte.GetHashCleAsync(_mdp.IdCompteCreateur);
 
             AESprotection aes = new(hashCle);
             _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
@@ -55,7 +55,7 @@ namespace back.Controllers
                 Url = aes.Chiffrer(_mdp.Url)
             };
 
-            dbMdp.Modifier(mdp);
+            await dbMdp.ModifierAsync(mdp);
 
             return JsonConvert.SerializeObject(true);
         }
@@ -77,10 +77,10 @@ namespace back.Controllers
         /// <param name="_mdp"></param>
         /// <response code="200">Id du mdp</response>
         [HttpPost("ajouter")]
-        public string Ajouter(MdpImport _mdp)
+        public async Task<string> Ajouter(MdpImport _mdp)
         {
-            DB_Compte.context = mdpContext;
-            string hashCle = DB_Compte.GetHashCle(_mdp.IdCompteCreateur);
+            DB_Compte dbCompte = new(context);
+            string hashCle = await dbCompte.GetHashCleAsync(_mdp.IdCompteCreateur);
 
             AESprotection aes = new(hashCle);
 
@@ -108,7 +108,7 @@ namespace back.Controllers
                 IdCompteCreateur = _mdp.IdCompteCreateur
             };
 
-            int id = dbMdp.Ajouter(mdp);
+            int id = await dbMdp.AjouterAsync(mdp);
 
             return JsonConvert.SerializeObject(id);
         }

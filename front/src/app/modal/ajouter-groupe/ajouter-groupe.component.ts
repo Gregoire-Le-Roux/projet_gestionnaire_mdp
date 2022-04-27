@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { CompteService } from 'src/app/services/compte.service';
 import { GroupeService } from 'src/app/services/groupe.service';
 import { OutilService } from 'src/app/services/outil.service';
+import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { ExportGroupe } from 'src/app/Types/Export/ExportGroupe';
 
 @Component({
@@ -29,14 +30,14 @@ export class AjouterGroupeComponent implements OnInit
   { 
     if(_mail.replace(/ /g, "") == "")
       return;
+
+    _mail = _mail.toLowerCase();
     
     if(_mail.match(/([a-z0-9-._]+)@([a-z]+).([a-z]+)/) == null)
     {
       this.outilServ.ToastErreur("Veuillez indiquer une adresse mail");
       return;
     }
-
-    _mail = _mail.toLowerCase();
 
     this.compteServ.Existe(_mail).subscribe({
       next: (retour: boolean) =>
@@ -68,6 +69,7 @@ export class AjouterGroupeComponent implements OnInit
 
     const DATA: ExportGroupe =
     {
+      IdCreateur: VariableStatic.compte.Id,
       Titre: _form.value.Titre,
       listeMail: this.listeMail
     };

@@ -6,32 +6,45 @@ namespace back.Controllers
     [ApiController]
     public class GroupeController : ControllerBase
     {
-        public GroupeController(GestionMdpContext _context)
+        private readonly DB_Groupe dbGroupe;
+
+        public GroupeController(GestionMdpContext _context, IConfiguration _config)
         {
-            DB_Groupe.context = _context;
+            dbGroupe = new (_context, _config);
         }
 
         [HttpGet("lister/{idCompte}")]
-        public string Lister([FromRoute] int idCompte)
+        public async Task<string> Lister([FromRoute] int idCompte)
         {
-            var liste = DB_Groupe.ListerLesMiens(idCompte);
+            var liste = await dbGroupe.ListerLesMiensAsync(idCompte);
 
             return JsonConvert.SerializeObject(liste);
         }
 
         [HttpPost("ajouter")]
-        public string Ajouter([FromBody] groupeImport _groupe)
+        public async Task<string> Ajouter([FromBody] groupeImport _groupe)
         {
+            List<string> listeMailSecu = new();
+
+            foreach (string mail in _groupe.listeMail)
+            {
+                listeMailSecu.Add(Protection.XSS(mail));
+            }
+
             Groupe groupe = new()
             {
                 Titre = Protection.XSS(_groupe.Titre),
                 IdCompteCreateur = _groupe.IdCreateur
             };
 
-            int idGroupe = DB_Groupe.Ajouter(groupe);
+            int idGroupe = await dbGroupe.AjouterAsync(groupe);
 
+            List<int> listeIdCompte = await dbGroupe.ListerIdCompteAsync(listeMailSecu);
 
-            return JsonConvert.SerializeObject(idGroupe);
+            await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, idGroupe);
+            await dbGroupe.AjouterMdpGroupeAsync(idGroupe, _groupe.IdMdp);
+
+            return JsonConvert.SerializeObject(true);
         }
     }
 }

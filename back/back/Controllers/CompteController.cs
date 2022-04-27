@@ -7,39 +7,36 @@ namespace back.Controllers
     [ApiController]
     public class CompteController : Controller
     {
-        private GestionMdpContext mdpContext;
+        private readonly DB_Compte dbCompte;
 
         public CompteController(GestionMdpContext _context)
         {
-            mdpContext = _context;
-            DB_Compte.context = _context;
+            dbCompte = new(_context);
         }
 
         [HttpGet("MonCompte/{id}")]
-        public string Compte([FromRoute] int id)
+        public async Task<string> Compte([FromRoute] int id)
         {
-            var compte = DB_Compte.Compte(id);
+            var compte = await dbCompte.CompteAsync(id);
 
             AESprotection? aESprotection = new(compte.HashCle);
 
             compte.Nom = aESprotection.Dechiffrer(compte.Nom);
             compte.Prenom = aESprotection.Dechiffrer(compte.Prenom);
 
-            aESprotection = null;
-
             return JsonConvert.SerializeObject(compte);
         }
 
         [HttpGet("existe/{mail}")]
-        public string Existe([FromRoute] string mail)
+        public async Task<string> Existe([FromRoute] string mail)
         {
-            bool existe = DB_Compte.Existe(mail);
+            bool existe = await dbCompte.ExisteAsync(mail);
 
             return JsonConvert.SerializeObject(existe);
         }
 
         [HttpPost("ajouter")]
-        public string Ajouter([FromBody] CompteImport _compte)
+        public async Task<string> Ajouter([FromBody] CompteImport _compte)
         {
             try
             {
@@ -47,7 +44,7 @@ namespace back.Controllers
                 string prenomSecu = Protection.XSS(_compte.Prenom);
                 string mailSecu = Protection.XSS(_compte.Mail);
 
-                if (DB_Compte.Existe(mailSecu))
+                if (await dbCompte.ExisteAsync(mailSecu))
                     return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
 
                 string cleAES = AESprotection.CreerCleChiffrement(nomSecu, prenomSecu, mailSecu);
@@ -63,7 +60,7 @@ namespace back.Controllers
                     HashCle = cleAES
                 };
 
-                int id = DB_Compte.Ajouter(compte);
+                int id = await dbCompte.AjouterAsync(compte);
 
                 return JsonConvert.SerializeObject(id);
             }
@@ -79,11 +76,11 @@ namespace back.Controllers
         /// <param name="id"></param>
         /// <response>True si tout est OK</response>
         [HttpDelete("supprimer/{id}")]
-        public string Supprimer([FromRoute] int id)
+        public async Task<string> Supprimer([FromRoute] int id)
         {
             try
             {
-                DB_Compte.Supprimer(id);
+                await dbCompte.SupprimerAsync(id);
 
                 return JsonConvert.SerializeObject(true);
             }

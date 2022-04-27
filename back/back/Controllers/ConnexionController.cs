@@ -8,13 +8,12 @@ namespace back.Controllers
     [ApiController]
     public class ConnexionController : Controller
     {
-        private readonly GestionMdpContext context;
+        private DB_Compte dbCompte;
         private const string CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
         public ConnexionController(GestionMdpContext _context)
         {
-            context = _context;
-            DB_Compte.context = context;
+            dbCompte = new(_context);
         }
 
         /// <summary>
@@ -23,7 +22,7 @@ namespace back.Controllers
         /// <param name="_log"></param>
         /// <returns></returns>
         [HttpPost("Connexion")]
-        public string Connexion([FromBody] LogImport _log)
+        public async Task<string> Connexion([FromBody] LogImport _log)
         {
             try
             {
@@ -34,13 +33,13 @@ namespace back.Controllers
 
                 aes = null;
 
-                if (DB_Compte.Existe(login))
+                if (await dbCompte.ExisteAsync(login))
                 {
-                    InterneCompte compte = DB_Compte.InfoConnexion(login);
+                    InterneCompte compte = await dbCompte.InfoConnexionAsync(login);
 
                     if (BC.Verify(mdp, compte.HashMdp))
                     {
-                        var infoCompte = DB_Compte.Compte(compte.Id);
+                        var infoCompte = await dbCompte.CompteAsync(compte.Id);
 
                         aes = new(infoCompte.HashCle);
 

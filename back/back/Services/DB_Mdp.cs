@@ -10,21 +10,26 @@
             context = _context;
         }
 
-        public MdpExport[] ListerMesMdp(int _id)
+        public async Task<MdpExport[]> ListerMesMdpAsync(int _id)
         {
-            MdpExport[] liste = (from mdp in context.MotDePasses
-                                where mdp.IdCompteCreateur == _id
-                                select new MdpExport
-                                {
-                                    Id = mdp.Id,
-                                    Titre = mdp.Titre,
-                                    Url = mdp.Url,
-                                    DateExpiration = mdp.DateExpiration,
-                                    Description = mdp.Description,
-                                    Login = mdp.Login,
-                                    Mdp = mdp.Mdp,
-                                    IdCompteCreateur = mdp.IdCompteCreateur
-                                }).ToArray();
+            MdpExport[] liste = Array.Empty<MdpExport>();
+
+            await Task.Run(() =>
+            {
+                liste = (from mdp in context.MotDePasses
+                         where mdp.IdCompteCreateur == _id
+                         select new MdpExport
+                         {
+                             Id = mdp.Id,
+                             Titre = mdp.Titre,
+                             Url = mdp.Url,
+                             DateExpiration = mdp.DateExpiration,
+                             Description = mdp.Description,
+                             Login = mdp.Login,
+                             Mdp = mdp.Mdp,
+                             IdCompteCreateur = mdp.IdCompteCreateur
+                         }).ToArray();
+            });
 
             return liste;
         }
@@ -34,20 +39,20 @@
             return new MdpExport[0];
         }
 
-        public int Ajouter(MotDePasse _mdp)
+        public async Task<int> AjouterAsync(MotDePasse _mdp)
         {
-            context.MotDePasses.Add(_mdp);
-            context.SaveChanges();
+            await context.MotDePasses.AddAsync(_mdp);
+            await context.SaveChangesAsync(true);
 
             int id = context.MotDePasses.OrderByDescending(m => m.Id).Select(m => m.Id).First();
 
             return id;
         }
 
-        public void Modifier(MotDePasse _mdp)
+        public async Task ModifierAsync(MotDePasse _mdp)
         {
             context.MotDePasses.Update(_mdp);
-            context.SaveChanges();
+            await context.SaveChangesAsync(true);
         }
     }
 }
