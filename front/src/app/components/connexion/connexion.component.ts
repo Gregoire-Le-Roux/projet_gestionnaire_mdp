@@ -15,6 +15,8 @@ import { Router } from '@angular/router';
 export class ConnexionComponent
 {
   voirMdp: boolean = false;
+  btnClicker: boolean = false;
+
   private readonly CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
   constructor(
@@ -24,7 +26,7 @@ export class ConnexionComponent
   
   SeConnecter(_form: NgForm): void
   {
-    if(_form.invalid)
+    if(_form.invalid || this.btnClicker)
       return;
 
     let aes: Aes = new Aes(this.CLE_SECRETE); 
@@ -33,6 +35,7 @@ export class ConnexionComponent
     let loginChiffrer = aes.Chiffrer(_form.value.login);
 
     aes = null;
+    this.btnClicker = true;
 
     this.connexionServ.Connexion({ login: loginChiffrer, mdp: mdpChiffrer }).subscribe({
       next: (retour: string | Compte) =>
@@ -48,7 +51,8 @@ export class ConnexionComponent
       error: () =>
       {
         this.outilServ.ToastErreurHttp();
-      }
+      },
+      complete: () => this.btnClicker = false
     });
   }
 

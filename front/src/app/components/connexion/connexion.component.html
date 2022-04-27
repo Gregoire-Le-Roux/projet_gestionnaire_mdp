@@ -17,7 +17,7 @@
             </mat-form-field>
         
             <button mat-raised-button class="full-width" color="primary" (click)="SeConnecter(e)" cdkFocusInitial>
-                Se connecter
+                <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Se connecter' : "" }}
             </button>
         </form>
       </mat-card-content>

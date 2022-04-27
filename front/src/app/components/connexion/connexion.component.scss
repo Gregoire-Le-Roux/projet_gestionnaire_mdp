@@ -7,3 +7,18 @@
     max-width: 400px;
     box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px !important;
 }
+
+::ng-deep .mat-progress-spinner circle, .mat-spinner circle
+{
+    stroke: white;
+}
+
+button
+{
+    min-height: 36px;
+}
+
+.mat-spinner
+{
+    margin: 0 auto;
+}

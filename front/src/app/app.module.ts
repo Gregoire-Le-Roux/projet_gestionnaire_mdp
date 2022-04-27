@@ -23,6 +23,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 import { AppRoutingModule } from './app-routing.module';
 import { ToastrModule } from 'ngx-toastr';
@@ -81,7 +82,8 @@ import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.co
     MatMenuModule,
     MatCardModule,
     MatToolbarModule,
-    MatListModule
+    MatListModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }, 
