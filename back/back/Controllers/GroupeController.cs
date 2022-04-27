@@ -44,7 +44,7 @@ namespace back.Controllers
             await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, idGroupe);
             await dbGroupe.AjouterMdpGroupeAsync(idGroupe, _groupe.IdMdp);
 
-            return JsonConvert.SerializeObject(true);
+            return JsonConvert.SerializeObject(idGroupe);
         }
     }
 }
