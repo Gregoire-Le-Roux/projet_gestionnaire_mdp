@@ -118,7 +118,7 @@ namespace back.Services
                     valueInsert += ",";
             }
 
-            using (SqlConnection sqlCon = new(configuration.GetConnectionString("pcPortable")))
+            using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
                 await sqlCon.OpenAsync();
 
@@ -148,7 +148,7 @@ namespace back.Services
                     valueGroupeMdp += ",";
             }
 
-            using(SqlConnection sqlCon = new(configuration.GetConnectionString("pcPortable")))
+            using(SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
                 await sqlCon.OpenAsync();
 
@@ -162,6 +162,14 @@ namespace back.Services
 
                 await sqlCon.CloseAsync();
             }
+        }
+
+        public async Task SupprimerAsync(int _idGroupe)
+        {
+            Groupe groupe = context.Groupes.First(g => g.Id == _idGroupe);
+
+            context.Groupes.Remove(groupe);
+            await context.SaveChangesAsync(true);
         }
 
         private async Task<List<Compte>> ListerCompteGroupeAvecMonHash(ICollection<Compte> _listeCompte)

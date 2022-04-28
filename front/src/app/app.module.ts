@@ -42,6 +42,7 @@ import { ListingGroupeComponent } from './components/listing-groupe/listing-grou
 // permet de donner la possibilité de refrech la page en mode prod en ajoutant un # sur URL
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.component';
+import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.co
     PartagerMdpComponent,
     ModifierMdpComponent,
     ListingGroupeComponent,
-    AjouterGroupeComponent
+    AjouterGroupeComponent,
+    ConfirmationComponent
   ],
   imports: [
     BrowserModule,

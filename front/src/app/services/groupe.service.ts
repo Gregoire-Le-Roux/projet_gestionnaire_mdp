@@ -21,4 +21,9 @@ export class GroupeService {
   {
     return this.http.post<number>(`${environment.urlApi}/Groupe/ajouter`, _info);
   }
+
+  Supprimer(_idGroupe: number): Observable<boolean>
+  {
+    return this.http.delete<boolean>(`${environment.urlApi}/Groupe/supprimer/${_idGroupe}`);
+  }
 }

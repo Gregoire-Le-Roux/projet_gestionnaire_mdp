@@ -44,6 +44,26 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
     this.dataSource.sort = this.sort;
   }
 
+  ConfirmerSupprimerGroupe(_titreGroupe: string, _idGroupe: number, _index: number): void
+  {
+    const TITRE = `Confirmation suppression groupe: ${_titreGroupe}`;
+    const MESSAGE = `Confirmer vous la suppression du groupe: ${_titreGroupe} ?`;
+
+    this.outilServ.OuvrirModalConfirmation(TITRE, MESSAGE);
+
+    this.outilServ.reponseConfirmation.subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour == true)
+        {
+          this.SupprimerGroupe(_idGroupe, _index);
+        }
+        else
+          this.outilServ.ToastInfo("Suppression annulée");
+      }
+    });
+  }
+
   OuvrirModalAjouterGroupe(): void
   {
     const DIALOG_REF = this.dialog.open(AjouterGroupeComponent);
@@ -64,6 +84,22 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
   {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  private SupprimerGroupe(_idGroupe: number, _index: number): void
+  {
+    this.groupeServ.Supprimer(_idGroupe).subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour == true)
+        {
+          this.dataSource.data.splice(_index, 1);
+          this.dataSource.data = this.dataSource.data;
+        }
+        else
+          this.outilServ.ToastErreurHttp();
+      }
+    });
   }
 
   private ListerGroupe(): void

@@ -36,9 +36,13 @@
             <!-- action Column -->
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef> Action </th>
-                <td mat-cell *matCellDef="let element">
+                <td mat-cell *matCellDef="let element; let i = index">
                     <button mat-mini-fab color="primary">
                         <mat-icon>edit</mat-icon>
+                    </button>&nbsp;
+
+                    <button mat-mini-fab color="warn" (click)="ConfirmerSupprimerGroupe(element.Titre, element.Id, i)">
+                        <mat-icon>delete</mat-icon>
                     </button>
                 </td>
             </ng-container>

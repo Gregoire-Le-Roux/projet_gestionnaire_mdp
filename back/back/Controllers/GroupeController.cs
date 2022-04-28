@@ -61,5 +61,20 @@ namespace back.Controllers
 
             return JsonConvert.SerializeObject(idGroupe);
         }
+
+        [HttpDelete("supprimer/{idGroupe}")]
+        public async Task<string> Supprimer([FromRoute] int idGroupe)
+        {
+            try
+            {
+                await dbGroupe.SupprimerAsync(idGroupe);
+
+                return JsonConvert.SerializeObject(true);
+            }
+            catch (Exception)
+            {
+                return JsonConvert.SerializeObject(false);
+            }
+        }
     }
 }
