@@ -98,6 +98,10 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
         }
         else
           this.outilServ.ToastErreurHttp();
+      },
+      error: () =>
+      {
+        this.outilServ.ToastErreurHttp();
       }
     });
   }
