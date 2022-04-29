@@ -1,0 +1,7 @@
+<mat-card>
+    <mat-card-title>{{afficherFormInscription ? 'S\'inscrire' : 'Se connecter'}}</mat-card-title>
+    <mat-card-content>
+        <app-connexion *ngIf="!afficherFormInscription" (ChangerForm)="ChangerForm($event)"></app-connexion>
+        <app-inscription *ngIf="afficherFormInscription" (ChangerForm)="ChangerForm($event)"></app-inscription>
+    </mat-card-content>
+</mat-card>

@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  urlApi: "http://localhost:5181"
+  urlApi: "http://localhost:5181",
+  patternMail: /^[a-z0-9-._]+@[a-z]+.[a-z]{2,4}$/,
+  patternVide: / /g
 };
 
 /*

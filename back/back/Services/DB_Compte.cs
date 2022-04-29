@@ -7,12 +7,13 @@ namespace back.Services;
 
 public class DB_Compte
 {
-    private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
+    private IConfiguration config;
     private GestionMdpContext context;
 
-    public DB_Compte(GestionMdpContext _context)
+    public DB_Compte(GestionMdpContext _context, IConfiguration _config = null)
     {
         context = _context;
+        config = _config;
     }
 
     /// <summary>
@@ -76,7 +77,7 @@ public class DB_Compte
         // using evite les fuite mémoire,
         // tout est en lecture seul,
         // a la fin du using tout est supprimé de la mémoire
-        using(SqlConnection con = new(connectionString))
+        using (SqlConnection con = new(config.GetConnectionString("ionos")))
         {
             await con.OpenAsync();
 

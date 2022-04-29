@@ -1,0 +1,45 @@
+<form #e="ngForm">
+    <div class="row">
+        <!-- Prenom -->
+        <div class="col-12 col-lg-6">
+            <mat-form-field class="full-width padding0" appearance="outline">
+                <mat-label>Prénom</mat-label>
+                <input matInput type="text" name="Prenom" ngModel required>
+            </mat-form-field>
+        </div>
+
+        <!-- Nom -->
+        <div class="col-12 col-lg-6">
+            <mat-form-field class="full-width padding0" appearance="outline">
+                <mat-label>Nom</mat-label>
+                <input matInput type="text" name="Nom" ngModel required>
+            </mat-form-field>
+        </div>
+    </div>
+
+    <!-- Mail -->
+    <mat-form-field class="full-width padding0" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" name="Mail" [pattern]="patternMail" ngModel required>
+    </mat-form-field>
+
+    <!-- Mdp -->
+    <mat-form-field class="full-width padding0" appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" minlength="6" ngModel required>
+        <mat-icon matSuffix (click)="AfficherMdp()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </mat-form-field>
+
+    <!-- MdpConfirmation -->
+    <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Confirmer le mot de passe</mat-label>
+        <input matInput [type]="voirMdpConfirmation ? 'text' : 'password'" name="MdpConfirmation" minlength="6" ngModel required>
+        <mat-icon matSuffix (click)="AfficherMdpConfirmation()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button class="full-width marginb" color="primary" (click)="Inscription(e)" cdkFocusInitial>
+        <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? "S\'inscrire" : "" }}
+    </button>
+
+    <button mat-button class="full-width" (click)="AfficherFormInscription()">Se connecter</button>
+</form>

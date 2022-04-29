@@ -44,6 +44,8 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.component';
 import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
 import { InfoGroupeComponent } from './modal/info-groupe/info-groupe.component';
+import { InscriptionComponent } from './components/inscription/inscription.component';
+import { ConnexionInscriptionComponent } from './components/connexion-inscription/connexion-inscription.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +59,9 @@ import { InfoGroupeComponent } from './modal/info-groupe/info-groupe.component';
     ListingGroupeComponent,
     AjouterGroupeComponent,
     ConfirmationComponent,
-    InfoGroupeComponent
+    InfoGroupeComponent,
+    InscriptionComponent,
+    ConnexionInscriptionComponent
   ],
   imports: [
     BrowserModule,

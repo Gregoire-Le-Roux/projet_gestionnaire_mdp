@@ -11,6 +11,7 @@ import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { ExportGroupe } from 'src/app/Types/Export/ExportGroupe';
 import { Groupe } from 'src/app/Types/Groupe';
 import { Mdp } from 'src/app/Types/Mdp';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-ajouter-groupe',
@@ -58,12 +59,12 @@ export class AjouterGroupeComponent implements OnInit
 
   AjouterListeMail(_mail: string): void
   {
-    if(_mail.replace(/ /g, "") == "")
+    if(_mail.replace(environment.patternVide, "") == "")
       return;
 
     _mail = _mail.toLowerCase();
     
-    if(_mail.match(/([a-z0-9-._]+)@([a-z]+).([a-z]+)/) == null)
+    if(_mail.match(environment.patternMail) == null)
     {
       this.outilServ.ToastErreur("Veuillez indiquer une adresse mail");
       return;

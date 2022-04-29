@@ -1,24 +1,21 @@
-<mat-card>
-    <mat-card-title>Connexion</mat-card-title>
-    <mat-card-content>
-        <form #e="ngForm">
+<form #e="ngForm">
 
-            <!-- login -->
-            <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Login</mat-label>
-                <input matInput type="text" name="login" ngModel required>
-            </mat-form-field>
-        
-            <!-- mdp -->
-            <mat-form-field class="full-width" appearance="outline">
-                <mat-label>Mot de passe</mat-label>
-                <input matInput [type]="voirMdp ? 'text' : 'password'" name="mdp" ngModel required>
-                <mat-icon matSuffix (click)="AfficherMdp()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
-            </mat-form-field>
-        
-            <button mat-raised-button class="full-width" color="primary" (click)="SeConnecter(e)" cdkFocusInitial>
-                <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Se connecter' : "" }}
-            </button>
-        </form>
-      </mat-card-content>
-</mat-card>
+    <!-- login -->
+    <mat-form-field class="full-width padding0" appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="text" name="login" [pattern]="patternMail" ngModel required>
+    </mat-form-field>
+
+    <!-- mdp -->
+    <mat-form-field class="full-width" appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput [type]="voirMdp ? 'text' : 'password'" name="mdp" ngModel required>
+        <mat-icon matSuffix (click)="AfficherMdp()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
+    </mat-form-field>
+
+    <button mat-raised-button class="full-width marginb" color="primary" (click)="SeConnecter(e)" cdkFocusInitial>
+        <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Se connecter' : "" }}
+    </button>
+
+    <button mat-button class="full-width" (click)="AfficherFormInscription()">S'inscrire</button>
+</form>

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ConnexionService } from 'src/app/services/connexion.service';
 import { OutilService } from 'src/app/services/outil.service';
@@ -7,6 +7,7 @@ import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Aes } from 'src/app/Static/Aes';
 import { Router } from '@angular/router';
 import { Cache } from 'src/app/enum/Cache';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-connexion',
@@ -15,8 +16,12 @@ import { Cache } from 'src/app/enum/Cache';
 })
 export class ConnexionComponent
 {
+  @Output() ChangerForm: EventEmitter<boolean> = new EventEmitter();
+  
   voirMdp: boolean = false;
   btnClicker: boolean = false;
+
+  patternMail: RegExp = environment.patternMail;
 
   private readonly CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
@@ -55,6 +60,11 @@ export class ConnexionComponent
         this.outilServ.ToastErreurHttp();
       }
     });
+  }
+
+  AfficherFormInscription(): void
+  {
+    this.ChangerForm.emit(true);
   }
 
   AfficherMdp(): void
