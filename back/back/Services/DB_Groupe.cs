@@ -1,12 +1,13 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
+using back.InterneModels;
 
 namespace back.Services
 {
     public class DB_Groupe
     {
-        public GestionMdpContext context;
-        public IConfiguration configuration;
+        private GestionMdpContext context;
+        private IConfiguration configuration;
 
         public DB_Groupe(GestionMdpContext _context, IConfiguration _config)
         {
@@ -66,7 +67,7 @@ namespace back.Services
                     listeMailString += ',';
             }
 
-            using (SqlConnection sqlCon = new(configuration.GetConnectionString("pcPortable")))
+            using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
                 sqlCon.Open();
 
@@ -91,6 +92,24 @@ namespace back.Services
 
                 return listeMailCompte;
             }
+        }
+
+        public async Task<InterneCompteGroupe> ListerCompteAsync(int _idGroupe)
+        {
+            InterneCompteGroupe liste = null;
+
+            await Task.Run(() =>
+            {
+                liste = (from g in context.Groupes
+                        where g.Id == _idGroupe
+                        select new InterneCompteGroupe
+                        {
+                            ListeCompte = g.IdComptes.Select(c => new CompteGroupe
+                            { Id = c.Id, Nom = c.Nom, Prenom = c.Prenom, Mail = c.Mail, HashCle = c.HashCle }).ToList()
+                        }).First();
+            });
+
+            return liste;
         }
 
         public async Task<int> AjouterAsync(Groupe _groupe)
@@ -171,28 +190,26 @@ namespace back.Services
             context.Groupes.Remove(groupe);
             await context.SaveChangesAsync(true);
         }
-
-        private async Task<List<Compte>> ListerCompteGroupeAvecMonHash(ICollection<Compte> _listeCompte)
+        
+        public async Task SupprimerCompteAsync(int[] _listeIdCompte, int _idGroupe)
         {
-            List<Compte> listeRetour = new();
+            string listeIdCompteString = string.Join(',', _listeIdCompte);
 
-            await Task.Run(() =>
+            using(SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
-                foreach (Compte compte in _listeCompte)
-                {
-                    AESprotection aes = new(compte.HashCle);
+                await sqlCon.OpenAsync();
 
-                    listeRetour.Add(
-                        new Compte
-                        {
-                            Nom = aes.Chiffrer(aes.Dechiffrer(compte.Nom)),
-                            Prenom = aes.Chiffrer(aes.Dechiffrer(compte.Prenom)),
-                            Mail = aes.Chiffrer(aes.Dechiffrer(compte.Mail))
-                        });
-                }
-            });
+                SqlCommand cmd = sqlCon.CreateCommand();
 
-            return listeRetour;
+                cmd.CommandText = $"DELETE FROM CompteGroupe WHERE idGroupe = @idGrp AND idCompte IN ({listeIdCompteString})";
+
+                cmd.Parameters.Add("@idGrp", SqlDbType.Int).Value = _idGroupe;
+                await cmd.PrepareAsync();
+
+                await cmd.ExecuteReaderAsync();
+
+                await sqlCon.CloseAsync();
+            }
         }
     }
 }

@@ -129,37 +129,5 @@ public class DB_Compte
 
         return hashCle;
     }
-
-    public string[] Lister()
-    {
-        string[] tab = new string[2];
-
-        using(SqlConnection connection = new(connectionString))
-        {
-            connection.Open();
-
-            var cmd = connection.CreateCommand();
-            cmd.CommandText = "SELECT * FROM Compte";
-
-            cmd.Prepare();
-
-            cmd.ExecuteNonQuery();
-
-            using(var reader = cmd.ExecuteReader())
-            {
-                while(reader.Read())
-                {
-                    // si SELECT * => indiquer les nom des champs
-                    // si SELECT nomChamps => indiquer les index des champs
-                    Console.WriteLine(reader.GetString("nom"));
-                }
-
-                reader.Close();
-                connection.Close();
-
-                return tab;
-            }
-        }
-    }
 }
 

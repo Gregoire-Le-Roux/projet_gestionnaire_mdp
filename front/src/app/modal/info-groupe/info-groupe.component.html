@@ -1,0 +1,49 @@
+<h1 mat-dialog-title>Information du groupe: {{ nomGroupe }}</h1>
+<mat-dialog-content style="padding-bottom: 10px" class="mat-typography">
+
+    <mat-accordion>
+
+        <!-- liste compte -->
+        <mat-expansion-panel expanded>
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Liste des comptes
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+
+          <form #e="ngForm">
+            <mat-selection-list name="listeIdCompte" color="primary" ngModel>
+                <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeCompte">
+                  {{ element.Prenom }} {{ element.Nom }} ({{ element.Mail }})
+                </mat-list-option>
+              </mat-selection-list>
+
+              <button mat-raised-button (click)="SupprimerCompteGroupe(e)" color="primary">Supprimer</button>
+          </form>
+
+        </mat-expansion-panel>
+
+        <!-- liste MDP -->
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Liste des mots de passe
+              </mat-panel-title>
+            </mat-expansion-panel-header>
+
+            <form #f="ngForm">
+                <mat-selection-list name="listeIdMdp" color="primary" ngModel>
+                    <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeMdp">
+                      {{ element.Login }} {{ element.Mdp }} ({{ element.Titre }})
+                    </mat-list-option>
+                </mat-selection-list>
+
+                <button mat-raised-button (click)="SupprimerMdpGroupe(f)" color="primary">Supprimer</button>
+            </form>
+          </mat-expansion-panel>
+    </mat-accordion>
+
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-raised-button color="primary" mat-dialog-close>Fermer</button>
+</mat-dialog-actions>

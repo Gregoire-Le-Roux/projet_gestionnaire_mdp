@@ -4,12 +4,16 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Cache } from 'src/app/enum/Cache';
 import { AjouterGroupeComponent } from 'src/app/modal/ajouter-groupe/ajouter-groupe.component';
+import { InfoGroupeComponent } from 'src/app/modal/info-groupe/info-groupe.component';
 import { GroupeService } from 'src/app/services/groupe.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { Groupe } from 'src/app/Types/Groupe';
+import { GroupeMdpCompte } from 'src/app/Types/GroupeMdpCompte';
+import { CompteImport } from 'src/app/Types/Import/CompteImport';
 import { Mdp } from 'src/app/Types/Mdp';
 
 @Component({
@@ -44,8 +48,10 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
     this.dataSource.sort = this.sort;
   }
 
-  ConfirmerSupprimerGroupe(_titreGroupe: string, _idGroupe: number, _index: number): void
+  ConfirmerSupprimerGroupe(_titreGroupe: string, _idGroupe: number, _index: number, _event: Event): void
   {
+    _event.stopPropagation();
+
     const TITRE = `Confirmation suppression groupe: ${_titreGroupe}`;
     const MESSAGE = `Confirmer vous la suppression du groupe: ${_titreGroupe} ?`;
 
@@ -79,11 +85,62 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
       }
     });
   }
-  
+
+  OuvrirModalModifierGroupe(_event: Event): void
+  {
+    _event.stopPropagation();
+  }
+
+  OuvrirModalInfoGroupe(_idGroupe: number, _nomGroupe: string, _listeMdp: Mdp[], _event: Event): void
+  {
+    _event.stopPropagation();
+
+    this.groupeServ.ListerCompte(_idGroupe).subscribe({
+      next: (retour: CompteImport[]) =>
+      {
+        let mdpCompteGroupe = this.InitInfoGroupe(retour, _listeMdp);
+        
+        this.dialog.open(InfoGroupeComponent, 
+          { minWidth: "40%", data: { nomGroupe: _nomGroupe, idGroupe: _idGroupe, infoGroupe: mdpCompteGroupe }});
+      },
+      error: () =>
+      {
+        this.outilServ.ToastErreurHttp();
+      }
+    });
+  }
+    
   applyFilter(event: Event): void
   {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  private InitInfoGroupe(_listeCompte: CompteImport[], _listeMdp: Mdp[]): GroupeMdpCompte
+  {
+    let mdpCompteGroupe: GroupeMdpCompte =
+    {
+      listeCompte: [],
+      listeMdp: []
+    };
+
+    const AES = new Aes(VariableStatic.compte.HashCle);
+
+    // dechiffrer les comptes
+    for (const element of _listeCompte) 
+    {
+      mdpCompteGroupe.listeCompte.push({
+        Id: element.Id,
+        Nom: AES.Dechiffrer(element.Nom),
+        Prenom: AES.Dechiffrer(element.Prenom),
+        Mail: AES.Dechiffrer(element.Mail)
+      });
+    }
+
+    // ajouter les MDPs
+    mdpCompteGroupe.listeMdp = _listeMdp;
+
+    return mdpCompteGroupe;
   }
 
   private SupprimerGroupe(_idGroupe: number, _index: number): void
@@ -95,6 +152,8 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
         {
           this.dataSource.data.splice(_index, 1);
           this.dataSource.data = this.dataSource.data;
+
+          this.outilServ.ToastOK("Le groupe a bien été supprimeé");
         }
         else
           this.outilServ.ToastErreurHttp();

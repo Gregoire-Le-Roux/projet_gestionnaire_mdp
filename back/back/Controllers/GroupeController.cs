@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using back.ImportModels;
 
 namespace back.Controllers
 {
@@ -19,6 +20,33 @@ namespace back.Controllers
         public async Task<string> Lister([FromRoute] int idCompte)
         {
             var liste = await dbGroupe.ListerLesMiensAsync(idCompte);
+
+            return JsonConvert.SerializeObject(liste);
+        }
+
+        [HttpGet("listerCompte/{idGroupe}/{idCompte}")]
+        public async Task<string> ListerMdpCompte([FromRoute] int idGroupe, [FromRoute] int idCompte)
+        {
+            DB_Compte dbCompte = new(context);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
+
+            List<object> liste = new List<object>();
+
+            InterneModels.InterneCompteGroupe compteGroupe = await dbGroupe.ListerCompteAsync(idGroupe);
+
+            AESprotection aesCreateur = new(hashCle);
+
+            // chiffre les infos avec le hashcle du propriétaire du groupe
+            foreach (var compte in compteGroupe.ListeCompte)
+            {
+                AESprotection aes = new(compte.HashCle);
+
+                compte.Prenom = aesCreateur.Chiffrer(aes.Dechiffrer(compte.Prenom));
+                compte.Nom = aesCreateur.Chiffrer(aes.Dechiffrer(compte.Nom));
+                compte.Mail = aesCreateur.Chiffrer(compte.Mail);
+
+                liste.Add(new { Id = compte.Id, Prenom = compte.Prenom, Nom = compte.Nom, Mail = compte.Mail });
+            }
 
             return JsonConvert.SerializeObject(liste);
         }
@@ -68,6 +96,21 @@ namespace back.Controllers
             try
             {
                 await dbGroupe.SupprimerAsync(idGroupe);
+
+                return JsonConvert.SerializeObject(true);
+            }
+            catch (Exception)
+            {
+                return JsonConvert.SerializeObject(false);
+            }
+        }
+
+        [HttpPost("supprimerCompte")]
+        public async Task<string> SupprimerMdp([FromBody] CompteGroupeImport _compteGroupe)
+        {
+            try
+            {
+                await dbGroupe.SupprimerCompteAsync(_compteGroupe.listeIdCompte, _compteGroupe.IdGroupe);
 
                 return JsonConvert.SerializeObject(true);
             }

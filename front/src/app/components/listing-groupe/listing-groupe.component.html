@@ -37,11 +37,11 @@
             <ng-container matColumnDef="action">
                 <th mat-header-cell *matHeaderCellDef> Action </th>
                 <td mat-cell *matCellDef="let element; let i = index">
-                    <button mat-mini-fab color="primary">
+                    <button mat-mini-fab color="primary" (click)="OuvrirModalModifierGroupe($event)">
                         <mat-icon>edit</mat-icon>
                     </button>&nbsp;
 
-                    <button mat-mini-fab color="warn" (click)="ConfirmerSupprimerGroupe(element.Titre, element.Id, i)">
+                    <button mat-mini-fab color="warn" (click)="ConfirmerSupprimerGroupe(element.Titre, element.Id, i, $event)">
                         <mat-icon>delete</mat-icon>
                     </button>
                 </td>
@@ -49,7 +49,10 @@
     
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             
-            <tr [ngClass]="{ 'td': pair }" mat-row *matRowDef="let row; let pair = even; columns: displayedColumns;"></tr>
+            <tr [ngClass]="{ 'tdO': true, 'td': pair }" 
+            mat-row 
+            *matRowDef="let element; let pair = even; columns: displayedColumns;"
+            (click)="OuvrirModalInfoGroupe(element.Id, element.Titre, element.ListeMdp, $event)"></tr>
     
             <!-- Row shown when there is no matching data. -->
             <tr class="mat-row" *matNoDataRow>

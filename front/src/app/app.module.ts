@@ -43,6 +43,7 @@ import { ListingGroupeComponent } from './components/listing-groupe/listing-grou
 import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 import { AjouterGroupeComponent } from './modal/ajouter-groupe/ajouter-groupe.component';
 import { ConfirmationComponent } from './modal/confirmation/confirmation.component';
+import { InfoGroupeComponent } from './modal/info-groupe/info-groupe.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { ConfirmationComponent } from './modal/confirmation/confirmation.compone
     ModifierMdpComponent,
     ListingGroupeComponent,
     AjouterGroupeComponent,
-    ConfirmationComponent
+    ConfirmationComponent,
+    InfoGroupeComponent
   ],
   imports: [
     BrowserModule,
