@@ -183,9 +183,12 @@ namespace back.Services
             }
         }
 
-        public async Task SupprimerAsync(int _idGroupe)
+        public async Task SupprimerAsync(int _idGroupe, int _idCompte)
         {
-            Groupe groupe = context.Groupes.First(g => g.Id == _idGroupe);
+            Groupe? groupe = context.Groupes.FirstOrDefault(g => g.Id == _idGroupe && g.IdCompteCreateur == _idCompte);
+
+            if (groupe is null)
+                return;
 
             context.Groupes.Remove(groupe);
             await context.SaveChangesAsync(true);

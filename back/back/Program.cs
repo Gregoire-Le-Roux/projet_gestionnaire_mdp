@@ -5,9 +5,12 @@ global using back.securite;
 global using back.ImportModels;
 global using back.ExportModels;
 global using System.Text;
+global using Microsoft.AspNetCore.Authorization;
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +23,29 @@ builder.Services.AddSwaggerGen();
 
 // connection a la base de donnée
 builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Configuration.GetConnectionString("ionos")));
+
+ConfigurationManager config = builder.Configuration;
+
+string cleSecrete = config["token:cleSecrete"];
+var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cleSecrete));
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
+    option =>
+    {
+        option.TokenValidationParameters = new TokenValidationParameters
+        {
+            // se qu'on veut valider
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateIssuerSigningKey = true,
+            ValidateLifetime = true,
+
+            // valider les données
+            ValidIssuer = config["token:issuer"],
+            ValidAudience = config["token:audience"],
+            IssuerSigningKey = cle
+        };
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(swagger =>
@@ -50,6 +76,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("CORS");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

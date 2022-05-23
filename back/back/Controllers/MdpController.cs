@@ -6,47 +6,64 @@ namespace back.Controllers
     [ApiController]
     public class MdpController : Controller
     {
-        private DB_Mdp dbMdp;
+        private readonly Token tokenNoConfig;
+        private readonly DB_Mdp dbMdp;
         private GestionMdpContext context;
 
         public MdpController(GestionMdpContext _context)
         {
             context = _context;
             dbMdp = new(_context);
+            tokenNoConfig = new();
         }
 
-        [HttpGet("listerMesMdp/{id}")]
-        public async Task<string> ListerMesMdp([FromRoute] int id)
+        [Authorize]
+        [HttpGet("listerMesMdp")]
+        public async Task<string> ListerMesMdp()
         {
-            MdpExport[] liste = await dbMdp.ListerMesMdpAsync(id);
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+            MdpExport[] liste = await dbMdp.ListerMesMdpAsync(idCompte);
 
             return JsonConvert.SerializeObject(liste);
         }
 
-        [HttpGet("listerPartagerAvecMoi/{id}")]
-        public string ListerPartagerAvecMoi([FromRoute] int id)
+        [Authorize]
+        [HttpGet("listerPartagerAvecMoi")]
+        public string ListerPartagerAvecMoi()
         {
-            MdpExport[] liste = dbMdp.ListerMdpPartagerAvecMoi(id);
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+            MdpExport[] liste = dbMdp.ListerMdpPartagerAvecMoi(idCompte);
 
             return JsonConvert.SerializeObject(liste);
         }
 
+        [Authorize]
         [HttpPut("modifier")]
         public async Task<string> Modifier([FromBody] MdpImport _mdp)
         {
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
             DB_Compte dbCompte = new(context);
-            string hashCle = await dbCompte.GetHashCleAsync(_mdp.IdCompteCreateur);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
             AESprotection aes = new(hashCle);
             _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
             _mdp.Titre = Protection.XSS(aes.Dechiffrer(_mdp.Titre));
-            _mdp.Login =  Protection.XSS(aes.Dechiffrer(_mdp.Login));
+            _mdp.Login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
             _mdp.Url =  Protection.XSS(aes.Dechiffrer(_mdp.Url));
 
             MotDePasse mdp = new()
             {
                 Id = _mdp.Id,
-                IdCompteCreateur = _mdp.IdCompteCreateur,
+                IdCompteCreateur = idCompte,
                 DateExpiration = _mdp.DateExpiration,
                 Mdp = _mdp.Mdp,
                 Description = aes.Chiffrer(_mdp.Description),
@@ -72,15 +89,20 @@ namespace back.Controllers
         }
 
         /// <summary>
-        ///     Toutes les infos reçu doivent etre Chiffrés SAUF la date et l'id createur
+        ///     Toutes les infos reçu doivent etre Chiffrés SAUF la date
         /// </summary>
         /// <param name="_mdp"></param>
         /// <response code="200">Id du mdp</response>
+        [Authorize]
         [HttpPost("ajouter")]
         public async Task<string> Ajouter(MdpImport _mdp)
         {
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
             DB_Compte dbCompte = new(context);
-            string hashCle = await dbCompte.GetHashCleAsync(_mdp.IdCompteCreateur);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
             AESprotection aes = new(hashCle);
 
@@ -105,7 +127,7 @@ namespace back.Controllers
                 Url = aes.Chiffrer(url),
                 DateExpiration = aes.Chiffrer(date),
                 Description = description,
-                IdCompteCreateur = _mdp.IdCompteCreateur
+                IdCompteCreateur = idCompte
             };
 
             int id = await dbMdp.AjouterAsync(mdp);

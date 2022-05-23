@@ -8,25 +8,37 @@ namespace back.Controllers
     public class GroupeController : ControllerBase
     {
         private readonly DB_Groupe dbGroupe;
+        private readonly Token tokenNoConfig;
         private readonly GestionMdpContext context;
 
         public GroupeController(GestionMdpContext _context, IConfiguration _config)
         {
+            tokenNoConfig = new();
             dbGroupe = new (_context, _config);
             context = _context;
         }
 
-        [HttpGet("lister/{idCompte}")]
-        public async Task<string> Lister([FromRoute] int idCompte)
+        [Authorize]
+        [HttpGet("lister")]
+        public async Task<string> Lister()
         {
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
             var liste = await dbGroupe.ListerLesMiensAsync(idCompte);
 
             return JsonConvert.SerializeObject(liste);
         }
 
-        [HttpGet("listerCompte/{idGroupe}/{idCompte}")]
-        public async Task<string> ListerMdpCompte([FromRoute] int idGroupe, [FromRoute] int idCompte)
+        [Authorize]
+        [HttpGet("listerCompte/{idGroupe}")]
+        public async Task<string> ListerMdpCompte([FromRoute] int idGroupe)
         {
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
             DB_Compte dbCompte = new(context);
             string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
@@ -51,13 +63,19 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(liste);
         }
 
+        [Authorize]
         [HttpPost("ajouter")]
         public async Task<string> Ajouter([FromBody] groupeImport _groupe)
         {
+
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
             List<string> listeMailSecuDechiffrer = new();
             DB_Compte dbCompte = new(context);
 
-            string hashCle = await dbCompte.GetHashCleAsync(_groupe.IdCreateur);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
             AESprotection aes = new(hashCle);
 
@@ -72,7 +90,7 @@ namespace back.Controllers
             Groupe groupe = new()
             {
                 Titre = aes.Chiffrer(titreSecuDechiffrer),
-                IdCompteCreateur = _groupe.IdCreateur
+                IdCompteCreateur = idCompte
             };
 
             int idGroupe = await dbGroupe.AjouterAsync(groupe);
@@ -90,12 +108,17 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(idGroupe);
         }
 
+        [Authorize]
         [HttpDelete("supprimer/{idGroupe}")]
         public async Task<string> Supprimer([FromRoute] int idGroupe)
         {
             try
             {
-                await dbGroupe.SupprimerAsync(idGroupe);
+                // recupere le token et vire le bearer
+                string token = HttpContext.Request.Headers.Authorization;
+                int idCompte = tokenNoConfig.GetIdCompte(token);
+
+                await dbGroupe.SupprimerAsync(idGroupe, idCompte);
 
                 return JsonConvert.SerializeObject(true);
             }

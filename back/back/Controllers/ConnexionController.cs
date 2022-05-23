@@ -9,9 +9,10 @@ namespace back.Controllers
     public class ConnexionController : Controller
     {
         private DB_Compte dbCompte;
+        private IConfiguration config;
         private const string CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
-        public ConnexionController(GestionMdpContext _context)
+        public ConnexionController(GestionMdpContext _context, IConfiguration _config)
         {
             dbCompte = new(_context);
         }
@@ -39,12 +40,15 @@ namespace back.Controllers
 
                     if (BC.Verify(mdp, compte.HashMdp))
                     {
-                        var infoCompte = await dbCompte.CompteAsync(compte.Id);
+                        CompteExport infoCompte = await dbCompte.CompteAsync(compte.Id);
 
                         aes = new(infoCompte.HashCle);
 
                         infoCompte.Mail = aes.Chiffrer(infoCompte.Mail);
                         infoCompte.HashCle = Convert.ToBase64String(Encoding.UTF8.GetBytes(infoCompte.HashCle));
+
+                        Token token = new(config);
+                        infoCompte.Jwt = token.Generer(infoCompte.Id);
 
                         return JsonConvert.SerializeObject(infoCompte);
                     }

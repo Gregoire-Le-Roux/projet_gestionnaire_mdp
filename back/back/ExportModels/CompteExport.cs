@@ -7,5 +7,6 @@
         public string Prenom { get; set; } = null!;
         public string Mail { get; set; } = null!;
         public string HashCle { get; set; } = null!;
+        public string Jwt { get; set; } = null!;
     }
 }

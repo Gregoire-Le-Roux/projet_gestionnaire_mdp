@@ -8,19 +8,29 @@ namespace back.Controllers
     public class CompteController : Controller
     {
         private readonly DB_Compte dbCompte;
+        private readonly Token tokenNoConfig;
+        private IConfiguration config;
         private const string CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
-        public CompteController(GestionMdpContext _context)
+        public CompteController(GestionMdpContext _context, IConfiguration _config)
         {
             dbCompte = new(_context);
+            tokenNoConfig = new();
+            config = _config;
         }
 
-        [HttpGet("MonCompte/{id}")]
-        public async Task<string> Compte([FromRoute] int id)
+        [Authorize]
+        [HttpGet("monCompte")]
+        public async Task<string> Compte()
         {
+            // recupere le token et vire le bearer
+            string token = HttpContext.Request.Headers.Authorization;
+            int id = tokenNoConfig.GetIdCompte(token);
+
             var compte = await dbCompte.CompteAsync(id);
 
             AESprotection? aESprotection = new(compte.HashCle);
+            
 
             compte.Nom = aESprotection.Dechiffrer(compte.Nom);
             compte.Prenom = aESprotection.Dechiffrer(compte.Prenom);
@@ -79,13 +89,17 @@ namespace back.Controllers
         /// <summary>
         ///     Suppprime le compte et toutes ses infos liées
         /// </summary>
-        /// <param name="id"></param>
         /// <response>True si tout est OK</response>
-        [HttpDelete("supprimer/{id}")]
-        public async Task<string> Supprimer([FromRoute] int id)
+        [Authorize]
+        [HttpDelete("supprimer")]
+        public async Task<string> Supprimer()
         {
             try
             {
+                // recupere le token et vire le bearer
+                string token = HttpContext.Request.Headers.Authorization;
+                int id = tokenNoConfig.GetIdCompte(token);
+
                 await dbCompte.SupprimerAsync(id);
 
                 return JsonConvert.SerializeObject(true);
