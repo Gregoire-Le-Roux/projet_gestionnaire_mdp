@@ -1,4 +1,8 @@
-﻿namespace back.Services
+﻿using System.Data;
+using back.InterneModels;
+using Microsoft.Data.SqlClient;
+
+namespace back.Services
 {
     public class DB_Mdp
     {
@@ -53,6 +57,54 @@
         {
             context.MotDePasses.Update(_mdp);
             await context.SaveChangesAsync(true);
+        }
+
+        public async Task<bool> SupprimerAsync(int _idMdp, int _idCompte, string _connexionString)
+        {
+            bool estSupp = false;
+
+            await Task.Run(() =>
+            {
+                using(SqlConnection sqlCon = new(_connexionString))
+                {
+                    sqlCon.Open();
+
+                    SqlCommand cmd = sqlCon.CreateCommand();
+                    cmd.Parameters.Add("@idMdp", SqlDbType.Int).Value = _idMdp;
+                    cmd.Parameters.Add("@idCompte", SqlDbType.Int).Value = _idCompte;
+
+                    cmd.CommandText = "SELECT COUNT(*) FROM MotDePasse WHERE id = @idMdp AND idCompteCreateur = @idCompte";
+
+                    cmd.Prepare();
+
+                    int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                    Console.WriteLine("---------------------------------");
+                    Console.WriteLine(count);
+
+                    if (count == 0)
+                    {
+                        estSupp = false;
+                        return;
+                    }
+
+                    cmd.CommandText = "DELETE FROM GroupeMdp WHERE idMdp = @idMdp";
+
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "DELETE FROM MotDePasse WHERE id = @idMdp";
+
+                    cmd.Prepare();
+                    cmd.ExecuteNonQuery();
+
+                    sqlCon.Close();
+
+                    estSupp = true;
+                }
+            });
+
+            return estSupp;
         }
     }
 }

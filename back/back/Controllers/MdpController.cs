@@ -9,9 +9,11 @@ namespace back.Controllers
         private readonly Token tokenNoConfig;
         private readonly DB_Mdp dbMdp;
         private GestionMdpContext context;
+        private IConfiguration config;
 
-        public MdpController(GestionMdpContext _context)
+        public MdpController(GestionMdpContext _context, IConfiguration _config)
         {
+            config = _config;
             context = _context;
             dbMdp = new(_context);
             tokenNoConfig = new();
@@ -47,7 +49,7 @@ namespace back.Controllers
         [HttpPut("modifier")]
         public async Task<string> Modifier([FromBody] MdpImport _mdp)
         {
-            // recupere le token et vire le bearer
+            // recupere le token
             string token = HttpContext.Request.Headers.Authorization;
             int idCompte = tokenNoConfig.GetIdCompte(token);
 
@@ -133,6 +135,18 @@ namespace back.Controllers
             int id = await dbMdp.AjouterAsync(mdp);
 
             return JsonConvert.SerializeObject(id);
+        }
+
+        [HttpDelete("supprimer/{idMdp}")]
+        public async Task<string> Supprimer(int idMdp)
+        {
+            // recupere le token
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+            bool estSupp = await dbMdp.SupprimerAsync(idMdp, idCompte, config.GetConnectionString("ionos"));
+
+            return JsonConvert.SerializeObject(estSupp);
         }
     }
 }

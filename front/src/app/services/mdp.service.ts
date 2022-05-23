@@ -31,4 +31,9 @@ export class MdpService
   {
     return this.http.put<boolean>(`${environment.urlApi}/Mdp/modifier`, _info)
   }
+
+  Supprimer(_idMdp: number): Observable<boolean>
+  {
+    return this.http.delete<boolean>(`${environment.urlApi}/Mdp/supprimer/${_idMdp}`);
+  }
 }

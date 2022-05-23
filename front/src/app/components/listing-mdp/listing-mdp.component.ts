@@ -6,6 +6,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { ModifierMdpComponent } from 'src/app/modal/modifier-mdp/modifier-mdp.component';
 import { PartagerMdpComponent } from 'src/app/modal/partager-mdp/partager-mdp.component';
+import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Mdp } from 'src/app/Types/Mdp';
 
@@ -25,9 +26,12 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   dataSource: MatTableDataSource<Mdp>;
 
   displayedColumns: string[] = ['Titre', 'Login', 'Mdp', 'Url', 'DateExpiration', 'action'];
-  voirMdp: boolean = false;
 
-  constructor(private outilServ: OutilService, private dialog: MatDialog) { }
+  constructor(
+    private mdpServ: MdpService,
+    private outilServ: OutilService, 
+    private dialog: MatDialog
+    ) { }
 
   ngOnInit(): void
   {
@@ -51,9 +55,20 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
     window.open(_url, "_blanck");
   }
 
-  ConfirmeSupprimerMdp(_idMdp: number): void
-  {
-    
+  ConfirmeSupprimerMdp(_mdp: Mdp): void
+  {  
+    const TITRE = `Confirmation suppression mot de passe`;
+    const MSG = `Veuillez confirmer la suppression du mot de passe: ${_mdp.Titre}`
+
+    this.outilServ.OuvrirModalConfirmation(TITRE, MSG);
+
+    this.outilServ.reponseConfirmation.subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour == true)
+          this.Supprimer(_mdp.Id);
+      }
+    })
   }
 
   OuvrirModalPartagerMdp(_mdp: Mdp): void
@@ -90,15 +105,34 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   {
     this.outilServ.ToastOK("Le mot de passe a été copié");
   }
-  
-  AfficherMdp(_mdp: Mdp): void
-  {
-    _mdp.EstVisible = !_mdp.EstVisible;
-  }
 
   applyFilter(event: Event): void
   {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
+  }
+
+  private Supprimer(_idMdp: number): void
+  {
+    this.mdpServ.Supprimer(_idMdp).subscribe({
+      next: (retour: boolean) =>
+      {
+        if(retour === false)
+          this.outilServ.ToastErreur("Se mot de passe ne vous appartient pas");
+        else
+        {
+          const INDEX = this.dataSource.data.findIndex(m => m.Id == _idMdp);
+          this.dataSource.data.splice(INDEX, 1);
+
+          this.dataSource.data = this.dataSource.data;
+
+          this.outilServ.ToastOK("Le mot de passe a été supprimé");
+        }     
+      },
+      error: () =>
+      {
+        this.outilServ.ToastErreurHttp();
+      }
+    })
   }
 }
