@@ -1,0 +1,45 @@
+<h1 mat-dialog-title>Générer un mot de passe</h1>
+<mat-dialog-content style="padding-bottom: 10px;">
+    <form #e="ngForm">
+    
+        <!-- mdp -->
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Mot de passe</mat-label>
+            <input #inputMdp matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" ngModel>
+            <button matSuffix mat-icon-button type="button" (click)="Generer()">
+                <mat-icon>refresh</mat-icon>
+            </button>
+            <button matSuffix mat-icon-button type="button" (click)="AfficherMdp()">
+                <mat-icon>{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </button>
+        </mat-form-field>
+
+        <!-- longueur -->
+        <mat-form-field class="full-width" appearance="outline">
+            <mat-label>Longueur</mat-label>
+            <input #inputLongueur matInput [value]="longueur" type="number" name="longueur" (keyup)="ChangerLongueur(+inputLongueur.value)" (change)="ChangerLongueur(+inputLongueur.value)">
+        </mat-form-field>
+
+        <!-- minuscule / majuscule / nombre / speciaux -->        
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <mat-checkbox [checked]="contientMinuscule" color="primary" name="minuscule" (change)="ContientMdp($event)">Minuscules</mat-checkbox>
+            </div>
+            <div class="col-12 col-lg-6">
+                <mat-checkbox [checked]="contientMajuscule" color="primary" name="majuscule" (change)="ContientMdp($event)">Majuscules</mat-checkbox>
+            </div>
+            <div class="col-12 col-lg-6">
+                <mat-checkbox [checked]="contientNombre" color="primary" name="nombre" (change)="ContientMdp($event)">Chiffres</mat-checkbox>
+            </div>
+            <div class="col-12 col-lg-6">
+                <mat-checkbox [checked]="contientSpeciaux" color="primary" name="speciaux" (change)="ContientMdp($event)">Caractères spéciaux (@$!%*?&)</mat-checkbox>
+            </div>
+        </div>
+
+        <p *ngIf="!contientMinuscule && !contientMajuscule && !contientNombre && !contientSpeciaux" class="mt-2">Lorsqu'aucune case n'est cochée, le mot de passe généré par défaut contient des minuscules, majuscules et des chiffres.</p>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button color="warn" [mat-dialog-close]="false">Annuler</button>
+    <button mat-raised-button color="primary" (click)="Ajouter()">Ajouter le mot de passe</button>
+</mat-dialog-actions>

@@ -46,6 +46,7 @@ import { ConfirmationComponent } from './modal/confirmation/confirmation.compone
 import { InfoGroupeComponent } from './modal/info-groupe/info-groupe.component';
 import { InscriptionComponent } from './components/inscription/inscription.component';
 import { ConnexionInscriptionComponent } from './components/connexion-inscription/connexion-inscription.component';
+import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.component';
 
 @NgModule({
   declarations: [
@@ -61,7 +62,8 @@ import { ConnexionInscriptionComponent } from './components/connexion-inscriptio
     ConfirmationComponent,
     InfoGroupeComponent,
     InscriptionComponent,
-    ConnexionInscriptionComponent
+    ConnexionInscriptionComponent,
+    GenerateurMDPComponent
   ],
   imports: [
     BrowserModule,

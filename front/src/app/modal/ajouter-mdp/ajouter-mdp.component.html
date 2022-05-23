@@ -17,8 +17,11 @@
         <!-- mdp -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Mot de passe</mat-label>
-            <input matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" ngModel required>
-            <button matSuffix mat-icon-button (click)="AfficherMdp()">
+            <input #inputMdp matInput [type]="voirMdp ? 'text' : 'password'" name="Mdp" ngModel required>
+            <button matSuffix mat-icon-button type="button" (click)="OuvrirModalGenerateurMdp()">
+                <mat-icon>casino</mat-icon>
+            </button>
+            <button matSuffix mat-icon-button type="button" (click)="AfficherMdp()">
                 <mat-icon>{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
         </mat-form-field>

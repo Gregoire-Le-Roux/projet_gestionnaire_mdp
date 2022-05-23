@@ -4,5 +4,6 @@ export type Compte =
     Nom: string,
     Prenom: string,
     Mail: string,
-    HashCle: string
+    HashCle: string,
+    Jwt?: string
 }

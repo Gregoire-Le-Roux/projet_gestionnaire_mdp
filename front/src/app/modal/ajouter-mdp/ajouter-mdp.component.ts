@@ -1,12 +1,13 @@
 import { DatePipe } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
+import { GenerateurMDPComponent } from '../generateur-mdp/generateur-mdp.component';
 
 @Component({
   selector: 'app-ajouter-mdp',
@@ -15,12 +16,14 @@ import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 })
 export class AjouterMdpComponent implements OnInit 
 {
+  @ViewChild ("inputMdp") inputMdp : ElementRef;
   voirMdp: boolean = false;
 
   constructor(
-    private outilServ: OutilService, 
-    private mdpServ: MdpService, 
+    private outilServ: OutilService,
+    private mdpServ: MdpService,
     private dialogRef: MatDialogRef<AjouterMdpComponent>,
+    private dialog: MatDialog,
     private datePipe: DatePipe) { }
 
   ngOnInit(): void {
@@ -39,6 +42,7 @@ export class AjouterMdpComponent implements OnInit
         this.outilServ.ToastOK("Votre mot de passe a été enregistré");
 
         _form.value.Id = retour;
+        _form.value.Mdp = this.inputMdp.nativeElement.value;
         this.dialogRef.close(_form.value);
       },
       error: () =>
@@ -69,6 +73,21 @@ export class AjouterMdpComponent implements OnInit
     };
 
     return DATA;
+  }
+
+  OuvrirModalGenerateurMdp(): void
+  {
+    const DIALOG_REF = this.dialog.open(GenerateurMDPComponent);
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: string) =>
+      {
+        if(retour)
+        {
+          this.inputMdp.nativeElement.value = retour;
+        }
+      }
+    });
   }
 
 }
