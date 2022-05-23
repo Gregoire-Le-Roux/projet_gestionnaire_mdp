@@ -46,6 +46,7 @@ export class ConnexionComponent
     this.connexionServ.Connexion({ login: loginChiffrer, mdp: mdpChiffrer }).subscribe({
       next: (retour: string | Compte) =>
       {
+        this.btnClicker = false;
         if(typeof(retour) == "string")
           this.outilServ.ToastErreur(retour);
         else

@@ -2,9 +2,11 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AES } from 'crypto-js';
-import { ConnexionService } from 'src/app/services/connexion.service';
+import { CompteService } from 'src/app/services/compte.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
+import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Compte } from 'src/app/Types/Compte';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -26,7 +28,7 @@ export class InscriptionComponent
   private readonly CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
   constructor(
-    private connexionServ: ConnexionService, 
+    private compteServ: CompteService, 
     private outilServ: OutilService,
     private router: Router) { }
 
@@ -65,8 +67,6 @@ export class InscriptionComponent
       formValide = false;
     }
 
-    console.log(formValide);
-
     if(!formValide) return
 
     let aes: Aes = new Aes(this.CLE_SECRETE); 
@@ -80,6 +80,30 @@ export class InscriptionComponent
 
     aes = null;
 
+    this.compteServ.Inscription(DATA).subscribe({
+      next: (retour: string | Compte) =>
+      {
+        this.btnClicker = false;
+        if(typeof(retour) == "string")
+          this.outilServ.ToastErreur(retour);
+        else {
+          VariableStatic.compte = 
+          { 
+            Id: retour.Id,
+            Prenom: _form.value.Prenom,
+            Nom: _form.value.Nom,
+            Mail: _form.value.Mail,
+            HashCle: retour.HashCle
+          }
+          this.router.navigate(["/mdp"]);
+        }
+      },
+      error: () =>
+      {
+        this.btnClicker = false;
+        this.outilServ.ToastErreurHttp();
+      }
+    });
   }
 
   AfficherFormInscription(): void

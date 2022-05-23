@@ -8,6 +8,7 @@ namespace back.Controllers
     public class CompteController : Controller
     {
         private readonly DB_Compte dbCompte;
+        private const string CLE_SECRETE = "qrNm9BJjJ729A2Qi2vbr28M99hHhPW2p";
 
         public CompteController(GestionMdpContext _context)
         {
@@ -35,14 +36,19 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(existe);
         }
 
-        [HttpPost("ajouter")]
+        [HttpPost("inscription")]
         public async Task<string> Ajouter([FromBody] CompteImport _compte)
         {
             try
             {
+                AESprotection aes = new(CLE_SECRETE);
                 string nomSecu = Protection.XSS(_compte.Nom);
                 string prenomSecu = Protection.XSS(_compte.Prenom);
-                string mailSecu = Protection.XSS(_compte.Mail);
+                string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
+                string mdpSecu = aes.Dechiffrer(_compte.Mdp);
+
+                Console.WriteLine("-------------------------------");
+                Console.WriteLine(mdpSecu);
 
                 if (await dbCompte.ExisteAsync(mailSecu))
                     return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
@@ -56,13 +62,13 @@ namespace back.Controllers
                     Nom = aESprotection.Chiffrer(nomSecu),
                     Prenom = aESprotection.Chiffrer(prenomSecu),
                     Mail =  mailSecu,
-                    Mdp = BC.HashPassword(_compte.Mdp),
+                    Mdp = BC.HashPassword(mdpSecu),
                     HashCle = cleAES
                 };
 
                 int id = await dbCompte.AjouterAsync(compte);
 
-                return JsonConvert.SerializeObject(id);
+                return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES });
             }
             catch (Exception)
             {

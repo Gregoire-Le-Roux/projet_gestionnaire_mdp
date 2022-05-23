@@ -5,3 +5,10 @@
 ::ng-deep .padding0 .mat-form-field-wrapper {
     padding-bottom: 5px;
 }
+
+::ng-deep .btn-inscription-connexion .mat-button-wrapper {
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

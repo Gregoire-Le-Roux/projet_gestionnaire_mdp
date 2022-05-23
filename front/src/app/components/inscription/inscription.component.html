@@ -37,7 +37,7 @@
         <mat-icon matSuffix (click)="AfficherMdpConfirmation()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
     </mat-form-field>
 
-    <button mat-raised-button class="full-width marginb" color="primary" (click)="Inscription(e)" cdkFocusInitial>
+    <button mat-raised-button class="full-width marginb btn-inscription-connexion" color="primary" (click)="Inscription(e)" cdkFocusInitial>
         <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? "S\'inscrire" : "" }}
     </button>
 

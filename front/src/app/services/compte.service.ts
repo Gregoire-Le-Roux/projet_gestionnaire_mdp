@@ -14,7 +14,7 @@ export class CompteService
 
   Inscription(_compte: ExportCompte): Observable<Compte>
   {
-    return this.http.post<Compte>(`${environment.urlApi}/Compte/Ajouter`, _compte);
+    return this.http.post<Compte>(`${environment.urlApi}/Compte/inscription`, _compte);
   }
 
   Existe(_mail: string): Observable<boolean>
