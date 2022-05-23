@@ -51,7 +51,7 @@ public class Token
 
         // decode le token
         var tokenHandler = new JwtSecurityTokenHandler();
-        var jsonToken = tokenHandler.ReadJwtToken(_token);
+        var jsonToken = tokenHandler.ReadJwtToken(_token.Trim());
 
         // recupere se qu'on veut dans le token
         string idCompteString = jsonToken.Claims.First(c => c.Type == "idCompte").Value;

@@ -73,7 +73,7 @@
                     </button>
 
                     <!-- supprimer site -->
-                    <button *ngIf="mesMdp" mat-menu-item (click)="OuvrirModalModifierMdp(element)">
+                    <button *ngIf="mesMdp" mat-menu-item (click)="ConfirmeSupprimerMdp(element.Id)">
                         <mat-icon>delete</mat-icon> Supprimer
                     </button>
                 </mat-menu>

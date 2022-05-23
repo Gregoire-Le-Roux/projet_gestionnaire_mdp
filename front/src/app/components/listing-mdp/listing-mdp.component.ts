@@ -50,6 +50,11 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
     window.open(_url, "_blanck");
   }
 
+  ConfirmeSupprimerMdp(_idMdp: number): void
+  {
+    
+  }
+
   OuvrirModalPartagerMdp(_mdp: Mdp): void
   {
     this.dialog.open(PartagerMdpComponent, { data: { mdp: _mdp }});
@@ -62,11 +67,14 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: Mdp) =>
       {
-        _mdp.DateExpiration = retour.DateExpiration;
-        _mdp.Description = retour.Description;
-        _mdp.Login = retour.Login;
-        _mdp.Mdp = retour.Mdp;
-        _mdp.Url = retour.Url;
+        if(retour)
+        {
+          _mdp.DateExpiration = retour.DateExpiration;
+          _mdp.Description = retour.Description;
+          _mdp.Login = retour.Login;
+          _mdp.Mdp = retour.Mdp;
+          _mdp.Url = retour.Url;
+        }
       }
     });
   }
