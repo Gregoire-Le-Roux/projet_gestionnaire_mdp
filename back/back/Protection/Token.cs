@@ -35,8 +35,8 @@ public class Token
         };
 
         var token = new JwtSecurityToken(
-            issuer: config["token:issuer"],
-            audience: config["token:audience"],
+            issuer: config.GetValue<string>("token:issuer"),
+            audience: config.GetValue<string>("token:audience"),
             claims: claim,
             expires: DateTime.UtcNow.AddHours(2),
             signingCredentials: cleSigner

@@ -6,6 +6,7 @@ global using back.ImportModels;
 global using back.ExportModels;
 global using System.Text;
 global using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Configuration;
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
@@ -26,7 +27,7 @@ builder.Services.AddDbContext<GestionMdpContext>(o => o.UseSqlServer(builder.Con
 
 ConfigurationManager config = builder.Configuration;
 
-string cleSecrete = config["token:cleSecrete"];
+string cleSecrete = config.GetValue<string>("token:cleSecrete");
 var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(cleSecrete));
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
@@ -41,8 +42,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidateLifetime = true,
 
             // valider les données
-            ValidIssuer = config["token:issuer"],
-            ValidAudience = config["token:audience"],
+            ValidIssuer = config.GetValue<string>("token:issuer"),
+            ValidAudience = config.GetValue<string>("token:audience"),
             IssuerSigningKey = cle
         };
     });

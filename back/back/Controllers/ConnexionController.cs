@@ -14,6 +14,7 @@ namespace back.Controllers
 
         public ConnexionController(GestionMdpContext _context, IConfiguration _config)
         {
+            config = _config;
             dbCompte = new(_context);
         }
 
