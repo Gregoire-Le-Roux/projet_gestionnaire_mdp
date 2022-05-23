@@ -96,7 +96,7 @@ namespace back.Services
 
         public async Task<InterneCompteGroupe> ListerCompteAsync(int _idGroupe)
         {
-            InterneCompteGroupe liste = null;
+            InterneCompteGroupe? liste = null;
 
             await Task.Run(() =>
             {
@@ -110,6 +110,21 @@ namespace back.Services
             });
 
             return liste;
+        }
+
+        public async Task<bool> EstAMoi(int _idGroupe, int _idCompte)
+        {
+            int t = 0;
+
+            await Task.Run(() =>
+            {
+                t = (from c in context.Comptes
+                    where c.Id == _idCompte 
+                        && _idGroupe == c.IdGroupes.Where(grp => grp.Id == _idGroupe).Select(grp => grp.Id).FirstOrDefault()
+                    select c.Id).FirstOrDefault();
+            });
+
+            return t != 0;
         }
 
         public async Task<int> AjouterAsync(Groupe _groupe)

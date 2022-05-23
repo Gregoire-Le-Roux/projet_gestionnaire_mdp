@@ -3,6 +3,7 @@ using back.ImportModels;
 
 namespace back.Controllers
 {
+    [Authorize]
     [Route("[controller]")]
     [ApiController]
     public class GroupeController : ControllerBase
@@ -18,11 +19,10 @@ namespace back.Controllers
             context = _context;
         }
 
-        [Authorize]
         [HttpGet("lister")]
         public async Task<string> Lister()
         {
-            // recupere le token et vire le bearer
+            // recupere le token
             string token = HttpContext.Request.Headers.Authorization;
             int idCompte = tokenNoConfig.GetIdCompte(token);
 
@@ -31,7 +31,6 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(liste);
         }
 
-        [Authorize]
         [HttpGet("listerCompte/{idGroupe}")]
         public async Task<string> ListerMdpCompte([FromRoute] int idGroupe)
         {
@@ -63,11 +62,9 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(liste);
         }
 
-        [Authorize]
         [HttpPost("ajouter")]
         public async Task<string> Ajouter([FromBody] groupeImport _groupe)
         {
-
             // recupere le token et vire le bearer
             string token = HttpContext.Request.Headers.Authorization;
             int idCompte = tokenNoConfig.GetIdCompte(token);
@@ -95,7 +92,6 @@ namespace back.Controllers
 
             int idGroupe = await dbGroupe.AjouterAsync(groupe);
 
-
             if(listeMailSecuDechiffrer.Count > 0)
             {
                 List<int> listeIdCompte = await dbGroupe.ListerIdCompteAsync(listeMailSecuDechiffrer);
@@ -108,15 +104,17 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(idGroupe);
         }
 
-        [Authorize]
         [HttpDelete("supprimer/{idGroupe}")]
         public async Task<string> Supprimer([FromRoute] int idGroupe)
         {
             try
             {
-                // recupere le token et vire le bearer
+                // recupere le token
                 string token = HttpContext.Request.Headers.Authorization;
                 int idCompte = tokenNoConfig.GetIdCompte(token);
+
+                if (!await dbGroupe.EstAMoi(idGroupe, idCompte))
+                    return JsonConvert.SerializeObject("Vous n'etes pas le propriétaire du groupe");
 
                 await dbGroupe.SupprimerAsync(idGroupe, idCompte);
 
@@ -129,12 +127,18 @@ namespace back.Controllers
         }
 
         [HttpPost("supprimerCompte")]
-        public async Task<string> SupprimerMdp([FromBody] CompteGroupeImport _compteGroupe)
+        public async Task<string> SupprimerCompte([FromBody] CompteGroupeImport _compteGroupe)
         {
             try
             {
-                await dbGroupe.SupprimerCompteAsync(_compteGroupe.listeIdCompte, _compteGroupe.IdGroupe);
+                // recupere le token
+                string token = HttpContext.Request.Headers.Authorization;
+                int idCompte = tokenNoConfig.GetIdCompte(token);
 
+                if(!await dbGroupe.EstAMoi(_compteGroupe.IdGroupe, idCompte))
+                    return JsonConvert.SerializeObject("Vous n'etes pas le propriétaire du groupe");
+               
+                await dbGroupe.SupprimerCompteAsync(_compteGroupe.listeIdCompte, _compteGroupe.IdGroupe);
                 return JsonConvert.SerializeObject(true);
             }
             catch (Exception)
