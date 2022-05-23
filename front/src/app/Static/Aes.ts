@@ -41,7 +41,8 @@ export class Aes
                 Login: this.Dechiffrer(element.Login),
                 DateExpiration: this.Dechiffrer(element.DateExpiration),
                 IdCompteCreateur: element.IdCompteCreateur,
-                Description: this.Dechiffrer(element.Description)
+                Description: this.Dechiffrer(element.Description),
+                EstVisible: false
             });
         }
         

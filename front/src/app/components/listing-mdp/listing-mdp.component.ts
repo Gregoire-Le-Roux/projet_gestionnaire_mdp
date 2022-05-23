@@ -25,6 +25,7 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   dataSource: MatTableDataSource<Mdp>;
 
   displayedColumns: string[] = ['Titre', 'Login', 'Mdp', 'Url', 'DateExpiration', 'action'];
+  voirMdp: boolean = false;
 
   constructor(private outilServ: OutilService, private dialog: MatDialog) { }
 
@@ -88,6 +89,11 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
   ToastrCopierMdp(): void
   {
     this.outilServ.ToastOK("Le mot de passe a été copié");
+  }
+  
+  AfficherMdp(_mdp: Mdp): void
+  {
+    _mdp.EstVisible = !_mdp.EstVisible;
   }
 
   applyFilter(event: Event): void

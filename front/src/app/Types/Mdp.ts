@@ -7,5 +7,7 @@ export type Mdp =
     Login: string,
     DateExpiration: string,
     IdCompteCreateur: number,
-    Description: string
+    Description: string,
+
+    EstVisible: boolean
 }
