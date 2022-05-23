@@ -167,7 +167,7 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
 
   private ListerGroupe(): void
   {
-    this.groupeServ.Lister(VariableStatic.compte.Id).subscribe({
+    this.groupeServ.Lister().subscribe({
       next: (liste: Groupe[]) =>
       {  
         let aes = new Aes(VariableStatic.compte.HashCle);

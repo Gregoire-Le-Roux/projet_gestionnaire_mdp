@@ -51,7 +51,7 @@ export class MenuMdpComponent implements OnInit
 
   private ListerMesMdp(): void
   {
-    this.mdpServ.ListerLesMiens(VariableStatic.compte.Id).subscribe({
+    this.mdpServ.ListerLesMiens().subscribe({
       next: (retour: Mdp[]) =>
       {
         if(retour.length > 0)
@@ -75,7 +75,7 @@ export class MenuMdpComponent implements OnInit
 
   private ListerMdpPartagerAvecMoi(): void
   {
-    this.mdpServ.ListerPartagerAvecMoi(VariableStatic.compte.Id).subscribe({
+    this.mdpServ.ListerPartagerAvecMoi().subscribe({
       next: (retour: Mdp[]) =>
       {
         if(retour.length > 0)

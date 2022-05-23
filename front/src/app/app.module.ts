@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';
 import { DatePipe } from '@angular/common';
 
@@ -47,6 +47,8 @@ import { InfoGroupeComponent } from './modal/info-groupe/info-groupe.component';
 import { InscriptionComponent } from './components/inscription/inscription.component';
 import { ConnexionInscriptionComponent } from './components/connexion-inscription/connexion-inscription.component';
 import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.component';
+
+import { JwtInterceptor } from './interceptor/jwt.interceptor';
 
 @NgModule({
   declarations: [
@@ -99,7 +101,9 @@ import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.co
   ],
   providers: [
     { provide: LocationStrategy, useClass: HashLocationStrategy }, 
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: MAT_DATE_LOCALE, useValue: 'fr-FR' }, 
+
     DatePipe
   ],
   bootstrap: [AppComponent]

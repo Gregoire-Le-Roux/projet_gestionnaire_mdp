@@ -26,14 +26,14 @@ export class GroupeService
 {
   constructor(private http: HttpClient) { }
 
-  Lister(_idCompte: number): Observable<Groupe[]>
+  Lister(): Observable<Groupe[]>
   {
-    return this.http.get<Groupe[]>(`${environment.urlApi}/Groupe/lister/${_idCompte}`);
+    return this.http.get<Groupe[]>(`${environment.urlApi}/Groupe/lister`);
   }
 
   ListerCompte(_idGroupe: number): Observable<CompteImport[]>
   {
-    return this.http.get<CompteImport[]>(`${environment.urlApi}/Groupe/listerCompte/${_idGroupe}/${VariableStatic.compte.Id}`);
+    return this.http.get<CompteImport[]>(`${environment.urlApi}/Groupe/listerCompte/${_idGroupe}`);
   }
 
   Ajouter(_info: ExportGroupe): Observable<number>

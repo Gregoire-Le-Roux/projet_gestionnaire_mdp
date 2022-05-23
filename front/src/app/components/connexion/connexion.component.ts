@@ -85,7 +85,8 @@ export class ConnexionComponent
       HashCle: _retour.HashCle,
       Mail: aes.Dechiffrer(_retour.Mail),
       Nom: aes.Dechiffrer(_retour.Nom),
-      Prenom: aes.Dechiffrer(_retour.Prenom)
+      Prenom: aes.Dechiffrer(_retour.Prenom),
+      Jwt: _retour.Jwt
     };
 
     aes = null;

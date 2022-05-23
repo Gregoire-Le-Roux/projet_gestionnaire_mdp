@@ -41,7 +41,7 @@ export class AjouterGroupeComponent implements OnInit
       return;
     }
   
-    this.mdpServ.ListerLesMiens(VariableStatic.compte.Id).subscribe({
+    this.mdpServ.ListerLesMiens().subscribe({
       next: (liste: Mdp[]) =>
       {
         let aes: Aes = new Aes(VariableStatic.compte.HashCle);
