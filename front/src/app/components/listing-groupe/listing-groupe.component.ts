@@ -64,8 +64,6 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
         {
           this.SupprimerGroupe(_idGroupe, _index);
         }
-        else
-          this.outilServ.ToastInfo("Suppression annulée");
       }
     });
   }
@@ -106,7 +104,6 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
         DIALOG_REF.afterClosed().subscribe({
           next: (retour: any) =>
           {
-            console.log(retour);
             _groupe.NbCompte = retour.NbCompte;
             _groupe.NbMdp = retour.NbMdp;
           }
@@ -162,7 +159,7 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
           this.dataSource.data.splice(_index, 1);
           this.dataSource.data = this.dataSource.data;
 
-          this.outilServ.ToastOK("Le groupe a bien été supprimeé");
+          this.outilServ.ToastOK("Le groupe a bien été supprimé");
         }
         else
           this.outilServ.ToastErreurHttp();

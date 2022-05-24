@@ -113,7 +113,7 @@ namespace back.Controllers
                 int idCompte = tokenNoConfig.GetIdCompte(token);
 
                 if (!await dbGroupe.EstAMoi(idGroupe, idCompte))
-                    return JsonConvert.SerializeObject("Vous n'etes pas le propriétaire du groupe");
+                    return JsonConvert.SerializeObject("Vous n'êtes pas le propriétaire du groupe");
 
                 await dbGroupe.SupprimerAsync(idGroupe, idCompte);
 
@@ -134,9 +134,9 @@ namespace back.Controllers
                 string token = HttpContext.Request.Headers.Authorization;
                 int idCompte = tokenNoConfig.GetIdCompte(token);
 
-                if(!await dbGroupe.EstAMoi(_compteGroupe.IdGroupe, idCompte))
-                    return JsonConvert.SerializeObject("Vous n'etes pas le propriétaire du groupe");
-               
+                if (!await dbGroupe.EstAMoi(_compteGroupe.IdGroupe, idCompte))
+                    return JsonConvert.SerializeObject("Vous n'êtes pas le propriétaire du groupe");
+
                 await dbGroupe.SupprimerCompteAsync(_compteGroupe.listeIdCompte, _compteGroupe.IdGroupe);
                 return JsonConvert.SerializeObject(true);
             }

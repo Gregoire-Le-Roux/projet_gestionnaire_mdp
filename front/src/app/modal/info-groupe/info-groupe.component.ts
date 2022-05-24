@@ -48,9 +48,13 @@ export class InfoGroupeComponent implements OnInit, OnDestroy
     this.groupeServ.SupprimerCompte(_form.value).subscribe({
       next: (retour: boolean) =>
       {
-        if(retour == true)
+        if(retour)
         {
-          
+          for(let i = 0; i < _form.value.listeIdCompte.length; i++)
+          {
+            const INDEX_COMPTE = this.infoGroupe.listeCompte.findIndex(x => x.Id == _form.value.listeIdCompte[i]);
+            this.infoGroupe.listeCompte.splice(INDEX_COMPTE, 1);
+          }
         }
         else
           this.outilServ.ToastErreurHttp();
