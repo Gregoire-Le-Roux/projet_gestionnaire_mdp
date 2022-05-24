@@ -57,10 +57,33 @@ namespace back.Controllers
             string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
             AESprotection aes = new(hashCle);
-            _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
+
             _mdp.Titre = Protection.XSS(aes.Dechiffrer(_mdp.Titre));
-            _mdp.Login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
-            _mdp.Url =  Protection.XSS(aes.Dechiffrer(_mdp.Url));
+            _mdp.Titre = aes.Chiffrer(_mdp.Titre);
+
+            if(!string.IsNullOrEmpty(_mdp.Description))
+            {
+                _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
+                _mdp.Description = aes.Chiffrer(_mdp.Description);
+            }
+
+            if(!string.IsNullOrEmpty(_mdp.Login))
+            {
+                _mdp.Login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
+                _mdp.Login = aes.Chiffrer(_mdp.Login);
+            }
+
+            if(!string.IsNullOrEmpty(_mdp.Url))
+            {
+                _mdp.Url = Protection.XSS(aes.Dechiffrer(_mdp.Url));
+                _mdp.Url = aes.Chiffrer(_mdp.Url);
+            }
+
+            if (!string.IsNullOrEmpty(_mdp.DateExpiration))
+            {
+                _mdp.DateExpiration = Protection.XSS(aes.Dechiffrer(_mdp.DateExpiration));
+                _mdp.DateExpiration = aes.Chiffrer(_mdp.DateExpiration);
+            }
 
             MotDePasse mdp = new()
             {
@@ -68,10 +91,10 @@ namespace back.Controllers
                 IdCompteCreateur = idCompte,
                 DateExpiration = _mdp.DateExpiration,
                 Mdp = _mdp.Mdp,
-                Description = aes.Chiffrer(_mdp.Description),
-                Titre = aes.Chiffrer(_mdp.Titre),
-                Login = aes.Chiffrer(_mdp.Login),
-                Url = aes.Chiffrer(_mdp.Url)
+                Description = _mdp.Description,
+                Titre = _mdp.Titre,
+                Login = _mdp.Login,
+                Url = _mdp.Url
             };
 
             await dbMdp.ModifierAsync(mdp);
@@ -109,33 +132,39 @@ namespace back.Controllers
             AESprotection aes = new(hashCle);
 
             string titre = Protection.XSS(aes.Dechiffrer(_mdp.Titre));
-            string login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
-            string mdpD = Protection.XSS(aes.Dechiffrer(_mdp.Mdp));
-            string url = Protection.XSS(aes.Dechiffrer(_mdp.Url));
-
-            string description = "";
-            string date = "";
 
             if(!string.IsNullOrEmpty(_mdp.Description))
             {
-                description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
-                description = aes.Chiffrer(_mdp.Description);
+                _mdp.Description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
+                _mdp.Description = aes.Chiffrer(_mdp.Description);
             }
 
             if(!string.IsNullOrEmpty(_mdp.DateExpiration))
             {
-                date = Protection.XSS(aes.Dechiffrer(_mdp.DateExpiration));
-                date = aes.Chiffrer(_mdp.DateExpiration);
+                _mdp.DateExpiration = Protection.XSS(aes.Dechiffrer(_mdp.DateExpiration));
+                _mdp.DateExpiration = aes.Chiffrer(_mdp.DateExpiration);
             }
-                 
+
+            if (!string.IsNullOrEmpty(_mdp.Login))
+            {
+                _mdp.Login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
+                _mdp.Login = aes.Chiffrer(_mdp.Login);
+            }
+
+            if (!string.IsNullOrEmpty(_mdp.Url))
+            {
+                _mdp.Url = Protection.XSS(aes.Dechiffrer(_mdp.Url));
+                _mdp.Url = aes.Chiffrer(_mdp.Url);
+            }
+
             MotDePasse mdp = new()
             {
                 Titre = aes.Chiffrer(titre),
-                Login = aes.Chiffrer(login),
-                Mdp = aes.Chiffrer(mdpD),
-                Url = aes.Chiffrer(url),
-                DateExpiration = date,
-                Description = description,
+                Login = _mdp.Login,
+                Mdp = _mdp.Mdp,
+                Url = _mdp.Url,
+                DateExpiration = _mdp.DateExpiration,
+                Description = _mdp.Description,
                 IdCompteCreateur = idCompte
             };
 

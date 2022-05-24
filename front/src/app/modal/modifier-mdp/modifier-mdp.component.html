@@ -11,7 +11,7 @@
         <!-- login -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Login</mat-label>
-            <input matInput type="text" name="Login" [ngModel]="mdp.Login" required>
+            <input matInput type="text" name="Login" [ngModel]="mdp.Login">
         </mat-form-field>
     
         <!-- mdp -->
@@ -32,7 +32,7 @@
             <div class="col-xs-12 col-lg-6">
                 <mat-form-field class="full-width" appearance="outline">
                     <mat-label>Url</mat-label>
-                    <input matInput type="url" name="Url" [ngModel]="mdp.Url" required>
+                    <input matInput type="url" name="Url" [ngModel]="mdp.Url">
                 </mat-form-field>
             </div>
 
@@ -40,7 +40,7 @@
             <div class="col-xs-12 col-lg-6">
                 <mat-form-field class="full-width" appearance="outline">
                     <mat-label>Date expiration</mat-label>
-                    <input matInput name="DateExpiration" [matDatepicker]="picker" [ngModel]="mdp.DateExpiration" required>
+                    <input matInput name="DateExpiration" [matDatepicker]="picker" [ngModel]="mdp.DateExpiration">
                     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                     <mat-datepicker #picker></mat-datepicker>
                 </mat-form-field>
@@ -50,7 +50,7 @@
         <!-- description -->
         <mat-form-field class="full-width" appearance="outline">
             <mat-label>Description</mat-label>
-            <textarea matInput rows="5" name="Description" [ngModel]="mdp.Description" required></textarea>
+            <textarea matInput rows="5" name="Description" [ngModel]="mdp.Description"></textarea>
         </mat-form-field>
     </form>
 </mat-dialog-content>

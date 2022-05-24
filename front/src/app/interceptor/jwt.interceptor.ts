@@ -8,7 +8,6 @@ import {
 import { catchError, Observable, throwError } from 'rxjs';
 import { VariableStatic } from '../Classes/VariableStatic';
 import { OutilService } from '../services/outil.service';
-import { Jwt } from '../Classes/Jwt';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
@@ -19,9 +18,6 @@ export class JwtInterceptor implements HttpInterceptor {
   {
     if(VariableStatic.compte)
     {
-      console.log(Jwt.EstExpirer());
-      
-
       request = request.clone({
         headers: request.headers.set("Authorization", `Bearer  ${VariableStatic.compte.Jwt}`)
       });
@@ -30,9 +26,13 @@ export class JwtInterceptor implements HttpInterceptor {
     return next.handle(request).pipe(
       catchError(
         (erreur) => 
-        {
+        { 
           if(erreur.status == 401)
             this.outilServ.SessionExpirer();
+          else if(erreur.status == 0)
+            this.outilServ.ToastErreurHttp();
+          else
+            this.outilServ.ToastErreur("Une erreur c'est produite demande à Gérard de fix le soucis");
 
           return throwError(() => null);
         })

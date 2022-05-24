@@ -94,11 +94,11 @@ export class AjouterMdpComponent implements OnInit
     const DATA: ExportMdp =
     {
       Titre: aes.Chiffrer(_donnee.Titre),
-      Login: aes.Chiffrer(_donnee.Login),
+      Login: _donnee.Login != "" ? aes.Chiffrer(_donnee.Login) : "",
       Mdp: aes.Chiffrer(_donnee.Mdp),
-      Url: aes.Chiffrer(_donnee.Url),
-      Description: aes.Chiffrer(_donnee.Description),
-      DateExpiration: aes.Chiffrer(_donnee.DateExpiration),
+      Url: _donnee.Url != "" ? aes.Chiffrer(_donnee.Url) : "",
+      Description: _donnee.Description != "" ? aes.Chiffrer(_donnee.Description) : "",
+      DateExpiration: _donnee.DateExpiration != "" ? aes.Chiffrer(_donnee.DateExpiration) : "",
       IdCompteCreateur: _donnee.IdCompteCreateur
     };
 
@@ -115,21 +115,9 @@ export class AjouterMdpComponent implements OnInit
       formValide = false;
     }
 
-    if(_donnee.Login.replace(this.regexVide, "") == "")
-    {
-      this.outilServ.ToastWarning("Le champ login est vide");
-      formValide = false;
-    }
-
     if(_donnee.Mdp.replace(this.regexVide, "") == "")
     {
       this.outilServ.ToastWarning("Le champ mot de passe est vide");
-      formValide = false;
-    }
-
-    if(_donnee.Url.replace(this.regexVide, "") == "")
-    {
-      this.outilServ.ToastWarning("Le champ url est vide");
       formValide = false;
     }
 

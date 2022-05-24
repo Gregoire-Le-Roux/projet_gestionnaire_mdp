@@ -9,6 +9,7 @@ import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 import { Mdp } from 'src/app/Types/Mdp';
 import { GenerateurMDPComponent } from '../generateur-mdp/generateur-mdp.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-modifier-mdp',
@@ -20,6 +21,8 @@ export class ModifierMdpComponent implements OnInit
   @ViewChild ("inputMdp") inputMdp : ElementRef;
   voirMdp: boolean = false;
   mdp: Mdp;
+
+  private regexVide: RegExp = environment.patternVide
 
   constructor(
     @Inject(MAT_DIALOG_DATA) public data: any,
@@ -37,11 +40,28 @@ export class ModifierMdpComponent implements OnInit
 
   Modifier(_form: NgForm): void
   {
+    let formValide: boolean = true;
+
     if(_form.invalid)
     {
-      this.outilServ.ToastInfo("Veuillez compléter tous les champs");
+      this.outilServ.ToastInfo("Veuillez compléter tous les champs requis");
       return;
     }
+
+    if(_form.value.Titre.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champ titre est vide");
+      formValide = false;
+    }
+
+    if(_form.value.Mdp.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champs mot de passe est vide");
+      formValide = false;
+    }
+
+    if(!formValide)
+      return;
 
     _form.value.IdCompteCreateur = VariableStatic.compte.Id;
     _form.value.Id = this.mdp.Id;
@@ -54,7 +74,11 @@ export class ModifierMdpComponent implements OnInit
       next: (retour: boolean) =>
       {
         if(retour == true)
+        {
+          this.outilServ.ToastOK("Modification réussi");
           this.dialogRef.close(_form.value);
+        }
+          
       },
       error: () =>
       {
@@ -68,26 +92,6 @@ export class ModifierMdpComponent implements OnInit
     this.voirMdp = !this.voirMdp;
   }
 
-  private ChiffrerDonnee(_donnee: Mdp): ExportMdp
-  {
-    const AES = new Aes(VariableStatic.compte.HashCle);
-
-    const DATA: ExportMdp =
-    {
-      Id: _donnee.Id,
-      IdCompteCreateur: _donnee.IdCompteCreateur,
-
-      Login: AES.Chiffrer(_donnee.Login),
-      Description: AES.Chiffrer(_donnee.Description),
-      DateExpiration: AES.Chiffrer(_donnee.DateExpiration),
-      Mdp: AES.Chiffrer(_donnee.Mdp),
-      Titre: AES.Chiffrer(_donnee.Titre),
-      Url: AES.Chiffrer(_donnee.Url)
-    }
-
-    return DATA;
-  }
-  
   OuvrirModalGenerateurMdp(): void
   {
     const DIALOG_REF = this.dialog.open(GenerateurMDPComponent);
@@ -101,5 +105,25 @@ export class ModifierMdpComponent implements OnInit
         }
       }
     });
+  }
+
+  private ChiffrerDonnee(_donnee: Mdp): ExportMdp
+  {
+    const AES = new Aes(VariableStatic.compte.HashCle);
+
+    const DATA: ExportMdp =
+    {
+      Id: _donnee.Id,
+      IdCompteCreateur: _donnee.IdCompteCreateur,
+
+      Login: _donnee.Login != "" ? AES.Chiffrer(_donnee.Login) : "",
+      Description: _donnee.Description != "" ? AES.Chiffrer(_donnee.Description) : "",
+      DateExpiration: _donnee.DateExpiration != "" ? AES.Chiffrer(_donnee.DateExpiration) : "",
+      Mdp: AES.Chiffrer(_donnee.Mdp),
+      Titre: AES.Chiffrer(_donnee.Titre),
+      Url: _donnee.Url != "" ? AES.Chiffrer(_donnee.Url) : ""
+    }
+
+    return DATA;
   }
 }
