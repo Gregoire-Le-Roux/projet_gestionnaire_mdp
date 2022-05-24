@@ -101,6 +101,11 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
     return caractere.repeat(_mdp.length);
   }
 
+  AfficherMdp(_mdp: Mdp): void
+  {
+    _mdp.EstVisible = !_mdp.EstVisible;
+  }
+
   ToastrCopierMdp(): void
   {
     this.outilServ.ToastOK("Le mot de passe a été copié");
