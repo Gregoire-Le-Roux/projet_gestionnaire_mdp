@@ -2,9 +2,13 @@
     <span>Gestion mot de passe</span>
 
     <div id="flex"></div>
-
+    
     <button mat-button routerLink="/mdp" routerLinkeActive="active">Mots de passe</button>
     <button mat-button routerLink="/groupe" routerLinkeActive="active">Groupes</button>
+    <button mat-button routerLink="/profil" routerLinkeActive="active">
+        <mat-icon>account_circle</mat-icon>
+        Profil
+    </button>
     <button mat-raised-button color="warn" (click)="Deconnexion()">Déconnexion</button>
 </mat-toolbar>
 

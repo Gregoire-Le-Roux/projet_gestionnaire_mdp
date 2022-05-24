@@ -21,4 +21,9 @@ export class CompteService
   {
     return this.http.get<boolean>(`${environment.urlApi}/Compte/existe/${_mail}`);
   }
+
+  Supprimer(): Observable<boolean>
+  {
+    return this.http.delete<boolean>(`${environment.urlApi}/Compte/supprimer`);
+  }
 }

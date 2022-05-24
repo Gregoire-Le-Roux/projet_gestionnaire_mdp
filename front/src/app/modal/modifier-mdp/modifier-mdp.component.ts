@@ -1,13 +1,14 @@
 import { DatePipe } from '@angular/common';
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, ElementRef, Inject, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Classes/Aes';
 import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 import { Mdp } from 'src/app/Types/Mdp';
+import { GenerateurMDPComponent } from '../generateur-mdp/generateur-mdp.component';
 
 @Component({
   selector: 'app-modifier-mdp',
@@ -16,6 +17,7 @@ import { Mdp } from 'src/app/Types/Mdp';
 })
 export class ModifierMdpComponent implements OnInit 
 {
+  @ViewChild ("inputMdp") inputMdp : ElementRef;
   voirMdp: boolean = false;
   mdp: Mdp;
 
@@ -24,7 +26,8 @@ export class ModifierMdpComponent implements OnInit
     private mdpServ: MdpService, 
     private outilServ: OutilService,
     private datePipe: DatePipe,
-    private dialogRef: MatDialogRef<ModifierMdpComponent>
+    private dialogRef: MatDialogRef<ModifierMdpComponent>,    
+    private dialog: MatDialog,
     ) { }
 
   ngOnInit(): void
@@ -42,6 +45,7 @@ export class ModifierMdpComponent implements OnInit
 
     _form.value.IdCompteCreateur = VariableStatic.compte.Id;
     _form.value.Id = this.mdp.Id;
+    _form.value.Mdp = this.inputMdp.nativeElement.value;
     _form.value.DateExpiration = this.datePipe.transform(_form.value.DateExpiration, "yyyy-MM-dd");
 
     let data: ExportMdp = this.ChiffrerDonnee(_form.value);
@@ -82,5 +86,20 @@ export class ModifierMdpComponent implements OnInit
     }
 
     return DATA;
+  }
+  
+  OuvrirModalGenerateurMdp(): void
+  {
+    const DIALOG_REF = this.dialog.open(GenerateurMDPComponent);
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: string) =>
+      {
+        if(retour)
+        {
+          this.inputMdp.nativeElement.value = retour;
+        }
+      }
+    });
   }
 }

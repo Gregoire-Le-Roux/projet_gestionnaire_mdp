@@ -88,7 +88,7 @@ export class ConnexionComponent
       Prenom: aes.Dechiffrer(_retour.Prenom),
       Jwt: _retour.Jwt
     };
-
+    
     aes = null;
 
     sessionStorage.setItem(Cache.INFO_COMPTE, JSON.stringify(DATA));

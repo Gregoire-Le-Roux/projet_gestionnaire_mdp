@@ -1,0 +1,37 @@
+<div class="header-profil">
+    <h1>Profil</h1>
+</div>
+
+<div class="container">
+    <mat-card class="mb-4">
+        <form #e="ngForm">
+            <h3 class="mb-3">Mes informations</h3>
+            <div class="row">
+                <div class="col-12 col-lg-6">
+                    <mat-form-field class="full-width padding0" appearance="outline">
+                        <mat-label>Prénom</mat-label>
+                        <input matInput [value]="compte.Prenom.charAt(0).toUpperCase() + compte.Prenom.slice(1)" 
+                        type="text" name="Prenom" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <mat-form-field class="full-width padding0" appearance="outline">
+                        <mat-label>Nom</mat-label>
+                        <input matInput [value]="compte.Nom.toUpperCase()" type="text" name="Nom" disabled>
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <mat-form-field class="full-width padding0" appearance="outline">
+                        <mat-label>Mail</mat-label>
+                        <input matInput [value]="compte.Mail" type="text" name="Mail" disabled>
+                    </mat-form-field>
+                </div>
+            </div>
+        </form>        
+        <!-- <h3 class="mb-3">Mes statistiques</h3> -->
+    </mat-card>
+
+    <div class="d-flex flex-row-reverse">        
+        <button mat-raised-button color="warn" (click)="OuvrirModalSupprimerCompte()">Supprimer mon compte</button>
+    </div>
+</div>

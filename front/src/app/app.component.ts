@@ -22,13 +22,13 @@ export class AppComponent implements OnInit
 
   EstConnecter(): boolean
   {
-    return VariableStatic.compte?.Id ? true : false;  
+    return VariableStatic.compte != undefined;  
   }
   
   Deconnexion() : void
   {
     sessionStorage.clear();
-    VariableStatic.compte = null;
+    VariableStatic.compte = undefined;
     this.router.navigate([""]);
   }
 }

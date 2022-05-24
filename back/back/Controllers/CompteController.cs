@@ -14,7 +14,7 @@ namespace back.Controllers
 
         public CompteController(GestionMdpContext _context, IConfiguration _config)
         {
-            dbCompte = new(_context);
+            dbCompte = new(_context, _config);
             tokenNoConfig = new();
             config = _config;
         }
@@ -52,13 +52,15 @@ namespace back.Controllers
             try
             {
                 AESprotection aes = new(CLE_SECRETE);
-                string nomSecu = Protection.XSS(_compte.Nom);
-                string prenomSecu = Protection.XSS(_compte.Prenom);
+                string nomSecu = Protection.XSS(aes.Dechiffrer(_compte.Nom));
+                string prenomSecu = Protection.XSS(aes.Dechiffrer(_compte.Prenom));
                 string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
                 string mdpSecu = aes.Dechiffrer(_compte.Mdp);
 
                 Console.WriteLine("-------------------------------");
                 Console.WriteLine(mdpSecu);
+                Console.WriteLine(nomSecu);
+                Console.WriteLine(prenomSecu);
 
                 if (await dbCompte.ExisteAsync(mailSecu))
                     return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
@@ -78,7 +80,10 @@ namespace back.Controllers
 
                 int id = await dbCompte.AjouterAsync(compte);
 
-                return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES });
+                Token token = new(config);
+                string Jwt = token.Generer(id);
+
+                return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES, Jwt = Jwt });
             }
             catch (Exception)
             {

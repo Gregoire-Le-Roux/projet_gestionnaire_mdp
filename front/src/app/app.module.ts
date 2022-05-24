@@ -49,6 +49,7 @@ import { ConnexionInscriptionComponent } from './components/connexion-inscriptio
 import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.component';
 
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
+import { ProfilComponent } from './components/profil/profil.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +66,8 @@ import { JwtInterceptor } from './interceptor/jwt.interceptor';
     InfoGroupeComponent,
     InscriptionComponent,
     ConnexionInscriptionComponent,
-    GenerateurMDPComponent
+    GenerateurMDPComponent,
+    ProfilComponent
   ],
   imports: [
     BrowserModule,

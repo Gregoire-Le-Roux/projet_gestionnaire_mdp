@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Cache } from 'src/app/enum/Cache';
 import { CompteService } from 'src/app/services/compte.service';
 import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Classes/Aes';
@@ -66,8 +67,12 @@ export class InscriptionComponent
       formValide = false;
     }
 
-    if(!formValide) return
-
+    if(!formValide) 
+    {      
+      this.btnClicker = false;
+      return
+    }
+    
     let aes: Aes = new Aes(this.CLE_SECRETE); 
 
     const DATA = {
@@ -86,14 +91,17 @@ export class InscriptionComponent
         if(typeof(retour) == "string")
           this.outilServ.ToastErreur(retour);
         else {
-          VariableStatic.compte = 
-          { 
+          const DATA_COMPTE: Compte = 
+          {
             Id: retour.Id,
             Prenom: _form.value.Prenom,
             Nom: _form.value.Nom,
             Mail: _form.value.Mail,
-            HashCle: retour.HashCle
+            HashCle: retour.HashCle,
+            Jwt: retour.Jwt
           }
+          VariableStatic.compte = DATA_COMPTE
+          sessionStorage.setItem(Cache.INFO_COMPTE, JSON.stringify(DATA_COMPTE));
           this.router.navigate(["/mdp"]);
         }
       },
