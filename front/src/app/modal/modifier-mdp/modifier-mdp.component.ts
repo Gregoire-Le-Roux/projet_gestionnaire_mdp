@@ -4,8 +4,8 @@ import { NgForm } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
-import { Aes } from 'src/app/Static/Aes';
-import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Aes } from 'src/app/Classes/Aes';
+import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
 import { Mdp } from 'src/app/Types/Mdp';
 

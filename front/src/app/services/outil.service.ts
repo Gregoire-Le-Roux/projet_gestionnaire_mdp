@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Subject } from 'rxjs';
+import { VariableStatic } from '../Classes/VariableStatic';
 import { ConfirmationComponent } from '../modal/confirmation/confirmation.component';
 
 @Injectable({
@@ -11,7 +13,7 @@ export class OutilService
 {
   reponseConfirmation: Subject<boolean>;
 
-  constructor(private toastrServ: ToastrService, private dialog: MatDialog) { }
+  constructor(private toastrServ: ToastrService, private dialog: MatDialog, private router: Router) { }
 
   OuvrirModalConfirmation(_titre: string, _message: string): void
   {
@@ -26,6 +28,15 @@ export class OutilService
         this.reponseConfirmation.complete();
       }
     });
+  }
+
+  SessionExpirer(): void
+  {
+    this.ToastErreur("Votre session a éxpirée");
+    sessionStorage.clear();
+    VariableStatic.compte = undefined;
+
+    this.router.navigate([""]);
   }
 
   ToastErreurHttp(): void

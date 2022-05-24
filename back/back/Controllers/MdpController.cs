@@ -134,7 +134,7 @@ namespace back.Controllers
                 Login = aes.Chiffrer(login),
                 Mdp = aes.Chiffrer(mdpD),
                 Url = aes.Chiffrer(url),
-                DateExpiration = aes.Chiffrer(date),
+                DateExpiration = date,
                 Description = description,
                 IdCompteCreateur = idCompte
             };

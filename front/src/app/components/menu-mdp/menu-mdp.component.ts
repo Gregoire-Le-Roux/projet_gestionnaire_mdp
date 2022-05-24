@@ -4,8 +4,8 @@ import { Cache } from 'src/app/enum/Cache';
 import { AjouterMdpComponent } from 'src/app/modal/ajouter-mdp/ajouter-mdp.component';
 import { MdpService } from 'src/app/services/mdp.service';
 import { OutilService } from 'src/app/services/outil.service';
-import { Aes } from 'src/app/Static/Aes';
-import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Aes } from 'src/app/Classes/Aes';
+import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { Mdp } from 'src/app/Types/Mdp';
 import { ListingMdpComponent } from '../listing-mdp/listing-mdp.component';
 
@@ -59,6 +59,7 @@ export class MenuMdpComponent implements OnInit
           let aes: Aes = new Aes(VariableStatic.compte.HashCle);
 
           this.listeMesMdp = aes.DechiffrerMdp(retour);
+          
           sessionStorage.setItem(Cache.LISTE_MDP, JSON.stringify(this.listeMesMdp));
 
           this.component.toArray()[0].InitListe(this.listeMesMdp);

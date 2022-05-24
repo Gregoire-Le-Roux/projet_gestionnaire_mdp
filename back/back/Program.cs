@@ -41,6 +41,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidateIssuerSigningKey = true,
             ValidateLifetime = true,
 
+            // la valeur par defaut est 5min de validité
+            // On defini la valeur mini à 0
+            ClockSkew = TimeSpan.Zero,
+
             // valider les données
             ValidIssuer = config.GetValue<string>("token:issuer"),
             ValidAudience = config.GetValue<string>("token:audience"),

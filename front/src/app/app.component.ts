@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Cache } from './enum/Cache';
-import { VariableStatic } from './Static/VariableStatic';
+import { VariableStatic } from './Classes/VariableStatic';
 import { Router } from "@angular/router";
 
 @Component({

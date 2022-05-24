@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { VariableStatic } from '../Static/VariableStatic';
+import { VariableStatic } from '../Classes/VariableStatic';
 import { ExportGroupe } from '../Types/Export/ExportGroupe';
 import { Groupe } from '../Types/Groupe';
 import { CompteImport } from '../Types/Import/CompteImport';

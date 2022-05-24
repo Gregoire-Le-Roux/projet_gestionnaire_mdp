@@ -39,9 +39,9 @@ export class Aes
                 Mdp: this.Dechiffrer(element.Mdp),
                 Url: this.Dechiffrer(element.Url),
                 Login: this.Dechiffrer(element.Login),
-                DateExpiration: this.Dechiffrer(element.DateExpiration),
+                DateExpiration: element.DateExpiration != "" ? this.Dechiffrer(element.DateExpiration) : "",
                 IdCompteCreateur: element.IdCompteCreateur,
-                Description: this.Dechiffrer(element.Description),
+                Description: element.Description != "" ? this.Dechiffrer(element.Description) : "",
                 EstVisible: false
             });
         }

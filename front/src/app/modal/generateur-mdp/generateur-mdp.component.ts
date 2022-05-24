@@ -2,7 +2,7 @@ import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angula
 import { NgForm } from '@angular/forms';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { MatDialogRef } from '@angular/material/dialog';
-import { GenerateurMDP } from 'src/app/Static/GenerateurMDP';
+import { GenerateurMDP } from 'src/app/Classes/GenerateurMDP';
 
 @Component({
   selector: 'app-generateur-mdp',

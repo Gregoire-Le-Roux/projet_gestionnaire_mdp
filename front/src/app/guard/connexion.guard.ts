@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { VariableStatic } from '../Static/VariableStatic';
+import { VariableStatic } from '../Classes/VariableStatic';
 
 @Injectable({
   providedIn: 'root'

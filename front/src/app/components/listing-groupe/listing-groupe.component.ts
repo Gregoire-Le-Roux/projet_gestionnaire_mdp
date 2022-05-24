@@ -9,8 +9,8 @@ import { AjouterGroupeComponent } from 'src/app/modal/ajouter-groupe/ajouter-gro
 import { InfoGroupeComponent } from 'src/app/modal/info-groupe/info-groupe.component';
 import { GroupeService } from 'src/app/services/groupe.service';
 import { OutilService } from 'src/app/services/outil.service';
-import { Aes } from 'src/app/Static/Aes';
-import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Aes } from 'src/app/Classes/Aes';
+import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { Groupe } from 'src/app/Types/Groupe';
 import { GroupeMdpCompte } from 'src/app/Types/GroupeMdpCompte';
 import { CompteImport } from 'src/app/Types/Import/CompteImport';

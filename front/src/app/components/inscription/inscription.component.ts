@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AES } from 'crypto-js';
 import { CompteService } from 'src/app/services/compte.service';
 import { OutilService } from 'src/app/services/outil.service';
-import { Aes } from 'src/app/Static/Aes';
-import { VariableStatic } from 'src/app/Static/VariableStatic';
+import { Aes } from 'src/app/Classes/Aes';
+import { VariableStatic } from 'src/app/Classes/VariableStatic';
 import { Compte } from 'src/app/Types/Compte';
 import { environment } from 'src/environments/environment';
 
