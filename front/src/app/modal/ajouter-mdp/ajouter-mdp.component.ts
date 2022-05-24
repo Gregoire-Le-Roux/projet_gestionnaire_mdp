@@ -7,6 +7,7 @@ import { OutilService } from 'src/app/services/outil.service';
 import { Aes } from 'src/app/Static/Aes';
 import { VariableStatic } from 'src/app/Static/VariableStatic';
 import { ExportMdp } from 'src/app/Types/Export/ExportMdp';
+import { environment } from 'src/environments/environment';
 import { GenerateurMDPComponent } from '../generateur-mdp/generateur-mdp.component';
 
 @Component({
@@ -17,7 +18,10 @@ import { GenerateurMDPComponent } from '../generateur-mdp/generateur-mdp.compone
 export class AjouterMdpComponent implements OnInit 
 {
   @ViewChild ("inputMdp") inputMdp : ElementRef;
+
   voirMdp: boolean = false;
+
+  private regexVide: RegExp = environment.patternVide;
 
   constructor(
     private outilServ: OutilService,
@@ -31,7 +35,18 @@ export class AjouterMdpComponent implements OnInit
 
   Ajouter(_form: NgForm): void
   {
-    _form.value.DateExpiration = this.datePipe.transform(_form.value.DateExpiration, "yyyy-MM-dd");
+    if(_form.invalid)
+    {
+      this.outilServ.ToastWarning("Veuillez completer tous les champs");
+      return;
+    }
+
+    if(!this.FormValide(_form.value))
+      return;
+
+    if(_form.value.DateExpiration != "")
+      _form.value.DateExpiration = this.datePipe.transform(_form.value.DateExpiration, "yyyy-MM-dd");
+
     _form.value.IdCompteCreateur = VariableStatic.compte.Id;
 
     const DATA = this.ChiffrerDonnee(_form.value);
@@ -52,9 +67,24 @@ export class AjouterMdpComponent implements OnInit
     });
   }
 
-  AfficherMdp()
+  AfficherMdp(): void
   {
     this.voirMdp = !this.voirMdp;
+  }
+
+  OuvrirModalGenerateurMdp(): void
+  {
+    const DIALOG_REF = this.dialog.open(GenerateurMDPComponent);
+
+    DIALOG_REF.afterClosed().subscribe({
+      next: (retour: string) =>
+      {
+        if(retour)
+        {
+          this.inputMdp.nativeElement.value = retour;
+        }
+      }
+    });
   }
 
   private ChiffrerDonnee(_donnee: ExportMdp): ExportMdp
@@ -75,19 +105,34 @@ export class AjouterMdpComponent implements OnInit
     return DATA;
   }
 
-  OuvrirModalGenerateurMdp(): void
+  private FormValide(_donnee): boolean
   {
-    const DIALOG_REF = this.dialog.open(GenerateurMDPComponent);
+    let formValide: boolean = true;
 
-    DIALOG_REF.afterClosed().subscribe({
-      next: (retour: string) =>
-      {
-        if(retour)
-        {
-          this.inputMdp.nativeElement.value = retour;
-        }
-      }
-    });
+    if(_donnee.Titre.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champ titre est vide");
+      formValide = false;
+    }
+
+    if(_donnee.Login.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champ login est vide");
+      formValide = false;
+    }
+
+    if(_donnee.Mdp.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champ mot de passe est vide");
+      formValide = false;
+    }
+
+    if(_donnee.Url.replace(this.regexVide, "") == "")
+    {
+      this.outilServ.ToastWarning("Le champ url est vide");
+      formValide = false;
+    }
+
+    return formValide;
   }
-
 }

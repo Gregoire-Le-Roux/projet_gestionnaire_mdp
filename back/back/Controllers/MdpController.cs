@@ -108,17 +108,24 @@ namespace back.Controllers
 
             AESprotection aes = new(hashCle);
 
-            string date = Protection.XSS(aes.Dechiffrer(_mdp.DateExpiration));
             string titre = Protection.XSS(aes.Dechiffrer(_mdp.Titre));
             string login = Protection.XSS(aes.Dechiffrer(_mdp.Login));
             string mdpD = Protection.XSS(aes.Dechiffrer(_mdp.Mdp));
             string url = Protection.XSS(aes.Dechiffrer(_mdp.Url));
-            string description = "";
 
-            if(string.IsNullOrEmpty(_mdp.Description))
+            string description = "";
+            string date = "";
+
+            if(!string.IsNullOrEmpty(_mdp.Description))
             {
                 description = Protection.XSS(aes.Dechiffrer(_mdp.Description));
                 description = aes.Chiffrer(_mdp.Description);
+            }
+
+            if(!string.IsNullOrEmpty(_mdp.DateExpiration))
+            {
+                date = Protection.XSS(aes.Dechiffrer(_mdp.DateExpiration));
+                date = aes.Chiffrer(_mdp.DateExpiration);
             }
                  
             MotDePasse mdp = new()

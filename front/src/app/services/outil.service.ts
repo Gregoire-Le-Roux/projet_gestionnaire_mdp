@@ -38,6 +38,11 @@ export class OutilService
     this.toastrServ.error(_text);
   }
 
+  ToastWarning(_text: string): void
+  {
+    this.toastrServ.warning(_text);
+  }
+
   ToastOK(_text: string): void
   {
     this.toastrServ.success(_text);
