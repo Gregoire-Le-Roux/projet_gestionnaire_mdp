@@ -2,7 +2,7 @@
 {
     public class MdpGroupeImport
     {
-        public int idGroupe { get; set; }
-        public int[] listeIdMdp { get; set; } = null!;
+        public int IdGroupe { get; set; }
+        public int[] ListeIdMdp { get; set; } = null!;
     }
 }

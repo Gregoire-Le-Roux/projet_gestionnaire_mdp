@@ -229,5 +229,26 @@ namespace back.Services
                 await sqlCon.CloseAsync();
             }
         }
+
+        public async Task SupprimerMdpAsync(int[] _listeIdMdp, int _idGroupe)
+        {
+            string listeIdMdpString = string.Join(',', _listeIdMdp);
+
+            using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
+            {
+                await sqlCon.OpenAsync();
+
+                SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = $"DELETE FROM GroupeMdp WHERE idGroupe = @idGrp AND idMdp IN ({listeIdMdpString})";
+
+                cmd.Parameters.Add("@idGrp", SqlDbType.Int).Value = _idGroupe;
+                await cmd.PrepareAsync();
+
+                await cmd.ExecuteReaderAsync();
+
+                await sqlCon.CloseAsync();
+            }
+        }
     }
 }

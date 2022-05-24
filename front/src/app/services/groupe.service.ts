@@ -51,7 +51,7 @@ export class GroupeService
     return this.http.post<boolean>(`${environment.urlApi}/Groupe/supprimerMdp`, _info);
   }
 
-  SupprimerCompte(_info: ExportMdpGroupe): Observable<boolean>
+  SupprimerCompte(_info: ExportCompteGroupe): Observable<boolean>
   {
     return this.http.post<boolean>(`${environment.urlApi}/Groupe/supprimerCompte`, _info);
   }

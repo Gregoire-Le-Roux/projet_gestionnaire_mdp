@@ -146,5 +146,26 @@ namespace back.Controllers
                 return JsonConvert.SerializeObject(false);
             }
         }
+
+        [HttpPost("supprimerMdp")]
+        public async Task<string> SupprimerMdp([FromBody] MdpGroupeImport _mdpGroupe)
+        {
+            try
+            {
+                // recupere le token
+                string token = HttpContext.Request.Headers.Authorization;
+                int idCompte = tokenNoConfig.GetIdCompte(token);
+
+                //if (!await dbGroupe.EstAMoi(_mdpGroupe.IdGroupe, idCompte))
+                //    return JsonConvert.SerializeObject("Vous n'êtes pas le propriétaire du groupe");
+
+                await dbGroupe.SupprimerMdpAsync(_mdpGroupe.ListeIdMdp, _mdpGroupe.IdGroupe);
+                return JsonConvert.SerializeObject(true);
+            }
+            catch (Exception)
+            {
+                return JsonConvert.SerializeObject(false);
+            }
+        }
     }
 }

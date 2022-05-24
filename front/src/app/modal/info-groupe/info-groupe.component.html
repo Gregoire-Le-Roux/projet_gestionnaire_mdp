@@ -12,7 +12,7 @@
           </mat-expansion-panel-header>
 
           <form #e="ngForm">
-            <mat-selection-list name="listeIdCompte" color="primary" ngModel>
+              <mat-selection-list class="mb-3" name="listeIdCompte" color="primary" ngModel>
                 <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeCompte">
                   {{ element.Prenom }} {{ element.Nom }} ({{ element.Mail }})
                 </mat-list-option>
@@ -32,10 +32,10 @@
             </mat-expansion-panel-header>
 
             <form #f="ngForm">
-                <mat-selection-list name="listeIdMdp" color="primary" ngModel>
-                    <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeMdp">
-                      {{ element.Login }} {{ element.Mdp }} ({{ element.Titre }})
-                    </mat-list-option>
+                <mat-selection-list class="mb-3" name="listeIdMdp" color="primary" ngModel>
+                  <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeMdp">
+                    {{ element.Login }} {{ element.Mdp }} ({{ element.Titre }})
+                  </mat-list-option>
                 </mat-selection-list>
 
                 <button mat-raised-button (click)="SupprimerMdpGroupe(f)" color="primary">Supprimer</button>
@@ -45,5 +45,5 @@
 
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-    <button mat-raised-button color="primary" mat-dialog-close>Fermer</button>
+    <button mat-raised-button color="primary" [mat-dialog-close]="{ NbCompte: infoGroupe.listeCompte.length, NbMdp: infoGroupe.listeMdp.length }">Fermer</button>
 </mat-dialog-actions>

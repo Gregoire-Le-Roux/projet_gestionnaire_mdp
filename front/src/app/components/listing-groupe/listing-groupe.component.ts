@@ -91,17 +91,26 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
     _event.stopPropagation();
   }
 
-  OuvrirModalInfoGroupe(_idGroupe: number, _nomGroupe: string, _listeMdp: Mdp[], _event: Event): void
+  OuvrirModalInfoGroupe(_groupe : Groupe, _event: Event): void
   {
     _event.stopPropagation();
 
-    this.groupeServ.ListerCompte(_idGroupe).subscribe({
+    this.groupeServ.ListerCompte(_groupe.Id).subscribe({
       next: (retour: CompteImport[]) =>
       {
-        let mdpCompteGroupe = this.InitInfoGroupe(retour, _listeMdp);
+        let mdpCompteGroupe = this.InitInfoGroupe(retour, _groupe.ListeMdp);
         
-        this.dialog.open(InfoGroupeComponent, 
-          { minWidth: "40%", data: { nomGroupe: _nomGroupe, idGroupe: _idGroupe, infoGroupe: mdpCompteGroupe }});
+        const DIALOG_REF = this.dialog.open(InfoGroupeComponent, 
+          { minWidth: "40%", data: { nomGroupe: _groupe.Titre, idGroupe: _groupe.Id, infoGroupe: mdpCompteGroupe }});
+
+        DIALOG_REF.afterClosed().subscribe({
+          next: (retour: any) =>
+          {
+            console.log(retour);
+            _groupe.NbCompte = retour.NbCompte;
+            _groupe.NbMdp = retour.NbMdp;
+          }
+        })
       },
       error: () =>
       {
