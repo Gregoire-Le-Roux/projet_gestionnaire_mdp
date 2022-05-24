@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using back.ImportModels;
 
 namespace back.Controllers
 {
@@ -15,7 +14,7 @@ namespace back.Controllers
         public GroupeController(GestionMdpContext _context, IConfiguration _config)
         {
             tokenNoConfig = new();
-            dbGroupe = new (_context, _config);
+            dbGroupe = new(_context, _config);
             context = _context;
         }
 
@@ -156,8 +155,8 @@ namespace back.Controllers
                 string token = HttpContext.Request.Headers.Authorization;
                 int idCompte = tokenNoConfig.GetIdCompte(token);
 
-                //if (!await dbGroupe.EstAMoi(_mdpGroupe.IdGroupe, idCompte))
-                //    return JsonConvert.SerializeObject("Vous n'êtes pas le propriétaire du groupe");
+                if (!await dbGroupe.EstAMoi(_mdpGroupe.IdGroupe, idCompte))
+                    return JsonConvert.SerializeObject("Vous n'êtes pas le propriétaire du groupe");
 
                 await dbGroupe.SupprimerMdpAsync(_mdpGroupe.ListeIdMdp, _mdpGroupe.IdGroupe);
                 return JsonConvert.SerializeObject(true);

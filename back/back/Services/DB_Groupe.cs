@@ -114,17 +114,25 @@ namespace back.Services
 
         public async Task<bool> EstAMoi(int _idGroupe, int _idCompte)
         {
-            int t = 0;
-
-            await Task.Run(() =>
+            using(SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
-                t = (from c in context.Comptes
-                    where c.Id == _idCompte 
-                        && _idGroupe == c.IdGroupes.Where(grp => grp.Id == _idGroupe).Select(grp => grp.Id).FirstOrDefault()
-                    select c.Id).FirstOrDefault();
-            });
+                await sqlCon.OpenAsync();
 
-            return t != 0;
+                SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = "SELECT COUNT(*) FROM Groupe WHERE id = @idGroupe AND idCompteCreateur = @idCompte";
+
+                cmd.Parameters.Add("@idGroupe", SqlDbType.Int).Value = _idGroupe;
+                cmd.Parameters.Add("@idCompte", SqlDbType.Int).Value = _idCompte;
+
+                await cmd.PrepareAsync();
+
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
+
+                await sqlCon.CloseAsync();
+
+                return count == 1;
+            }
         }
 
         public async Task<int> AjouterAsync(Groupe _groupe)
@@ -251,4 +259,5 @@ namespace back.Services
             }
         }
     }
+
 }
