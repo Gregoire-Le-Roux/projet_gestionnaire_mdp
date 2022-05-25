@@ -1,5 +1,4 @@
-﻿using MailKit;
-using MimeKit;
+﻿using MimeKit;
 using MailKit.Net.Smtp;
 
 namespace back.Classe
@@ -13,34 +12,54 @@ namespace back.Classe
         private const int SMTP_PORT = 465;
 
         private string Destinataire { get; init; }
-        private string token { get; init; } = "";
+        private string Message { get; init; }
+        private string Sujet { get; init; }
 
-        public Mail(string _destinataire)
+        private string Token { get; init; }
+
+        public string Nom { get; init; } = "";
+        public string Prenom { get; init; } = "";
+
+        /// <summary>
+        ///     Constructeur pour envoir mail personnalisé
+        /// </summary>
+        public Mail(string _destinataire, string _message, string _sujet)
         {
             Destinataire = _destinataire;
+            Message = _message;
+            Sujet = _sujet;
         }
 
-        public Mail(string _destinataire, string _token) : this(_destinataire)
+        /// <summary>
+        ///     Constructeur pour envoie mail de confirmation d'inscription
+        /// </summary>
+        public Mail(string _destinataire, string _token)
         {
-            token = _token;
+            Destinataire = _destinataire;
+            Token = _token;
         }
 
-        public async Task EnvoyerAsync(bool _estMailConfirmationInscription = false)
+        public async Task EnvoyerAsync()
         {
             string text = "";
             string sujet = "";
 
             BodyBuilder bodyBuilder = new();
 
-            if(_estMailConfirmationInscription)
+            if(!string.IsNullOrEmpty(Token))
             {
-                text = $"click: <a href='http://localhost:4200/#/compteValider/{token}'>click ici</a>";
-                sujet = "Confirmation de votre compte";
+                text = $"Bonjour {Prenom} {Nom} \n\n" +
+                    $"Afin de confirmer votre demande d'inscription cliquer sur le lien ci-dessous \n " +
+                    $"<a href='http://localhost:4200/#/compteValider/{Token}'>Confirmer ma demande d'inscription</a> \n" +
+                    $"Ce lien est valable 30 minutes \n\n" +
+                    $"A bientôt sur PasseBase !";
+
+                sujet = "Confirmation de votre compte sur passeBase";
             }   
             else
             {
-                text = "salut !";
-                sujet = "sujet mail";
+                text = Message;
+                sujet = Sujet;
             }
 
             bodyBuilder.HtmlBody = text;

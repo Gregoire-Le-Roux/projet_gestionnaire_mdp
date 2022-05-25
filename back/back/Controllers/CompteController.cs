@@ -53,9 +53,6 @@ namespace back.Controllers
             string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
             string mdpSecu = aes.Dechiffrer(_compte.Mdp);
 
-            Console.WriteLine("-----------------------------------------");
-            Console.WriteLine(mailSecu);
-
             if (await dbCompte.ExisteAsync(mailSecu))
                 return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
 
@@ -70,10 +67,15 @@ namespace back.Controllers
             Token token = new(config);
             string jwt = token.Generer(compte);
 
-            Mail mail = new(mailSecu, jwt);
-            mail.EnvoyerAsync(true);
+            Mail mail = new(mailSecu, jwt)
+            {
+                Nom = aes.Dechiffrer(compte.Nom),
+                Prenom = aes.Dechiffrer(compte.Prenom)
+            };
 
-            return JsonConvert.SerializeObject("Un mail vous été envoyé pour confirmer votre inscription");
+            mail.EnvoyerAsync();
+
+            return JsonConvert.SerializeObject("Un mail vous a été envoyé pour confirmer votre inscription");
         }
 
         [HttpPost("inscription")]
