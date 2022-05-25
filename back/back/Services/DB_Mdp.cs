@@ -9,6 +9,11 @@ namespace back.Services
         //private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         private GestionMdpContext context { init; get; }
 
+        /// <summary>
+        ///  A utiliser seulement pour le timer
+        ///  Ne pas utiliser pour les APIs
+        /// </summary>
+        public DB_Mdp() { }
         public DB_Mdp(GestionMdpContext _context)
         {
             context = _context;
@@ -41,6 +46,67 @@ namespace back.Services
         public MdpExport[] ListerMdpPartagerAvecMoi(int _id)
         {
             return new MdpExport[0];
+        }
+
+        /// <summary>
+        /// A utiliser seulement par le timer
+        /// </summary>
+        public async Task EnvoyerMailMdpBientotExpirerAsync(string _connectionString)
+        {
+            if (context is null)
+                return;
+
+            using(SqlConnection sqlCon = new (_connectionString))
+            {
+                await sqlCon.OpenAsync();
+
+                SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = "SELECT idCompteCreateur, mail, dateExpiration, hashCle, titre " +
+                                  "FROM MotDePasse mdp JOIN Compte c ON mdp.idCompteCreateur = c.id " +
+                                  "ORDER BY idCompteCreateur";
+
+                await cmd.PrepareAsync();
+                await cmd.ExecuteNonQueryAsync();
+
+                using(var reader = cmd.ExecuteReader())
+                {
+                    int idCreateur = 0;
+
+                    Mail mail;
+                    AESprotection aes = new("azertyuiopazertyuiopazertyuiopaw");
+
+                    while (reader.Read())
+                    {
+                        if(idCreateur != reader.GetInt32(0))
+                        {
+                            idCreateur = reader.GetInt32(0);
+                            aes = new(reader.GetString(3));
+                        }
+
+                        DateTime dateExpiration = DateTime.Parse(aes.Dechiffrer(reader.GetString(2)));
+                        Console.WriteLine(dateExpiration.ToString("d"));
+                        
+                        Console.WriteLine((dateExpiration - DateTime.Now).Days);
+
+                        if((dateExpiration - DateTime.Now).Days is 1)
+                        {
+                            string titre = aes.Dechiffrer(reader.GetString(4));
+
+                            string message = "PasseBase bonjour, \n\n" +
+                                             $"Votre mot de passe pour {titre} à la date du {dateExpiration.ToString("d")} va bientôt expiré \n\n" +
+                                             "N'oublier pas de le modifier en meme temps sur l'application en cliquant <a href='http://localhost:4200/'>ici</a> \n" +
+                                             "A bientôt sur passeBase";
+
+                            mail = new(reader.GetString(1), message, "PasseBase, mot de passe bientôt expirer");
+                            await mail.EnvoyerAsync();
+                        }
+                    }
+
+                    await sqlCon.CloseAsync();
+                    await reader.CloseAsync();
+                }
+            }
         }
 
         public async Task<int> AjouterAsync(MotDePasse _mdp)

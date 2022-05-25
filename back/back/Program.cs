@@ -8,7 +8,7 @@ global using System.Text;
 global using Microsoft.AspNetCore.Authorization;
 global using back.Classe;
 
-
+using System.Timers;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Microsoft.IdentityModel.Tokens;
@@ -86,6 +86,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+Coroutine.Init(config.GetConnectionString("ionos"));
 
 app.Run();
 
