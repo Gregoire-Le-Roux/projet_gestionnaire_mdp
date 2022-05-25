@@ -1,1 +1,33 @@
+<mat-card>
+    <mat-card-title>Nouveau mot de passe</mat-card-title>
+    <mat-card-content>
+        <form #e="ngForm">
 
+            <!-- mdp -->
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Mot de passe</mat-label>
+                <input matInput [type]="mdpVisible ? 'text' : 'password'" name="mdp" ngModel required>
+                <mat-icon matSuffix (click)="AfficherMdp()">{{ mdpVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </mat-form-field>
+
+            <!-- mdp confirmer -->
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Confirmer le mot de passe</mat-label>
+                <input matInput [type]="mdpConfirmeVisible ? 'text' : 'password'" name="mdpConfirmer" ngModel required>
+                <mat-icon matSuffix (click)="AfficherMdpConfirmer()">{{ mdpConfirmeVisible ? 'visibility_off' : 'visibility' }}</mat-icon>
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+    <mat-card-actions>
+
+        <!-- btn valider mdp -->
+        <button mat-raised-button color="primary" class="full-width btnMdp" (click)="ValiderNouveauMdp(e)">
+            <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Envoyer' : "" }} 
+        </button>
+
+        <!-- btn retour connexion -->
+        <button mat-button style="margin-top: 10px;" class="full-width" routerLink="">
+            retour a la connexion
+        </button>
+    </mat-card-actions>
+</mat-card>

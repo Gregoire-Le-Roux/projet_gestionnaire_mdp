@@ -48,7 +48,7 @@ namespace back.Controllers
             int idCompte = await dbCompte.GetId(mail);
 
             Token token = new(config);
-            string jwt = token.Generer(idCompte);
+            string jwt = token.Generer(idCompte, true);
 
             string message = "Bonjour \n\n" +
                             "Une demande de mot de passe oublié à été demandée \n" +
@@ -134,6 +134,22 @@ namespace back.Controllers
             string Jwt = token.Generer(id);
 
             return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES, Jwt = Jwt });
+        }
+
+        [Authorize]
+        [HttpPut("modifierMdp")]
+        public async Task<string> ModifierMdp(dynamic _info)
+        {
+            dynamic retour = JsonConvert.DeserializeObject<dynamic>(_info.ToString());
+
+            // recupere le token
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+            string mdpHash = BC.HashPassword(retour.Mdp.ToString());
+            await dbCompte.ModifierMdpAsync(mdpHash, idCompte);
+
+            return JsonConvert.SerializeObject(true);
         }
 
         /// <summary>

@@ -32,7 +32,7 @@ export class AppComponent implements OnInit, AfterViewInit
   EstConnecter(): boolean
   {
     // en cas d'inscription evite erreur NG1000 de merde !
-    if(!this.estFalse)
+    if(!this.estFalse || VariableStatic.compte?.Id == 0)
       return false;
 
     return VariableStatic.compte != undefined; 

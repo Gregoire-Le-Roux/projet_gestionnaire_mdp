@@ -22,7 +22,7 @@ public class Token
         config = _config;
     }
 
-    public string Generer(int _idCompte)
+    public string Generer(int _idCompte, bool _estMdpOublier = false)
     {
         var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(CLE_SECRETE));
 
@@ -38,7 +38,7 @@ public class Token
             issuer: config.GetValue<string>("token:issuer"),
             audience: config.GetValue<string>("token:audience"),
             claims: claim,
-            expires: DateTime.UtcNow.AddHours(2),
+            expires: _estMdpOublier ? DateTime.UtcNow.AddMinutes(10) : DateTime.UtcNow.AddHours(2),
             signingCredentials: cleSigner
             );
 

@@ -11,8 +11,15 @@
         </form>
     </mat-card-content>
     <mat-card-actions>
+
+        <!-- btn envoyer mail -->
         <button mat-raised-button color="primary" class="full-width btnMdpOublier" (click)="EnvoyerMailMdpOublier(e.value.mail)">
             <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Envoyer' : "" }} 
+        </button>
+
+        <!-- btn retour connexion -->
+        <button mat-button routerLink="" class="full-width">
+            retour à la connexion
         </button>
     </mat-card-actions>
 </mat-card>

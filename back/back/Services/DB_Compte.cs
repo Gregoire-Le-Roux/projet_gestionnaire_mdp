@@ -83,6 +83,25 @@ public class DB_Compte
         return id;
     }
 
+    public async Task ModifierMdpAsync(string _mdp, int _idCompte)
+    {
+        using (SqlConnection sqlCon = new(config.GetConnectionString("ionos")))
+        {
+            await sqlCon.OpenAsync();
+
+            SqlCommand cmd = sqlCon.CreateCommand();
+
+            cmd.CommandText = "UPDATE Compte SET mdp = @mdp WHERE id = @idCompte";
+
+            cmd.Parameters.Add("@mdp", SqlDbType.VarChar).Value = _mdp;
+            cmd.Parameters.Add("@idCompte", SqlDbType.Int).Value = _idCompte;
+
+            await cmd.ExecuteNonQueryAsync();
+
+            await sqlCon.CloseAsync();
+        }
+    }
+
     public async Task SupprimerAsync(int _id)
     {
         // ouvre une connection a la bdd
