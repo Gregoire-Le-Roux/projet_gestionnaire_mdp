@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { Cache } from 'src/app/enum/Cache';
 import { ModifierMdpComponent } from 'src/app/modal/modifier-mdp/modifier-mdp.component';
 import { PartagerMdpComponent } from 'src/app/modal/partager-mdp/partager-mdp.component';
 import { MdpService } from 'src/app/services/mdp.service';
@@ -85,11 +86,13 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
       {
         if(retour)
         {
+          _mdp.Titre = retour.Titre;
           _mdp.DateExpiration = retour.DateExpiration;
           _mdp.Description = retour.Description;
           _mdp.Login = retour.Login;
           _mdp.Mdp = retour.Mdp;
           _mdp.Url = retour.Url;
+          sessionStorage.setItem(Cache.LISTE_MDP, JSON.stringify(this.dataSource.data));
         }
       }
     });
@@ -123,13 +126,14 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
       next: (retour: boolean) =>
       {
         if(retour === false)
-          this.outilServ.ToastErreur("Se mot de passe ne vous appartient pas");
+          this.outilServ.ToastErreur("Ce mot de passe ne vous appartient pas");
         else
         {
           const INDEX = this.dataSource.data.findIndex(m => m.Id == _idMdp);
           this.dataSource.data.splice(INDEX, 1);
 
           this.dataSource.data = this.dataSource.data;
+          sessionStorage.setItem(Cache.LISTE_MDP, JSON.stringify(this.dataSource.data));
 
           this.outilServ.ToastOK("Le mot de passe a été supprimé");
         }     

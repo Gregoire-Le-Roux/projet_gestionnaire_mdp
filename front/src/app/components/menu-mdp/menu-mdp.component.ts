@@ -43,6 +43,7 @@ export class MenuMdpComponent implements OnInit
         if(retour)
         {
           this.listeMesMdp.push(retour);
+          sessionStorage.setItem(Cache.LISTE_MDP, JSON.stringify(this.listeMesMdp));
           this.component.toArray()[0].dataSource.data = this.listeMesMdp;
         }
       }

@@ -153,6 +153,31 @@ public class DB_Compte
         return retour >= 1;
     }
 
+    public async Task<CompteExport> GetCompteByMail(string _mail)
+    {
+        int retour = 0;
+
+        await Task.Run(() => retour = context.Comptes.Count(c => c.Mail == _mail));
+
+        CompteExport? compte = null;
+
+        await Task.Run(() =>
+        {
+            compte = (from c in context.Comptes
+                      where c.Mail == _mail
+                      select new CompteExport
+                      {
+                          Id = c.Id,
+                          Nom = c.Nom,
+                          Prenom = c.Prenom,
+                          Mail = c.Mail,
+                          HashCle = c.HashCle
+                      }).First();
+        });
+
+        return compte;
+    }
+
     public async Task<string> GetHashCleAsync(int _id)
     {
         string hashCle = "";

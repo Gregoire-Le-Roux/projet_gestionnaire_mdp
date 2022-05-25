@@ -63,6 +63,32 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(liste);
         }
 
+        [HttpGet("existeCompte/{idGroupe}/{compteMail}")]
+        public async Task<string> ExisteCompte([FromRoute] int idGroupe, string compteMail)
+        {
+            // recupere le token
+            string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+
+            DB_Compte dbCompte = new(context);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
+
+            AESprotection aes = new(hashCle);
+
+            /*string mailDechiffrer = Protection.XSS(aes.Dechiffrer(compteMail));;*/
+
+            CompteExport compte = await dbCompte.GetCompteByMail(Protection.XSS(compteMail));
+
+            int idCompteMail = compte.Id;
+
+            int idCompteExiste = await dbGroupe.ExisteCompteAsync(idCompteMail, idGroupe);
+            if (idCompteExiste != 0) compte.Id = -1;
+
+
+            return JsonConvert.SerializeObject(compte);
+        }
+
         [HttpPost("ajouter")]
         public async Task<string> Ajouter([FromBody] groupeImport _groupe)
         {
@@ -104,8 +130,53 @@ namespace back.Controllers
 
             return JsonConvert.SerializeObject(idGroupe);
         }
+        
+    
+    [HttpPost("ajouterCompte")]
+    public async Task<string> AjouterCompte([FromBody] groupeCompteImport _groupeCompte)
+    {
+        // recupere le token
+        /*string token = HttpContext.Request.Headers.Authorization;
+        int idCompte = tokenNoConfig.GetIdCompte(token);
 
-        [HttpDelete("supprimer/{idGroupe}")]
+        DB_Compte dbCompte = new(context);
+        string hashCle = await dbCompte.GetHashCleAsync(idCompte);
+
+        AESprotection aes = new(hashCle);*/
+
+        List<int> listeIdCompte = new();
+        listeIdCompte.Add(_groupeCompte.idCompteMail);
+
+        Console.WriteLine(listeIdCompte);
+
+        await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, _groupeCompte.idGroupe);
+
+        return JsonConvert.SerializeObject(true);
+    }
+
+    [HttpPost("ajouterMdp")]
+    public async Task<string> AjouterMdp([FromBody] groupeMdpImport _groupeMdp)
+    {
+            // recupere le token
+            /*string token = HttpContext.Request.Headers.Authorization;
+            int idCompte = tokenNoConfig.GetIdCompte(token);
+
+            DB_Compte dbCompte = new(context);
+            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
+
+            AESprotection aes = new(hashCle);*/
+
+            int[] listeIdMdp = _groupeMdp.ListeIdMdp;
+
+            Console.WriteLine("------------");
+            Console.WriteLine(listeIdMdp);
+
+            await dbGroupe.AjouterMdpGroupeAsync(_groupeMdp.IdGroupe, listeIdMdp);
+
+        return JsonConvert.SerializeObject(true);
+    }
+
+    [HttpDelete("supprimer/{idGroupe}")]
         public async Task<string> Supprimer([FromRoute] int idGroupe)
         {
             try

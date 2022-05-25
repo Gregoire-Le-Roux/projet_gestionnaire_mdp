@@ -112,6 +112,37 @@ namespace back.Services
             return liste;
         }
 
+        public async Task<int> ExisteCompteAsync(int _idCompte, int _idGroupe)
+        {
+            int idMailCompte = 0;
+            using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
+            {
+                sqlCon.Open();
+
+                SqlCommand cmd = sqlCon.CreateCommand();
+
+                cmd.CommandText = $"SELECT idCompte FROM CompteGroupe WHERE idCompte = {_idCompte} AND idGroupe = {_idGroupe}";
+
+                await cmd.PrepareAsync();
+
+                await cmd.ExecuteNonQueryAsync();
+
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        idMailCompte = reader.GetInt32(0);
+                    }
+
+                    await reader.CloseAsync();
+                    await sqlCon.CloseAsync();
+                }
+                if (idMailCompte != 0) idMailCompte = -1;
+
+                return idMailCompte;
+            }
+        }
+
         public async Task<bool> EstAMoi(int _idGroupe, int _idCompte)
         {
             using(SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
@@ -159,6 +190,7 @@ namespace back.Services
                 if (i < _listeIdCompte.Count - 1)
                     valueInsert += ",";
             }
+
 
             using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {

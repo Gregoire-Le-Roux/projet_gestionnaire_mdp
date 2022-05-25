@@ -1,0 +1,18 @@
+<h4>Ajouter des mots de passes à partager</h4>
+<mat-dialog-content class="mat-typography">
+    <form #e="ngForm">
+        <!-- liste des mdp -->
+        <div class="mt-3"><span *ngIf="listeMdp.length == 0">Aucun mot de passe</span></div>
+        <mat-accordion>
+            <mat-selection-list color="primary" name="ListeIdMdp" ngModel>
+                <mat-list-option [value]="element.Id" *ngFor="let element of listeMdp">
+                    {{ element.Titre }}
+                </mat-list-option>
+            </mat-selection-list>
+        </mat-accordion><br>
+    </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+    <button mat-button color="warn" [mat-dialog-close]="false">Annuler</button>
+    <button mat-raised-button color="primary" (click)="Ajouter(e)">Ajouter</button>
+</mat-dialog-actions>

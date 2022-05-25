@@ -12,7 +12,14 @@
           </mat-expansion-panel-header>
 
           <form #e="ngForm">
+            <p>Saisissez une adresse mail et appuyer sur entrer pour valider</p>
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Mail</mat-label>
+                <input #inputMail (keyup.enter)="ModifierListeMailGroupe(inputMail.value)" matInput placeholder="exemple@mail.com" type="email">
+            </mat-form-field>
+
             <span *ngIf="infoGroupe.listeCompte.length == 0">Aucun compte</span>
+
             <mat-selection-list #listeIdCompte class="mb-3" name="listeIdCompte" color="primary" ngModel>
               <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeCompte" >
                 {{ element.Prenom }} {{ element.Nom }} ({{ element.Mail }})
@@ -32,7 +39,12 @@
             </mat-expansion-panel-header>
 
             <form #f="ngForm">
-              <span *ngIf="infoGroupe.listeMdp.length == 0">Aucun mot de passe</span>
+              <div>
+                <button mat-raised-button color="primary" (click)="OuvrirModalAjouterMdp()">
+                  Ajouter un mot de passe
+                </button>
+              </div>
+              <div class="mt-3"><span *ngIf="infoGroupe.listeMdp.length == 0">Aucun mot de passe</span></div>
               <mat-selection-list #listeIdMdp class="mb-3" name="listeIdMdp" color="primary" ngModel>
                 <mat-list-option [value]="element.Id" *ngFor="let element of infoGroupe.listeMdp">
                   {{ element.Login }} {{ element.Mdp }} ({{ element.Titre }})

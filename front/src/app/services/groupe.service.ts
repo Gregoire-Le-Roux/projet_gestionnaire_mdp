@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { VariableStatic } from '../Classes/VariableStatic';
+import { Compte } from '../Types/Compte';
 import { ExportGroupe } from '../Types/Export/ExportGroupe';
 import { Groupe } from '../Types/Groupe';
 import { CompteImport } from '../Types/Import/CompteImport';
@@ -36,9 +37,29 @@ export class GroupeService
     return this.http.get<CompteImport[]>(`${environment.urlApi}/Groupe/listerCompte/${_idGroupe}`);
   }
 
+  ExisteCompte(_compteMail: string, _idGroupe: number): Observable<Compte>
+  {
+    return this.http.get<Compte>(`${environment.urlApi}/Groupe/existeCompte/${_idGroupe}/${_compteMail}`);
+  }
+
+  ExisteMdp(_idMdp: number, _idGroupe: number): Observable<Compte>
+  {
+    return this.http.get<Compte>(`${environment.urlApi}/Groupe/existeMdp/${_idGroupe}/${_idMdp}`);
+  }
+
   Ajouter(_info: ExportGroupe): Observable<number>
   {
     return this.http.post<number>(`${environment.urlApi}/Groupe/ajouter`, _info);
+  }
+
+  AjouterCompte(_groupeMail: any): Observable<boolean>
+  {
+    return this.http.post<boolean>(`${environment.urlApi}/Groupe/ajouterCompte`, _groupeMail);
+  }
+
+  AjouterMdp(_groupeMdp: any): Observable<boolean>
+  {
+    return this.http.post<boolean>(`${environment.urlApi}/Groupe/ajouterMdp`, _groupeMdp);
   }
 
   Supprimer(_idGroupe: number): Observable<boolean>
