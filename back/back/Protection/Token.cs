@@ -45,6 +45,30 @@ public class Token
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
+    public string Generer(CompteImport _compte)
+    {
+        SigningCredentials cleSigner = GenererCleSigner();
+
+        // ajout des infos divers dans le token
+        Claim[] claim = new[]
+        {
+            new Claim("Prenom", _compte.Prenom),
+            new Claim("Nom", _compte.Nom),
+            new Claim("Mail", _compte.Mail),
+            new Claim("Mdp", _compte.Mdp)
+        };
+
+        var token = new JwtSecurityToken(
+            issuer: config.GetValue<string>("token:issuer"),
+            audience: config.GetValue<string>("token:audience"),
+            claims: claim,
+            expires: DateTime.UtcNow.AddMinutes(30),
+            signingCredentials: cleSigner
+            );
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
     public int GetIdCompte(string _token)
     {
         _token = _token.Replace("Bearer ", string.Empty);
@@ -57,6 +81,15 @@ public class Token
         string idCompteString = jsonToken.Claims.First(c => c.Type == "idCompte").Value;
 
         return int.Parse(idCompteString);
+    }
+
+    public SigningCredentials GenererCleSigner()
+    {
+        var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(CLE_SECRETE));
+
+        SigningCredentials cleSigner = new SigningCredentials(cle, SecurityAlgorithms.HmacSha256);
+
+        return cleSigner;
     }
 }
 

@@ -50,6 +50,7 @@ import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.co
 
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { ProfilComponent } from './components/profil/profil.component';
+import { CompteValiderComponent } from './components/compte-valider/compte-valider.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ProfilComponent } from './components/profil/profil.component';
     InscriptionComponent,
     ConnexionInscriptionComponent,
     GenerateurMDPComponent,
-    ProfilComponent
+    ProfilComponent,
+    CompteValiderComponent
   ],
   imports: [
     BrowserModule,

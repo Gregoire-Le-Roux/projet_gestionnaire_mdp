@@ -84,31 +84,15 @@ export class InscriptionComponent
 
     aes = null;
 
-    this.compteServ.Inscription(DATA).subscribe({
-      next: (retour: string | Compte) =>
+    this.compteServ.DemanderInscription(DATA).subscribe({
+      next: (retour: string) =>
       {
         this.btnClicker = false;
-        if(typeof(retour) == "string")
-          this.outilServ.ToastErreur(retour);
-        else {
-          const DATA_COMPTE: Compte = 
-          {
-            Id: retour.Id,
-            Prenom: _form.value.Prenom,
-            Nom: _form.value.Nom,
-            Mail: _form.value.Mail,
-            HashCle: retour.HashCle,
-            Jwt: retour.Jwt
-          }
-          VariableStatic.compte = DATA_COMPTE
-          sessionStorage.setItem(Cache.INFO_COMPTE, JSON.stringify(DATA_COMPTE));
-          this.router.navigate(["/mdp"]);
-        }
+        this.outilServ.ToastOK(retour);
       },
       error: () =>
       {
         this.btnClicker = false;
-        this.outilServ.ToastErreurHttp();
       }
     });
   }

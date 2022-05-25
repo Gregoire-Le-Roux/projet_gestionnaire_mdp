@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { CompteValiderComponent } from './components/compte-valider/compte-valider.component';
 import { ConnexionInscriptionComponent } from './components/connexion-inscription/connexion-inscription.component';
 import { ListingGroupeComponent } from './components/listing-groupe/listing-groupe.component';
 import { ListingMdpComponent } from './components/listing-mdp/listing-mdp.component';
@@ -12,6 +13,8 @@ const routes: Routes = [
   { path: "mdp", canActivate: [ConnexionGuard], component: MenuMdpComponent },
   { path: "groupe", canActivate: [ConnexionGuard], component: ListingGroupeComponent },
   { path: "profil", canActivate: [ConnexionGuard], component: ProfilComponent },
+
+  { path: "compteValider/:token", component: CompteValiderComponent }
 ];
 
 @NgModule({

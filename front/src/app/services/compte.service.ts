@@ -12,6 +12,11 @@ export class CompteService
 {
   constructor(private http: HttpClient) { }
 
+  DemanderInscription(_compte: ExportCompte): Observable<string>
+  {
+    return this.http.post<string>(`${environment.urlApi}/Compte/demanderInscription`, _compte);
+  }
+
   Inscription(_compte: ExportCompte): Observable<Compte>
   {
     return this.http.post<Compte>(`${environment.urlApi}/Compte/inscription`, _compte);

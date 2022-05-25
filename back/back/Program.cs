@@ -6,7 +6,8 @@ global using back.ImportModels;
 global using back.ExportModels;
 global using System.Text;
 global using Microsoft.AspNetCore.Authorization;
-using Microsoft.Extensions.Configuration;
+global using back.Classe;
+
 
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;

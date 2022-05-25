@@ -46,49 +46,66 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(existe);
         }
 
-        [HttpPost("inscription")]
+        [HttpPost("demanderInscription")]
         public async Task<string> Ajouter([FromBody] CompteImport _compte)
         {
-            try
+            AESprotection aes = new(CLE_SECRETE);
+            string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
+            string mdpSecu = aes.Dechiffrer(_compte.Mdp);
+
+            Console.WriteLine("-----------------------------------------");
+            Console.WriteLine(mailSecu);
+
+            if (await dbCompte.ExisteAsync(mailSecu))
+                return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
+
+            CompteImport compte = new()
             {
-                AESprotection aes = new(CLE_SECRETE);
-                string nomSecu = Protection.XSS(aes.Dechiffrer(_compte.Nom));
-                string prenomSecu = Protection.XSS(aes.Dechiffrer(_compte.Prenom));
-                string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
-                string mdpSecu = aes.Dechiffrer(_compte.Mdp);
+                Nom = _compte.Nom,
+                Prenom = _compte.Prenom,
+                Mail = _compte.Mail,
+                Mdp = BC.HashPassword(mdpSecu)
+            };
 
-                Console.WriteLine("-------------------------------");
-                Console.WriteLine(mdpSecu);
-                Console.WriteLine(nomSecu);
-                Console.WriteLine(prenomSecu);
+            Token token = new(config);
+            string jwt = token.Generer(compte);
 
-                if (await dbCompte.ExisteAsync(mailSecu))
-                    return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
+            Mail mail = new(mailSecu, jwt);
+            mail.EnvoyerAsync(true);
 
-                string cleAES = AESprotection.CreerCleChiffrement(nomSecu, prenomSecu, mailSecu);
+            return JsonConvert.SerializeObject("Un mail vous été envoyé pour confirmer votre inscription");
+        }
 
-                AESprotection aESprotection = new(cleAES);
+        [HttpPost("inscription")]
+        public async Task<string> Inscription(CompteImport _compte)
+        {
+            AESprotection aes = new(CLE_SECRETE);
+            string nomSecu = Protection.XSS(aes.Dechiffrer(_compte.Nom));
+            string prenomSecu = Protection.XSS(aes.Dechiffrer(_compte.Prenom));
+            string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
 
-                Compte compte = new()
-                {
-                    Nom = aESprotection.Chiffrer(nomSecu),
-                    Prenom = aESprotection.Chiffrer(prenomSecu),
-                    Mail =  mailSecu,
-                    Mdp = BC.HashPassword(mdpSecu),
-                    HashCle = cleAES
-                };
+            if (await dbCompte.ExisteAsync(mailSecu))
+                return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
 
-                int id = await dbCompte.AjouterAsync(compte);
+            string cleAES = AESprotection.CreerCleChiffrement(nomSecu, prenomSecu, mailSecu);
 
-                Token token = new(config);
-                string Jwt = token.Generer(id);
+            AESprotection aESprotection = new(cleAES);
 
-                return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES, Jwt = Jwt });
-            }
-            catch (Exception)
+            Compte compte = new()
             {
-                return JsonConvert.SerializeObject(0);
-            }
+                Nom = aESprotection.Chiffrer(nomSecu),
+                Prenom = aESprotection.Chiffrer(prenomSecu),
+                Mail = mailSecu,
+                Mdp = _compte.Mdp,
+                HashCle = cleAES
+            };
+
+            int id = await dbCompte.AjouterAsync(compte);
+
+            Token token = new(config);
+            string Jwt = token.Generer(id);
+
+            return JsonConvert.SerializeObject(new { Id = id, HashCle = cleAES, Jwt = Jwt });
         }
 
         /// <summary>

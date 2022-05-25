@@ -10,12 +10,14 @@ namespace back.Controllers
         private readonly DB_Groupe dbGroupe;
         private readonly Token tokenNoConfig;
         private readonly GestionMdpContext context;
+        private readonly IConfiguration config;
 
         public GroupeController(GestionMdpContext _context, IConfiguration _config)
         {
             tokenNoConfig = new();
             dbGroupe = new(_context, _config);
             context = _context;
+            config = _config;
         }
 
         [HttpGet("lister")]
