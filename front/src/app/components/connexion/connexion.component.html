@@ -13,6 +13,8 @@
         <mat-icon matSuffix (click)="AfficherMdp()">{{ voirMdp ? 'visibility_off' : 'visibility' }}</mat-icon>
     </mat-form-field>
 
+    <p><a routerLink="/mot-de-passe-oublie">Mot de passe oublié</a></p>
+
     <button mat-raised-button class="full-width marginb btn-inscription-connexion" color="primary"  (click)="SeConnecter(e)" cdkFocusInitial>
         <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Se connecter' : "" }}
     </button>

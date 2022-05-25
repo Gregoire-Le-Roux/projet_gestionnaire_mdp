@@ -12,6 +12,18 @@ export class CompteService
 {
   constructor(private http: HttpClient) { }
 
+  EnvoyerMailMotDePasseOublie(_mail: string): Observable<string>
+  {
+    return this.http.get<string>(`${environment.urlApi}/Compte/mdpOublier/${_mail}`);
+  }
+
+  ModifierMdp(_mdp: string): Observable<boolean>
+  {
+    const DATA = { Mdp: _mdp };
+
+    return this.http.put<boolean>(`${environment.urlApi}/Compte/modifierMdp`, DATA);
+  }
+
   DemanderInscription(_compte: ExportCompte): Observable<string>
   {
     return this.http.post<string>(`${environment.urlApi}/Compte/demanderInscription`, _compte);

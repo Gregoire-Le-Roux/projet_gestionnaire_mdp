@@ -1,0 +1,18 @@
+<mat-card>
+    <mat-card-title>Mot de passe oublié</mat-card-title>
+    <mat-card-content>
+        <form #e="ngForm">
+
+            <!-- mail -->
+            <mat-form-field class="full-width" appearance="outline">
+                <mat-label>Mail</mat-label>
+                <input matInput type="text" [pattern]="patternMail" name="mail" ngModel required>
+            </mat-form-field>
+        </form>
+    </mat-card-content>
+    <mat-card-actions>
+        <button mat-raised-button color="primary" class="full-width btnMdpOublier" (click)="EnvoyerMailMdpOublier(e.value.mail)">
+            <mat-spinner *ngIf="btnClicker" diameter="21"></mat-spinner> {{ !btnClicker ? 'Envoyer' : "" }} 
+        </button>
+    </mat-card-actions>
+</mat-card>

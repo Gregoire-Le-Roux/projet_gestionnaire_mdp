@@ -10,13 +10,13 @@ import { VariableStatic } from '../Classes/VariableStatic';
 import { OutilService } from '../services/outil.service';
 
 @Injectable()
-export class JwtInterceptor implements HttpInterceptor {
-
+export class JwtInterceptor implements HttpInterceptor 
+{
   constructor(private outilServ: OutilService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> 
   {
-    if(VariableStatic.compte)
+    if(VariableStatic.compte != undefined)
     {
       request = request.clone({
         headers: request.headers.set("Authorization", `Bearer  ${VariableStatic.compte.Jwt}`)

@@ -38,6 +38,31 @@ namespace back.Controllers
             return JsonConvert.SerializeObject(compte);
         }
 
+
+        [HttpGet("mdpOublier/{mail}")]
+        public async Task<string> MdpOublier(string mail)
+        {
+            if (!await dbCompte.ExisteAsync(mail))
+                return JsonConvert.SerializeObject("Cette adresse mail n'existe pas");
+
+            int idCompte = await dbCompte.GetId(mail);
+
+            Token token = new(config);
+            string jwt = token.Generer(idCompte);
+
+            string message = "Bonjour \n\n" +
+                            "Une demande de mot de passe oublié à été demandée \n" +
+                            "Si cela ne vient pas de votre part ignorer simplement ce mail \n\n" +
+                            "Sinon merci de cliquer sur le lien ci-dessous pour procéder à la modification de votre mot de passe \n" +
+                            $"<a href='http://localhost:4200/#/nouveau-mot-de-passe/{jwt}'>Mot de passe oublié</a> \n\n" +
+                            "A bientôt sur passeBase !";
+
+            Mail mail1 = new(mail, message, "PasseBase, mot de passe oublié");
+            mail1.EnvoyerAsync();
+
+            return JsonConvert.SerializeObject("Un mail vous à été envoyé pour votre mot de passe oublié");
+        }
+
         [HttpGet("existe/{mail}")]
         public async Task<string> Existe([FromRoute] string mail)
         {
@@ -78,6 +103,7 @@ namespace back.Controllers
             return JsonConvert.SerializeObject("Un mail vous a été envoyé pour confirmer votre inscription");
         }
 
+        [Authorize]
         [HttpPost("inscription")]
         public async Task<string> Inscription(CompteImport _compte)
         {

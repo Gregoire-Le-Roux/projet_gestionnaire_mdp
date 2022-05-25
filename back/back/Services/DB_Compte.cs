@@ -16,6 +16,18 @@ public class DB_Compte
         config = _config;
     }
 
+    public async Task<int> GetId(string _mail)
+    {
+        int id = 0;
+
+        await Task.Run(() =>
+        {
+            id = context.Comptes.First(c => c.Mail == _mail).Id;
+        });
+
+        return id;
+    }
+
     /// <summary>
     /// Recupere les infos pour l'authentification
     /// </summary>

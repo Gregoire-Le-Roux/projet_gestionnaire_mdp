@@ -33,13 +33,25 @@ export class CompteValiderComponent implements OnInit
 
     let jwt = new Jwt(token);
 
+    console.log("valide: ", jwt.EstValide());
+
     if(!jwt.EstValide())
-    {
+    { 
       this.outilServ.ToastInfo("Cette confirmation à expiré");
       return;
     }
 
     let infoJwt = jwt.InfoToken();
+
+    VariableStatic.compte = 
+    {
+      Id:  0,
+      Nom: "",
+      Prenom: "",
+      Mail: "",
+      HashCle: "",
+      Jwt: token
+    }
 
     const DATA: ExportCompte =
     {

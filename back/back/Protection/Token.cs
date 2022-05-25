@@ -83,7 +83,7 @@ public class Token
         return int.Parse(idCompteString);
     }
 
-    public SigningCredentials GenererCleSigner()
+    private SigningCredentials GenererCleSigner()
     {
         var cle = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(CLE_SECRETE));
 

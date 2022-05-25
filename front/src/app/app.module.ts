@@ -51,6 +51,8 @@ import { GenerateurMDPComponent } from './modal/generateur-mdp/generateur-mdp.co
 import { JwtInterceptor } from './interceptor/jwt.interceptor';
 import { ProfilComponent } from './components/profil/profil.component';
 import { CompteValiderComponent } from './components/compte-valider/compte-valider.component';
+import { MdpOublierComponent } from './components/mdp-oublier/mdp-oublier.component';
+import { NouveauMdpComponent } from './components/nouveau-mdp/nouveau-mdp.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +71,9 @@ import { CompteValiderComponent } from './components/compte-valider/compte-valid
     ConnexionInscriptionComponent,
     GenerateurMDPComponent,
     ProfilComponent,
-    CompteValiderComponent
+    CompteValiderComponent,
+    MdpOublierComponent,
+    NouveauMdpComponent
   ],
   imports: [
     BrowserModule,

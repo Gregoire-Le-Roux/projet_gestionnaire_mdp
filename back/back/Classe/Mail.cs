@@ -46,6 +46,9 @@ namespace back.Classe
 
             BodyBuilder bodyBuilder = new();
 
+            Console.WriteLine("--------------------------------------------");
+            Console.WriteLine(Token);
+
             if(!string.IsNullOrEmpty(Token))
             {
                 text = $"Bonjour {Prenom} {Nom} \n\n" +
