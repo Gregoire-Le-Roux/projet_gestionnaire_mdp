@@ -101,16 +101,15 @@ SET IDENTITY_INSERT Compte OFF;
 */
 SET IDENTITY_INSERT MotDePasse ON;
 INSERT INTO MotDePasse(id, titre, login, mdp, url, dateExpiration, description, idCompteCreateur) VALUES
-(1, 'XzkHa7XGiIG/3ha/qk2xvg==', 'p9K5pO6g7mjvoiR8wbX36g==', 'nbLrArT7f5C5Y4xhCA+Jyw==', 'E1AEsWKv81vSQ2X+lNE6AvCc23gg4ITjvlWOIlAAc3k=', 'Zog0I/ZB1+7xkEd/vzbF1w==', '', 1),
-(2, 'XzkHa7XGiIG/3ha/qk2xvg==', 'p9K5pO6g7mjvoiR8wbX36g==', 'nbLrArT7f5C5Y4xhCA+Jyw==', 'E1AEsWKv81vSQ2X+lNE6AvCc23gg4ITjvlWOIlAAc3k=', 'Zog0I/ZB1+7xkEd/vzbF1w==', '', 1);
+(1, 'XzkHa7XGiIG/3ha/qk2xvg==', 'p9K5pO6g7mjvoiR8wbX36g==', 'nbLrArT7f5C5Y4xhCA+Jyw==', 'E1AEsWKv81vSQ2X+lNE6AvCc23gg4ITjvlWOIlAAc3k=', 'Zog0I/ZB1+7xkEd/vzbF1w==', '', 1);
 SET IDENTITY_INSERT MotDePasse OFF;
 
-INSERT INTO CarnetAdresse(idCompte, idCompteCarnet) VALUES (1, 2), (2, 1);
+INSERT INTO CarnetAdresse(idCompte, idCompteCarnet) VALUES (1, 2);
 
 SET IDENTITY_INSERT Groupe ON;
 INSERT INTO Groupe(id, idCompteCreateur, titre) VALUES (1, 2, 'Groupe 1');
 SET IDENTITY_INSERT Groupe OFF;
 
-INSERT INTO CompteGroupe(idCompte, idGroupe) VALUES (1, 1), (2, 1);
+INSERT INTO CompteGroupe(idCompte, idGroupe) VALUES (1, 1);
 
 INSERT INTO GroupeMdp(idGroupe, idMdp) VALUES (1, 1), (1, 2);

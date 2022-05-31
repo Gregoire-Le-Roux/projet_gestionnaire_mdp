@@ -6,6 +6,7 @@ namespace back.Classe
     {
         private static DB_Mdp dbMdp = new();
         private static string connectionString = "";
+        private static IConfiguration config;
 
         static System.Timers.Timer timer = new()
         {
@@ -13,8 +14,9 @@ namespace back.Classe
             AutoReset = true
         };
 
-        public static void Init(string _connectionString)
+        public static void InitEnvoieMailAuto(string _connectionString, IConfiguration _config)
         {
+            config = _config;
             connectionString = _connectionString;
             timer.Elapsed += Test;
             timer.Start();
@@ -22,9 +24,7 @@ namespace back.Classe
 
         private static async void Test(object _obj, ElapsedEventArgs e)
         {
-            await dbMdp.EnvoyerMailMdpBientotExpirerAsync(connectionString);
-
-            Console.WriteLine("fini");
+            await dbMdp.EnvoyerMailMdpBientotExpirerAsync(connectionString, config);
         }
     }
 }

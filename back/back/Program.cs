@@ -87,7 +87,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-Coroutine.Init(config.GetConnectionString("ionos"));
+Coroutine.InitEnvoieMailAuto(config.GetConnectionString("ionos"), config);
 
 app.Run();
 

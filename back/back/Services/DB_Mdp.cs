@@ -8,12 +8,14 @@ namespace back.Services
     {
         //private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         private GestionMdpContext context { init; get; }
+        private const bool EST_MODE_PROD = true;
 
         /// <summary>
         ///  A utiliser seulement pour le timer
         ///  Ne pas utiliser pour les APIs
         /// </summary>
         public DB_Mdp() { }
+
         public DB_Mdp(GestionMdpContext _context)
         {
             context = _context;
@@ -51,7 +53,7 @@ namespace back.Services
         /// <summary>
         /// A utiliser seulement par le timer
         /// </summary>
-        public async Task EnvoyerMailMdpBientotExpirerAsync(string _connectionString)
+        public async Task EnvoyerMailMdpBientotExpirerAsync(string _connectionString, IConfiguration _config)
         {
             if (context is null)
                 return;
@@ -95,10 +97,10 @@ namespace back.Services
 
                             string message = "PasseBase bonjour, \n\n" +
                                              $"Votre mot de passe pour {titre} à la date du {dateExpiration.ToString("d")} va bientôt expiré \n\n" +
-                                             "N'oublier pas de le modifier en meme temps sur l'application en cliquant <a href='http://localhost:4200/'>ici</a> \n" +
+                                             $"N'oublier pas de le modifier en meme temps sur l'application en cliquant <a href='{(EST_MODE_PROD ? _config.GetValue<string>("mailProd:baseUrl") : _config.GetValue<string>("mail:baseUrl"))}'>ici</a> \n" +
                                              "A bientôt sur passeBase";
 
-                            mail = new(reader.GetString(1), message, "PasseBase, mot de passe bientôt expirer");
+                            mail = new(reader.GetString(1), message, "PasseBase, mot de passe bientôt expirer", _config);
                             await mail.EnvoyerAsync();
                         }
                     }

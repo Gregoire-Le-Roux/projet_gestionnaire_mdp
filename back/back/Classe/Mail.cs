@@ -5,25 +5,45 @@ namespace back.Classe
 {
     public class Mail
     {
-        private string MDP = "R!@JAX46Zl60d!2tqA";
-        private const string MAIL = "passebase@gmail.com";
+        private const bool EST_MODE_PROD = true;
 
-        private const string SMTP_SERVEUR = "smtp.gmail.com";
-        private const int SMTP_PORT = 465;
+        private string MDP { get; init; }
+        private string MAIL { get; init; }
+        private string  URL_BASE { get; set; }
+        private string SMTP_SERVEUR { get; init; }
+
+        private const int SMTP_PORT = 587;
 
         private string Destinataire { get; init; }
         private string Message { get; init; }
         private string Sujet { get; init; }
-
         private string Token { get; init; }
 
         public string Nom { get; init; } = "";
         public string Prenom { get; init; } = "";
 
+        private Mail(IConfiguration _config)
+        {
+            if(EST_MODE_PROD)
+            {
+                MDP = _config.GetValue<string>("mailProd:mdp");
+                MAIL = _config.GetValue<string>("mailProd:login");
+                URL_BASE = _config.GetValue<string>("mailProd:baseUrl");
+                SMTP_SERVEUR = _config.GetValue<string>("mailProd:smtp");
+            }
+            else
+            {
+                MDP = _config.GetValue<string>("mail:mdp");
+                MAIL = _config.GetValue<string>("mail:login");
+                URL_BASE = _config.GetValue<string>("mail:baseUrl");
+                SMTP_SERVEUR = _config.GetValue<string>("mail:smtp");
+            }
+        }
+
         /// <summary>
         ///     Constructeur pour envoir mail personnalisé
         /// </summary>
-        public Mail(string _destinataire, string _message, string _sujet)
+        public Mail(string _destinataire, string _message, string _sujet, IConfiguration _config): this(_config)
         {
             Destinataire = _destinataire;
             Message = _message;
@@ -33,7 +53,7 @@ namespace back.Classe
         /// <summary>
         ///     Constructeur pour envoie mail de confirmation d'inscription
         /// </summary>
-        public Mail(string _destinataire, string _token)
+        public Mail(string _destinataire, string _token, IConfiguration _config): this(_config)
         {
             Destinataire = _destinataire;
             Token = _token;
@@ -49,16 +69,16 @@ namespace back.Classe
             Console.WriteLine("--------------------------------------------");
             Console.WriteLine(Token);
 
-            if(!string.IsNullOrEmpty(Token))
+            if (!string.IsNullOrEmpty(Token))
             {
                 text = $"Bonjour {Prenom} {Nom} \n\n" +
                     $"Afin de confirmer votre demande d'inscription cliquer sur le lien ci-dessous \n " +
-                    $"<a href='http://localhost:4200/#/compteValider/{Token}'>Confirmer ma demande d'inscription</a> \n" +
+                    $"<a href='{URL_BASE}compteValider/{Token}'>Confirmer ma demande d'inscription</a> \n" +
                     $"Ce lien est valable 30 minutes \n\n" +
                     $"A bientôt sur PasseBase !";
 
                 sujet = "Confirmation de votre compte sur passeBase";
-            }   
+            }
             else
             {
                 text = Message;

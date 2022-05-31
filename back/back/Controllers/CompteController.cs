@@ -7,6 +7,8 @@ namespace back.Controllers
     [ApiController]
     public class CompteController : Controller
     {
+        private const bool EST_MODE_PROD = true;
+
         private readonly DB_Compte dbCompte;
         private readonly Token tokenNoConfig;
         private IConfiguration config;
@@ -54,10 +56,10 @@ namespace back.Controllers
                             "Une demande de mot de passe oublié à été demandée \n" +
                             "Si cela ne vient pas de votre part ignorer simplement ce mail \n\n" +
                             "Sinon merci de cliquer sur le lien ci-dessous pour procéder à la modification de votre mot de passe \n" +
-                            $"<a href='http://localhost:4200/#/nouveau-mot-de-passe/{jwt}'>Mot de passe oublié</a> \n\n" +
+                            $"<a href='{ (EST_MODE_PROD ? config.GetValue<string>("mailProd:baseUrl") : config.GetValue<string>("mail:baseUrl")) }nouveau-mot-de-passe/{jwt}'>Mot de passe oublié</a> \n\n" +
                             "A bientôt sur passeBase !";
 
-            Mail mail1 = new(mail, message, "PasseBase, mot de passe oublié");
+            Mail mail1 = new(mail, message, "PasseBase, mot de passe oublié", config);
             mail1.EnvoyerAsync();
 
             return JsonConvert.SerializeObject("Un mail vous à été envoyé pour votre mot de passe oublié");
@@ -92,15 +94,15 @@ namespace back.Controllers
             Token token = new(config);
             string jwt = token.Generer(compte);
 
-            Mail mail = new(mailSecu, jwt)
+            Mail mail = new(mailSecu, jwt, config)
             {
                 Nom = aes.Dechiffrer(compte.Nom),
                 Prenom = aes.Dechiffrer(compte.Prenom)
             };
 
-            mail.EnvoyerAsync();
+            await mail.EnvoyerAsync();
 
-            return JsonConvert.SerializeObject("Un mail vous a été envoyé pour confirmer votre inscription");
+            return JsonConvert.SerializeObject("Un mail vous a été envoyé pour valider votre inscription");
         }
 
         [Authorize]
