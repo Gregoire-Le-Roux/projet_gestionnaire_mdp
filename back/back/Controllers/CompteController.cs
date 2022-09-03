@@ -7,8 +7,6 @@ namespace back.Controllers
     [ApiController]
     public class CompteController : Controller
     {
-        private const bool EST_MODE_PROD = false;
-
         private readonly DB_Compte dbCompte;
         private readonly Token tokenNoConfig;
         private IConfiguration config;
@@ -57,7 +55,7 @@ namespace back.Controllers
                             "Une demande de mot de passe oublié à été demandée \n" +
                             "Si cela ne vient pas de votre part ignorer simplement ce mail \n\n" +
                             "Sinon merci de cliquer sur le lien ci-dessous pour procéder à la modification de votre mot de passe \n" +
-                            $"<a href='{ (EST_MODE_PROD ? config.GetValue<string>("mailProd:baseUrl") : config.GetValue<string>("mail:baseUrl")) }nouveau-mot-de-passe/{jwt}'>Mot de passe oublié</a> \n\n" +
+                            $"<a href='{ (config.GetValue<bool>("estModeProd") ? config.GetValue<string>("mailProd:baseUrl") : config.GetValue<string>("mail:baseUrl")) }nouveau-mot-de-passe/{jwt}'>Mot de passe oublié</a> \n\n" +
                             "A bientôt sur passeBase !";
 
             Mail mail1 = new(mail, message, "PasseBase, mot de passe oublié", config);

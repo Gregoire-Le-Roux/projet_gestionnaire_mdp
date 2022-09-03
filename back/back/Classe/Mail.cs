@@ -5,8 +5,6 @@ namespace back.Classe
 {
     public class Mail
     {
-        private const bool EST_MODE_PROD = false;
-
         private string MDP { get; init; }
         private string MAIL { get; init; }
         private string  URL_BASE { get; set; }
@@ -24,7 +22,7 @@ namespace back.Classe
 
         private Mail(IConfiguration _config)
         {
-            if(EST_MODE_PROD)
+            if(_config.GetValue<bool>("estModeProd"))
             {
                 MDP = _config.GetValue<string>("mailProd:mdp");
                 MAIL = _config.GetValue<string>("mailProd:login");
