@@ -1,6 +1,9 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
+using System.Security.Cryptography;
 using back.InterneModels;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace back.Services
 {
@@ -9,6 +12,8 @@ namespace back.Services
         //private readonly static string connectionString = "Data Source=DESKTOP-J5HTQCS\\SQLSERVER;Initial Catalog=GestionMdp;Integrated Security=True";
         private GestionMdpContext context { init; get; }
         private const bool EST_MODE_PROD = true;
+
+        private IConfiguration config;
 
         /// <summary>
         ///  A utiliser seulement pour le timer
@@ -19,6 +24,11 @@ namespace back.Services
         public DB_Mdp(GestionMdpContext _context)
         {
             context = _context;
+        }
+
+        public DB_Mdp(GestionMdpContext _context, IConfiguration _config): this(_context)
+        {
+            config = _config;
         }
 
         public async Task<MdpExport[]> ListerMesMdpAsync(int _id)
@@ -45,9 +55,77 @@ namespace back.Services
             return liste;
         }
 
-        public MdpExport[] ListerMdpPartagerAvecMoi(int _id)
+        public async Task<List<MdpExport>> ListerMdpPartagerAvecMoi(int _idCompte)
         {
-            return new MdpExport[0];
+            List <dynamic> listeHashCle = new();
+
+            List<MdpExport> listeRetour = new();
+
+            using (SqlConnection con = new(config.GetConnectionString("ionos")))
+            {
+                await con.OpenAsync();
+                var cmd = con.CreateCommand();
+
+                cmd.CommandText = "SELECT mdp.id, login, mdp, mdp.titre, url, dateExpiration, description, mdp.idCompteCreateur " +
+                                "FROM CompteGroupe cg " +
+                                "JOIN Groupe g ON cg.idGroupe = g.id " +
+                                "JOIN GroupeMdp gm ON gm.idGroupe = g.id " +
+                                "JOIN MotDePasse mdp ON mdp.id = gm.idMdp " +
+                                $"WHERE idCompte = @id";
+
+                cmd.Parameters.Add("@id", SqlDbType.Int).Value = _idCompte;
+                await cmd.PrepareAsync();
+
+                using (var reader = await cmd.ExecuteReaderAsync())
+                {
+                    string hashCleCompteActuel = context.Comptes.Where(c => c.Id == _idCompte).Select(c => c.HashCle).First();
+                    listeHashCle.Add(new { hashCle = hashCleCompteActuel, idCompteCreateur = _idCompte });
+
+                    AESprotection AESprotectionCompteActuel = new(hashCleCompteActuel);
+
+                    while (await reader.ReadAsync())
+                    {
+                        string hashCle = "";
+
+                        int idCompteCreateur = reader.GetInt32(7);
+                        int index = listeHashCle.FindIndex(c => c.idCompteCreateur == idCompteCreateur);
+
+                        if (index != -1)
+                        {
+                            hashCle = listeHashCle[index].hashCle;
+                        }
+                        else
+                        {
+                            hashCle = context.Comptes.Where(c => c.Id == idCompteCreateur).Select(c => c.HashCle).First();
+                            listeHashCle.Add(new { hashCle = hashCle, idCompteCreateur = idCompteCreateur });
+                        }
+
+                        AESprotection aesProtection = new(hashCle);
+
+                        string loginClaire = aesProtection.Dechiffrer(reader.GetString(1));
+                        string mdpClaire = aesProtection.Dechiffrer(reader.GetString(2));
+                        string titreClaire = aesProtection.Dechiffrer(reader.GetString(3));
+                        string urlClaire = aesProtection.Dechiffrer(reader.GetString(4));
+                        string descriptionClaire = aesProtection.Dechiffrer(reader.GetString(5));
+                        string dateExpiClaire = aesProtection.Dechiffrer(reader.GetString(6));
+
+                        listeRetour.Add(new MdpExport() {
+                            Id = reader.GetInt32(0),
+                            Login = AESprotectionCompteActuel.Chiffrer(loginClaire),
+                            Mdp = AESprotectionCompteActuel.Chiffrer(mdpClaire),
+                            Titre = AESprotectionCompteActuel.Chiffrer(titreClaire),
+                            Url = AESprotectionCompteActuel.Chiffrer(urlClaire),
+                            Description = AESprotectionCompteActuel.Chiffrer(descriptionClaire),
+                            DateExpiration = AESprotectionCompteActuel.Chiffrer(dateExpiClaire)
+                        });
+                    }
+
+                    await reader.CloseAsync();
+                    await con.CloseAsync();
+                }
+
+                return listeRetour;
+            }
         }
 
         /// <summary>
@@ -87,9 +165,6 @@ namespace back.Services
                         }
 
                         DateTime dateExpiration = DateTime.Parse(aes.Dechiffrer(reader.GetString(2)));
-                        Console.WriteLine(dateExpiration.ToString("d"));
-                        
-                        Console.WriteLine((dateExpiration - DateTime.Now).Days);
 
                         if((dateExpiration - DateTime.Now).Days is 1)
                         {
@@ -146,9 +221,6 @@ namespace back.Services
                     cmd.Prepare();
 
                     int count = Convert.ToInt32(cmd.ExecuteScalar());
-
-                    Console.WriteLine("---------------------------------");
-                    Console.WriteLine(count);
 
                     if (count == 0)
                     {

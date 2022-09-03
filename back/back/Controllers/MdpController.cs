@@ -34,13 +34,15 @@ namespace back.Controllers
 
         [Authorize]
         [HttpGet("listerPartagerAvecMoi")]
-        public string ListerPartagerAvecMoi()
+        public async Task<string> ListerPartagerAvecMoi()
         {
             // recupere le token et vire le bearer
             string token = HttpContext.Request.Headers.Authorization;
             int idCompte = tokenNoConfig.GetIdCompte(token);
 
-            MdpExport[] liste = dbMdp.ListerMdpPartagerAvecMoi(idCompte);
+            DB_Mdp dB_Mdp = new(context, config); 
+
+            List<MdpExport> liste = await dB_Mdp.ListerMdpPartagerAvecMoi(idCompte);
 
             return JsonConvert.SerializeObject(liste);
         }

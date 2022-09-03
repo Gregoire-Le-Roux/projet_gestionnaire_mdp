@@ -63,11 +63,10 @@ export class InfoGroupeComponent implements OnInit, OnDestroy
         if(retour == true)
         {
           this.groupeServ.ExisteCompte(_mail, this.idGroupe).subscribe({
-            next: (retour: Compte) =>
+            next: (retour: boolean) =>
             {
-              if(retour.Id != -1) {
-                this.ModifierCompte(retour);
-              }
+              if(retour !== true)
+                this.AjouterCompteGrp(_mail);
               else
                 this.outilServ.ToastInfo(`L'adresse: ${_mail} est déjà dans le groupe`);
             },
@@ -79,17 +78,30 @@ export class InfoGroupeComponent implements OnInit, OnDestroy
     });
   }
 
-  ModifierCompte(_compte: Compte): void
+  private AjouterCompteGrp(_mail: string): void
   {
-    this.groupeServ.AjouterCompte({idCompteMail: _compte.Id, idGroupe: this.idGroupe}).subscribe({
-      next: (retour: boolean) =>
-      {
-        if(retour == true)
+    this.groupeServ.AjouterCompte({ mail: _mail, idGroupe: this.idGroupe }).subscribe({
+      next: (retour: boolean | Compte) =>
+      { 
+        if(retour !== false)
         {
-          const AES = new Aes(_compte.HashCle);
-          let ajoutCompte = { Id: _compte.Id, Prenom: AES.Dechiffrer(_compte.Prenom), Nom: AES.Dechiffrer(_compte.Nom), Mail: _compte.Mail }
+          retour = retour as Compte;
+
+          const AES = new Aes(retour.HashCle);
+
+          let ajoutCompte = { 
+            Id: retour.Id, 
+            Prenom: AES.Dechiffrer(retour.Prenom), 
+            Nom: AES.Dechiffrer(retour.Nom), 
+            Mail: retour.Mail 
+          };
+
           this.infoGroupe.listeCompte.push(ajoutCompte);
           this.inputMail.nativeElement.value = "";
+        }
+        else
+        {
+          this.outilServ.ToastErreur("Vous n'avez pas la propriéter du groupe");
         }
       },
     });
@@ -162,9 +174,14 @@ export class InfoGroupeComponent implements OnInit, OnDestroy
     DIALOG_REF.afterClosed().subscribe({
       next: (retour: any) =>
       {
-        if(retour != undefined && retour != false) {
-          this.infoGroupe.listeMdp = this.infoGroupe.listeMdp.concat(retour.ListeMdp);
-        }
+        console.log(retour);
+        
+
+        if(retour != undefined && retour != false)
+        {
+          for (const element of retour.ListeMdp) 
+            this.infoGroupe.listeMdp.push(element);
+        }  
       }
     })
   }

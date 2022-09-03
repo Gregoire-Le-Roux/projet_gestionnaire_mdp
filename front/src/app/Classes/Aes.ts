@@ -24,7 +24,7 @@ export class Aes
     {
         const TEXT_DECHIFFRER = CryptoJS.AES.decrypt(_text, this.cleSecrete, { iv: this.iv }).toString(CryptoJS.enc.Utf8);
 
-        return TEXT_DECHIFFRER.replace(/[\u0000\x00\u001f\x1F\u0002\b]/g, "");
+        return TEXT_DECHIFFRER.replace(/[\u0005\u0000\x00\u001f\x1F\u0002\b]/g, "");
     }
 
     DechiffrerMdp(_liste: Mdp[]): Mdp[]

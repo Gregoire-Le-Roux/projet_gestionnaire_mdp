@@ -37,9 +37,9 @@ export class GroupeService
     return this.http.get<CompteImport[]>(`${environment.urlApi}/Groupe/listerCompte/${_idGroupe}`);
   }
 
-  ExisteCompte(_compteMail: string, _idGroupe: number): Observable<Compte>
+  ExisteCompte(_compteMail: string, _idGroupe: number): Observable<boolean>
   {
-    return this.http.get<Compte>(`${environment.urlApi}/Groupe/existeCompte/${_idGroupe}/${_compteMail}`);
+    return this.http.get<boolean>(`${environment.urlApi}/Groupe/existeCompte/${_idGroupe}/${_compteMail}`);
   }
 
   ExisteMdp(_idMdp: number, _idGroupe: number): Observable<Compte>
@@ -52,9 +52,9 @@ export class GroupeService
     return this.http.post<number>(`${environment.urlApi}/Groupe/ajouter`, _info);
   }
 
-  AjouterCompte(_groupeMail: any): Observable<boolean>
+  AjouterCompte(_groupeMail: any): Observable<boolean | Compte>
   {
-    return this.http.post<boolean>(`${environment.urlApi}/Groupe/ajouterCompte`, _groupeMail);
+    return this.http.post<boolean | Compte>(`${environment.urlApi}/Groupe/ajouterCompte`, _groupeMail);
   }
 
   AjouterMdp(_groupeMdp: any): Observable<boolean>

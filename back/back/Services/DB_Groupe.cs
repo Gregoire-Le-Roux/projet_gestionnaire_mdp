@@ -112,34 +112,23 @@ namespace back.Services
             return liste;
         }
 
-        public async Task<int> ExisteCompteAsync(int _idCompte, int _idGroupe)
+        public async Task<bool> ExisteCompteAsync(int _idCompte, int _idGroupe)
         {
-            int idMailCompte = 0;
             using (SqlConnection sqlCon = new(configuration.GetConnectionString("ionos")))
             {
                 sqlCon.Open();
 
                 SqlCommand cmd = sqlCon.CreateCommand();
 
-                cmd.CommandText = $"SELECT idCompte FROM CompteGroupe WHERE idCompte = {_idCompte} AND idGroupe = {_idGroupe}";
+                cmd.CommandText = $"SELECT COUNT(*) FROM CompteGroupe WHERE idCompte = {_idCompte} AND idGroupe = {_idGroupe}";
 
                 await cmd.PrepareAsync();
 
-                await cmd.ExecuteNonQueryAsync();
+                int count = Convert.ToInt32(cmd.ExecuteScalar());
 
-                using (var reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        idMailCompte = reader.GetInt32(0);
-                    }
+                await sqlCon.CloseAsync();
 
-                    await reader.CloseAsync();
-                    await sqlCon.CloseAsync();
-                }
-                if (idMailCompte != 0) idMailCompte = -1;
-
-                return idMailCompte;
+                return count == 1;
             }
         }
 

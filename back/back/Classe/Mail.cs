@@ -5,7 +5,7 @@ namespace back.Classe
 {
     public class Mail
     {
-        private const bool EST_MODE_PROD = true;
+        private const bool EST_MODE_PROD = false;
 
         private string MDP { get; init; }
         private string MAIL { get; init; }
@@ -66,9 +66,6 @@ namespace back.Classe
 
             BodyBuilder bodyBuilder = new();
 
-            Console.WriteLine("--------------------------------------------");
-            Console.WriteLine(Token);
-
             if (!string.IsNullOrEmpty(Token))
             {
                 text = $"Bonjour {Prenom} {Nom} \n\n" +
@@ -102,6 +99,7 @@ namespace back.Classe
             };
 
             await smtp.ConnectAsync(SMTP_SERVEUR, SMTP_PORT);
+
             await smtp.AuthenticateAsync(MAIL, MDP);
             await smtp.SendAsync(mimeMsg);
             await smtp.DisconnectAsync(true);

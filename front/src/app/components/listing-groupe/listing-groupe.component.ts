@@ -97,6 +97,8 @@ export class ListingGroupeComponent implements OnInit, AfterViewInit
       next: (retour: CompteImport[]) =>
       {
         let mdpCompteGroupe = this.InitInfoGroupe(retour, _groupe.ListeMdp);
+        console.log(mdpCompteGroupe);
+        
         
         const DIALOG_REF = this.dialog.open(InfoGroupeComponent, 
           { minWidth: "40%", data: { nomGroupe: _groupe.Titre, idGroupe: _groupe.Id, infoGroupe: mdpCompteGroupe }});

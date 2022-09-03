@@ -7,7 +7,7 @@ namespace back.Controllers
     [ApiController]
     public class CompteController : Controller
     {
-        private const bool EST_MODE_PROD = true;
+        private const bool EST_MODE_PROD = false;
 
         private readonly DB_Compte dbCompte;
         private readonly Token tokenNoConfig;
@@ -21,6 +21,7 @@ namespace back.Controllers
             config = _config;
         }
 
+        // MODIFIER
         [Authorize]
         [HttpGet("monCompte")]
         public async Task<string> Compte()
@@ -79,9 +80,6 @@ namespace back.Controllers
             AESprotection aes = new(CLE_SECRETE);
             string mailSecu = Protection.XSS(aes.Dechiffrer(_compte.Mail));
             string mdpSecu = aes.Dechiffrer(_compte.Mdp);
-
-            if (await dbCompte.ExisteAsync(mailSecu))
-                return JsonConvert.SerializeObject("Cette adresse mail est déjà utilisée");
 
             CompteImport compte = new()
             {

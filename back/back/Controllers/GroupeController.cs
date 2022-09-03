@@ -66,27 +66,13 @@ namespace back.Controllers
         [HttpGet("existeCompte/{idGroupe}/{compteMail}")]
         public async Task<string> ExisteCompte([FromRoute] int idGroupe, string compteMail)
         {
-            // recupere le token
-            string token = HttpContext.Request.Headers.Authorization;
-            int idCompte = tokenNoConfig.GetIdCompte(token);
-
-
             DB_Compte dbCompte = new(context);
-            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
 
-            AESprotection aes = new(hashCle);
+            CompteExport compte = await dbCompte.GetCompteByMailAsync(Protection.XSS(compteMail));
 
-            /*string mailDechiffrer = Protection.XSS(aes.Dechiffrer(compteMail));;*/
+            bool existe = await dbGroupe.ExisteCompteAsync(compte.Id, idGroupe);
 
-            CompteExport compte = await dbCompte.GetCompteByMail(Protection.XSS(compteMail));
-
-            int idCompteMail = compte.Id;
-
-            int idCompteExiste = await dbGroupe.ExisteCompteAsync(idCompteMail, idGroupe);
-            if (idCompteExiste != 0) compte.Id = -1;
-
-
-            return JsonConvert.SerializeObject(compte);
+            return JsonConvert.SerializeObject(existe);
         }
 
         [HttpPost("ajouter")]
@@ -130,53 +116,39 @@ namespace back.Controllers
 
             return JsonConvert.SerializeObject(idGroupe);
         }
-        
     
-    [HttpPost("ajouterCompte")]
-    public async Task<string> AjouterCompte([FromBody] groupeCompteImport _groupeCompte)
-    {
-        // recupere le token
-        /*string token = HttpContext.Request.Headers.Authorization;
-        int idCompte = tokenNoConfig.GetIdCompte(token);
-
-        DB_Compte dbCompte = new(context);
-        string hashCle = await dbCompte.GetHashCleAsync(idCompte);
-
-        AESprotection aes = new(hashCle);*/
-
-        List<int> listeIdCompte = new();
-        listeIdCompte.Add(_groupeCompte.idCompteMail);
-
-        Console.WriteLine(listeIdCompte);
-
-        await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, _groupeCompte.idGroupe);
-
-        return JsonConvert.SerializeObject(true);
-    }
-
-    [HttpPost("ajouterMdp")]
-    public async Task<string> AjouterMdp([FromBody] groupeMdpImport _groupeMdp)
-    {
+        [HttpPost("ajouterCompte")]
+        public async Task<string> AjouterCompte([FromBody] groupeCompteImport _groupeCompte)
+        {
             // recupere le token
-            /*string token = HttpContext.Request.Headers.Authorization;
+            string token = HttpContext.Request.Headers.Authorization;
             int idCompte = tokenNoConfig.GetIdCompte(token);
 
-            DB_Compte dbCompte = new(context);
-            string hashCle = await dbCompte.GetHashCleAsync(idCompte);
+            DB_Compte dB_Compte = new(context);
+            CompteExport compte =  await dB_Compte.GetCompteByMailAsync(Protection.XSS(_groupeCompte.mail!));
 
-            AESprotection aes = new(hashCle);*/
+            if (!await dbGroupe.EstAMoi(_groupeCompte.idGroupe, idCompte))
+                return JsonConvert.SerializeObject(false);
 
+            List<int> listeIdCompte = new();
+            listeIdCompte.Add(compte.Id);
+
+            await dbGroupe.AjouterCompteGroupeAsync(listeIdCompte, _groupeCompte.idGroupe);
+
+            return JsonConvert.SerializeObject(compte);
+        }
+
+        [HttpPost("ajouterMdp")]
+        public async Task<string> AjouterMdp([FromBody] groupeMdpImport _groupeMdp)
+        {
             int[] listeIdMdp = _groupeMdp.ListeIdMdp;
-
-            Console.WriteLine("------------");
-            Console.WriteLine(listeIdMdp);
 
             await dbGroupe.AjouterMdpGroupeAsync(_groupeMdp.IdGroupe, listeIdMdp);
 
-        return JsonConvert.SerializeObject(true);
-    }
+            return JsonConvert.SerializeObject(true);
+        }
 
-    [HttpDelete("supprimer/{idGroupe}")]
+        [HttpDelete("supprimer/{idGroupe}")]
         public async Task<string> Supprimer([FromRoute] int idGroupe)
         {
             try

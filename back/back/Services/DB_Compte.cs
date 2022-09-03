@@ -153,7 +153,7 @@ public class DB_Compte
         return retour >= 1;
     }
 
-    public async Task<CompteExport> GetCompteByMail(string _mail)
+    public async Task<CompteExport> GetCompteByMailAsync(string _mail)
     {
         int retour = 0;
 

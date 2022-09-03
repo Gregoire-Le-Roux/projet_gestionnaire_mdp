@@ -85,6 +85,8 @@ export class MenuMdpComponent implements OnInit
           let aes: Aes = new Aes(VariableStatic.compte.HashCle);
 
           this.listeMdpPartagerAvecMoi = aes.DechiffrerMdp(retour);
+          console.log(this.listeMdpPartagerAvecMoi);
+          
           this.component.toArray()[1].InitListe(this.listeMdpPartagerAvecMoi);
         }
         else

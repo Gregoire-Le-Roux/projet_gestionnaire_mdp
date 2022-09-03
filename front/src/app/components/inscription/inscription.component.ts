@@ -72,23 +72,17 @@ export class InscriptionComponent
       this.btnClicker = false;
       return
     }
-    
-    let aes: Aes = new Aes(this.CLE_SECRETE); 
 
-    const DATA = {
-      Prenom: aes.Chiffrer(_form.value.Prenom),
-      Nom: aes.Chiffrer(_form.value.Nom),
-      Mail: aes.Chiffrer(_form.value.Mail),
-      Mdp: aes.Chiffrer(_form.value.Mdp),
-    }
-
-    aes = null;
-
-    this.compteServ.DemanderInscription(DATA).subscribe({
-      next: (retour: string) =>
+    this.compteServ.Existe(_form.value.Mail).subscribe({
+      next: (retour: boolean) =>
       {
-        this.btnClicker = false;
-        this.outilServ.ToastOK(retour);
+        if(retour == false)
+          this.EnvoyerDemandeInscription(_form.value.Prenom, _form.value.Nom, _form.value.Mail, _form.value.Mdp);
+        else
+        {
+          this.btnClicker = false;
+          this.outilServ.ToastInfo(`Le mail ${_form.value.Mail} existe déjà`);
+        }   
       },
       error: () =>
       {
@@ -112,4 +106,27 @@ export class InscriptionComponent
     this.voirMdpConfirmation = !this.voirMdpConfirmation;
   }
 
+  private EnvoyerDemandeInscription(_prenom: string, _nom: string, _mail: string, _mdp: string): void
+  {
+    let aes: Aes = new Aes(this.CLE_SECRETE); 
+
+    const DATA = {
+      Prenom: aes.Chiffrer(_prenom),
+      Nom: aes.Chiffrer(_nom),
+      Mail: aes.Chiffrer(_mail),
+      Mdp: aes.Chiffrer(_mdp),
+    }
+
+    this.compteServ.DemanderInscription(DATA).subscribe({
+      next: (retour: string) =>
+      {
+        this.outilServ.ToastOK(retour);
+        this.btnClicker = false;
+      },
+      error: () =>
+      {
+        this.btnClicker = false;
+      }
+    });
+  }
 }

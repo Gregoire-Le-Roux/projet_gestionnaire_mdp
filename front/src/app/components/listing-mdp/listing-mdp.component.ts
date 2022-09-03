@@ -100,8 +100,7 @@ export class ListingMdpComponent implements OnInit, AfterViewInit
 
   AfficherMdpCaractere(_mdp: string): string
   {
-    let caractere = "*";
-    return caractere.repeat(_mdp.length);
+    return "********";
   }
 
   AfficherMdp(_mdp: Mdp): void
