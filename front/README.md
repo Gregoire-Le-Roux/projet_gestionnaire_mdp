@@ -14,19 +14,20 @@ Essaye de ne pas utiliser le type any qui veut dire nimporte quel type
 
 accolade sur la meme colonne
 exemple:
-
+```
 fonction(_text: string): void
 {
     if()
     {
 
     }
-}
+}```
 
 sa a banir:
+```
 fonction(_text: string): void {
 
-}
+}```
 
 parametre de fonction commence par un _ et se termine par un type
 pense a bien aérer le code ne fait pas des pattés STP
